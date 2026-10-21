@@ -1,0 +1,91 @@
+//! # Secure Boot variables
+//!
+//! Variable names and their associated `GUID` values.
+//!
+//! The platform key, key-exchange database and mode variables
+//! use the global variable `GUID`. The signature databases use
+//! the image security database `GUID`. Variable existence is
+//! never assumed; callers must query firmware and handle the
+//! not-found result.
+
+/// The `SecureBoot` variable name.
+pub const VARIABLE_SECURE_BOOT: &[u16] = &[
+    0x53, 0x65, 0x63, 0x75, 0x72, 0x65, 0x42, 0x6F, 0x6F, 0x74, 0x00,
+];
+
+/// The `SetupMode` variable name.
+pub const VARIABLE_SETUP_MODE: &[u16] =
+    &[0x53, 0x65, 0x74, 0x75, 0x70, 0x4D, 0x6F, 0x64, 0x65, 0x00];
+
+/// The `AuditMode` variable name.
+pub const VARIABLE_AUDIT_MODE: &[u16] =
+    &[0x41, 0x75, 0x64, 0x69, 0x74, 0x4D, 0x6F, 0x64, 0x65, 0x00];
+
+/// The `DeployedMode` variable name.
+pub const VARIABLE_DEPLOYED_MODE: &[u16] = &[
+    0x44, 0x65, 0x70, 0x6C, 0x6F, 0x79, 0x65, 0x64, 0x4D, 0x6F, 0x64, 0x65, 0x00,
+];
+
+/// The `PK` variable name.
+pub const VARIABLE_PK: &[u16] = &[0x50, 0x4B, 0x00];
+
+/// The `KEK` variable name.
+pub const VARIABLE_KEK: &[u16] = &[0x4B, 0x45, 0x4B, 0x00];
+
+/// The `db` variable name.
+pub const VARIABLE_DB: &[u16] = &[0x64, 0x62, 0x00];
+
+/// The `dbx` variable name.
+pub const VARIABLE_DBX: &[u16] = &[0x64, 0x62, 0x78, 0x00];
+
+/// The `dbt` variable name.
+pub const VARIABLE_DBT: &[u16] = &[0x64, 0x62, 0x74, 0x00];
+
+/// The `dbr` variable name.
+pub const VARIABLE_DBR: &[u16] = &[0x64, 0x62, 0x72, 0x00];
+
+/// The `VendorKeys` variable name.
+pub const VARIABLE_VENDOR_KEYS: &[u16] = &[
+    0x56, 0x65, 0x6E, 0x64, 0x6F, 0x72, 0x4B, 0x65, 0x79, 0x73, 0x00,
+];
+
+/// The `SignatureSupport` variable name.
+pub const VARIABLE_SIGNATURE_SUPPORT: &[u16] = &[
+    0x53, 0x69, 0x67, 0x6E, 0x61, 0x74, 0x75, 0x72, 0x65, 0x53, 0x75, 0x70, 0x70, 0x6F, 0x72, 0x74,
+    0x00,
+];
+
+/// The `PKDefault` variable name.
+pub const VARIABLE_PK_DEFAULT: &[u16] =
+    &[0x50, 0x4B, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x00];
+
+/// The `KEKDefault` variable name.
+pub const VARIABLE_KEK_DEFAULT: &[u16] = &[
+    0x4B, 0x45, 0x4B, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x00,
+];
+
+/// The `dbDefault` variable name.
+pub const VARIABLE_DB_DEFAULT: &[u16] =
+    &[0x64, 0x62, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x00];
+
+/// The `dbxDefault` variable name.
+pub const VARIABLE_DBX_DEFAULT: &[u16] = &[
+    0x64, 0x62, 0x78, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x00,
+];
+
+/// The `dbtDefault` variable name.
+pub const VARIABLE_DBT_DEFAULT: &[u16] = &[
+    0x64, 0x62, 0x74, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6C, 0x74, 0x00,
+];
+
+/// Returns whether a variable name is null terminated.
+#[must_use]
+pub fn is_null_terminated(name: &[u16]) -> bool {
+    name.last() == Some(&0)
+}
+
+/// Returns the byte length of a variable name.
+#[must_use]
+pub fn variable_name_byte_len(name: &[u16]) -> Option<usize> {
+    name.len().checked_mul(2)
+}

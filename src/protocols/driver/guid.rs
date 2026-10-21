@@ -1,0 +1,45 @@
+//! # Driver identifiers
+//!
+//! Official driver-model `GUID` constants.
+
+use crate::base::EfiGuid;
+
+/// The driver binding protocol `GUID`.
+pub const DRIVER_BINDING_GUID: EfiGuid = EfiGuid::new(
+    0x18A0_31AB,
+    0xB443,
+    0x4D1A,
+    [0xA5, 0xC0, 0x0C, 0x09, 0x26, 0x1E, 0x9F, 0x71],
+);
+
+/// The component name protocol `GUID`.
+pub const COMPONENT_NAME_GUID: EfiGuid = EfiGuid::new(
+    0x107A_772C,
+    0xD5E1,
+    0x11D4,
+    [0x9A, 0x46, 0x00, 0x90, 0x27, 0x3F, 0xC1, 0x4D],
+);
+
+/// The component name 2 protocol `GUID`.
+pub const COMPONENT_NAME2_GUID: EfiGuid = EfiGuid::new(
+    0x6A7A_5CFF,
+    0xE8D9,
+    0x4F70,
+    [0xBA, 0xDA, 0x75, 0xAB, 0x30, 0x25, 0xCE, 0x14],
+);
+
+/// The loaded image protocol `GUID`.
+pub const LOADED_IMAGE_GUID: EfiGuid = EfiGuid::new(
+    0x5B1B_31A1,
+    0x9562,
+    0x11D2,
+    [0x8E, 0x3F, 0x00, 0xA0, 0xC9, 0x69, 0x72, 0x3B],
+);
+
+/// The loaded image device path protocol `GUID`.
+pub const LOADED_IMAGE_DEVICE_PATH_GUID: EfiGuid = EfiGuid::new(
+    0xBC62_157E,
+    0x3E33,
+    0x4FEC,
+    [0x99, 0x20, 0x2D, 0x3B, 0x36, 0xD7, 0x50, 0xDF],
+);

@@ -1,0 +1,23 @@
+//! ACPI GUID tests.
+
+use rover_uefi::base::EfiGuid;
+use rover_uefi::protocols::acpi::guid::{ACPI_10_GUID, ACPI_20_GUID};
+
+#[test]
+fn guid_bytes() {
+    assert_eq!(
+        ACPI_10_GUID.to_bytes(),
+        [
+            0x30, 0x2D, 0x9D, 0xEB, 0x88, 0x2D, 0xD3, 0x11, 0x9A, 0x16, 0x00, 0x90, 0x27, 0x3F,
+            0xC1, 0x4D
+        ]
+    );
+    assert_eq!(
+        ACPI_20_GUID.to_bytes(),
+        [
+            0x71, 0xE8, 0x68, 0x88, 0xF1, 0xE4, 0xD3, 0x11, 0xBC, 0x22, 0x00, 0x80, 0xC7, 0x3C,
+            0x88, 0x81
+        ]
+    );
+    assert_eq!(EfiGuid::from_bytes(ACPI_10_GUID.to_bytes()), ACPI_10_GUID);
+}

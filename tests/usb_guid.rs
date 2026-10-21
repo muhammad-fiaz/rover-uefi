@@ -1,0 +1,23 @@
+//! USB GUID tests.
+
+use rover_uefi::base::EfiGuid;
+use rover_uefi::protocols::usb::guid::{USB_IO_GUID, USB2_HC_GUID};
+
+#[test]
+fn guid_bytes() {
+    assert_eq!(
+        USB_IO_GUID.to_bytes(),
+        [
+            0xD6, 0x68, 0x2F, 0x2B, 0xD2, 0x0C, 0xCF, 0x44, 0x8E, 0x8B, 0xBB, 0xA2, 0x0B, 0x1B,
+            0x5B, 0x75
+        ]
+    );
+    assert_eq!(
+        USB2_HC_GUID.to_bytes(),
+        [
+            0x26, 0x52, 0x74, 0x3E, 0x18, 0x98, 0xB6, 0x45, 0xA2, 0xAC, 0xD7, 0xCD, 0x0E, 0x8B,
+            0xA2, 0xBC
+        ]
+    );
+    assert_eq!(EfiGuid::from_bytes(USB_IO_GUID.to_bytes()), USB_IO_GUID);
+}
