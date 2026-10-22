@@ -258,9 +258,12 @@ boot/rover-uefi/
 
 ## Acknowledgements
 
-`rover-uefi` was written from scratch in native Rust to provide a secure, modern, memory-safe firmware foundation for operating systems and bare-metal environments.
+`rover-uefi` was written from the ground up in native Rust as an independent, clean-room implementation to provide a secure, type-safe, and memory-safe firmware foundation for operating system bootloaders, pre-boot environments, and bare-metal systems.
 
-During the architecture, protocol definition, and hardware interface design phases, the open-source **[TianoCore EDK II](https://github.com/tianocore/edk2/)** project served as a foundational engineering reference for UEFI and Platform Initialization (PI) specifications, table layouts, GUIDs, and industry standards. We acknowledge and thank the TianoCore EDK II maintainers and contributors for their long-standing contributions to the UEFI firmware ecosystem.
+During the architecture, protocol definition, and hardware interface design phases, the open-source **[TianoCore EDK II](https://github.com/tianocore/edk2/)** project served as an engineering and specification reference for validating UEFI and Platform Initialization (PI) standards, structure layouts, GUIDs, and industry specifications.
+
+> [!NOTE]
+> `rover-uefi` is an independent implementation and does not incorporate, copy, or derive from EDK II source code. All ABIs, drivers, protocols, and cryptographic primitives are original, pure Rust implementations. We gratefully acknowledge and thank the TianoCore EDK II maintainers and contributors for their long-standing work in advancing open firmware standards and reference specifications.
 
 ---
 
