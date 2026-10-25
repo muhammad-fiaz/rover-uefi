@@ -221,34 +221,43 @@ cargo check --target i686-unknown-uefi
 <summary><strong>Project Structure</strong> (click to expand)</summary>
 
 ```text
-boot/rover-uefi/
+rover-uefi/
+├── .gitignore                  # Git exclusion rules
+├── Cargo.lock                  # Dependency lockfile
 ├── Cargo.toml                  # Package manifest, crates.io categories & strict lints
+├── CONTRIBUTING.md             # Contribution guidelines & development workflow
+├── LICENSE                     # Apache-2.0 license text
 ├── README.md                   # Project documentation
-├── LICENSE                     # GPL-3.0-only license text
+├── SECURITY.md                 # Security & vulnerability reporting policy
 ├── src/
 │   ├── lib.rs                  # Crate root, no_std configuration & top-level exports
 │   ├── abi/                    # Primitive types, calling conventions & status codes
-│   ├── arch/                   # Hardware architectures (x86/x86_64, ARM64, RISC-V)
-│   │   ├── common/             # MMIO, DMA descriptors, timers
-│   │   ├── x86/                # APIC, I/O APIC, PIC, PIT, RTC, CPUID, MSRs
-│   │   └── arm/                # GICv2/v3/v5, system registers, exception vectors
-│   ├── base/                   # Bounded byte readers/writers, CRC32, GUIDs, handles
+│   ├── arch/                   # Hardware architecture support (x86, ARM64, RISC-V)
+│   │   ├── arm64/              # ARM64 exception contexts & GICv2/v3 support
+│   │   ├── common/             # MMIO, DMA descriptors, and system timers
+│   │   ├── riscv/              # RISC-V contexts & SBI interfaces
+│   │   └── x86/                # APIC, I/O APIC, CPUID, and context handling
+│   ├── base/                   # GUIDs, handles, statuses, events, CRC32, drivers & bounded byte buffers
 │   ├── tables/                 # System, Boot, Runtime, and Configuration tables
 │   ├── services/               # Boot Services and Runtime Services wrappers
-│   ├── fs/                     # Filesystem parsers (FAT12/16/32, BPB, directory clusters)
-│   ├── format/                 # Binary formats (PE32/PE32+, TE terse executables)
-│   ├── fdt/                    # Flattened Device Tree (FDT) parsing & token scanner
 │   └── protocols/              # UEFI & PI protocol interfaces
-│       ├── console/            # Text I/O, Shell, Shell Parameters
-│       ├── driver/             # Driver binding, SCMI, VirtIO
-│       ├── firmware/           # Universal Payload, Intel FSP 2.x, PRM, MM/SMM
-│       ├── graphics/           # Graphics Output Protocol (GOP), BLT operations
-│       ├── manageability/      # IPMI, MCTP, PLDM protocols
-│       ├── network/            # SNP, MNP, ARP, VLAN, IP, TCP, UDP, DHCP, DNS, HTTP, REST EX, Redfish
-│       ├── pci/                # PCI I/O, root bridge, configuration space
-│       ├── security/           # AES, SHA, RSA, X.509, TPM 1.2/2.0, Secure Boot, Device Security
-│       ├── storage/            # Block I/O, Disk I/O, MBR/GPT partitions, Simple File System
-│       └── usb/                # USB I/O, XHCI, EHCI, HID descriptors
+│       ├── acpi/               # ACPI table discovery, parsing & validation
+│       ├── console/            # Text I/O, absolute pointer, and shell protocols
+│       ├── core/               # Handle database & protocol opening/closing
+│       ├── debug/              # Debug support & port communication
+│       ├── device_path/        # Device path nodes, instances & utilities
+│       ├── diagnostic/         # Status codes & timer architectures
+│       ├── driver/             # Driver binding, loaded images, SCMI, VirtIO
+│       ├── firmware/           # Universal Payload, Intel FSP 2.x, PRM, MM/SMM, HOBs
+│       ├── graphics/           # Graphics Output Protocol (GOP), pixel formats, BLT
+│       ├── manageability/      # IPMI, MCTP, and PLDM protocols
+│       ├── network/            # SNP, MNP, ARP, VLAN, IPv4/v6, TCP, UDP, DHCP, DNS, HTTP, Redfish
+│       ├── pci/                # PCI I/O, root bridge & configuration spaces
+│       ├── security/           # AES, SHA, RSA, X.509, TPM 1.2/2.0, Secure Boot
+│       ├── serial/             # Serial I/O protocols
+│       ├── smbios/             # SMBIOS 2.x/3.x table discovery & structure parsers
+│       ├── storage/            # Block I/O, Disk I/O, MBR/GPT partitions, FAT filesystem
+│       └── usb/                # USB I/O, XHCI, EHCI, HID descriptors & mass storage
 └── tests/                      # 114 native integration test suites
 ```
 
