@@ -37,20 +37,22 @@
 
 | Feature Category | Description |
 |---|---|
-| **Core ABI & Tables** | `extern "efiapi"` calling convention, primitive types (`Char16`, `UIntN`, `EfiGuid`, `EfiHandle`, `EfiStatus`, `EfiTime`), `EfiSystemTable`, `EfiBootServices`, `EfiRuntimeServices`, `EfiConfigurationTable`, and table headers. |
-| **Boot Services** | Allocation (`allocate_pages`, `allocate_pool`), handle databases, protocol locate/open/install, image load/start/unload, event/timer subsystems, watchdog, memory map parsing, and `exit_boot_services`. |
-| **Runtime Services** | Variable services (`get_variable`, `set_variable`, `get_next_variable_name`), time/wakeup alarms, virtual memory mapping (`set_virtual_address_map`), hardware reset systems, capsule update queries. |
-| **Management Mode (MM/SMM)** | Traditional and Standalone MM communication protocols (`EfiMmCommunication2Protocol`, `EFI_MM_COMMUNICATE2_HEADER`), MM CPU drivers, and secure buffer passing. |
-| **Cryptography & Security** | Constant-time AES-128/256, SHA-1/224/256/384/512, RSA PKCS#1 v1.5 verification, X.509 certificate decoding, Authenticode signature verification, Secure Boot key databases (`PK`, `KEK`, `db`, `dbx`), and Device Security Protocol (`PCI`, `USB` identifiers). |
-| **TCG / TPM** | TPM 1.2 and TPM 2.0 protocols (`EfiTcg2Protocol`), event log parsing, SHA-1/SHA-256 PCR bank operations, startup commands, and measurements. |
-| **ACPI & SMBIOS** | Full ACPI table generators and bounded parsers (RSDP, RSDT, XSDT, FADT, MADT, MCFG, HPET, DMAR, SRAT, SLIT, SPCR, BGRT, FACS, DSDT, SSDT) and SMBIOS 2.x/3.x table parsers. |
-| **Network Protocols** | SNP (Simple Network), MNP, ARP, VLAN Config, IPv4, IPv6, UDPv4/v6, TCPv4/v6, DHCPv4/v6, DNS, HTTP, REST EX Protocol, and Redfish Discover Protocol. |
-| **Storage & Filesystems** | Block I/O, Disk I/O, Simple File System (`EFI_FILE_PROTOCOL`), Partition discovery (MBR, GPT, protective MBR), and pure `#![no_std]` FAT12/16/32 reader with LFN support. |
-| **Firmware & Payload** | Universal Payload (`UNIVERSAL_PAYLOAD_IDENTIFIER`, `'PLDH'`, payload entry points), Intel FSP 2.x headers (`FspInfoHeader`, `'FSPH'`), and Platform Runtime Mechanism (PRM). |
-| **Manageability** | IPMI Protocol & KCS registers, MCTP message dispatch, and PLDM Protocol with base and platform monitoring commands. |
-| **Hardware & Architecture** | x86/x86_64 Local APIC, I/O APIC, 8259 PIC, 8254 PIT, RTC, CPUID, MSR, CR registers; ARM64 GICv2/v3, system registers, exception vector tables, and ARM SCMI (Base, Clock, Performance). |
-| **Virtualization & Drivers** | VirtIO Device Protocol, VirtIO subsystem devices (Net, Block, GPU, Console, Entropy, FS), and Flattened Device Tree (FDT) parsing. |
-| **Console & Shell** | Simple Text Input/Output, Graphics Output Protocol (GOP) & BLT engine, UEFI Shell Protocol (`EfiShellProtocol`), and Shell Parameters Protocol (`EfiShellParametersProtocol`). |
+| **Core ABI & Tables** | `extern "efiapi"` calling convention, primitive types (`Char16`, `UIntN`, `EfiGuid`, `EfiHandle`, `EfiStatus`, `EfiTime`), `EfiSystemTable`, `EfiBootServices`, `EfiRuntimeServices`, `EfiConfigurationTable`, and standard table headers. |
+| **Boot Services** | Memory allocation (`allocate_pages`, `allocate_pool`), handle databases, protocol locate/open/install, image load/start/unload, event/timer subsystems, watchdog, memory map parsing, and `exit_boot_services`. |
+| **Runtime Services** | Variable services (`get_variable`, `set_variable`, `get_next_variable_name`), time and wakeup alarms, virtual memory mapping (`set_virtual_address_map`), hardware reset systems, and capsule update queries. |
+| **Device Paths** | Device path nodes and instances (Hardware, ACPI, Messaging, Media, BBS, End), node iteration, validation, and Device Path Utilities (`EFI_DEVICE_PATH_UTILITIES_PROTOCOL`). |
+| **Hardware Architecture** | x86/x86_64 Local APIC, I/O APIC, and structured CPUID feature trees; ARM64 GICv2/v3 distributor/CPU interfaces, system registers, and exception vectors; RISC-V contexts and SBI extensions (Base, Timer, IPI, HSM, SRST, PMU, DBCN); common MMIO, DMA descriptors, and system timers. |
+| **PCI Subsystem** | `EfiPciIoProtocol`, `EfiPciRootBridgeIoProtocol`, Type 0/1 header decoding, BAR resource allocation, capability list traversal, and PCIe configuration space access. |
+| **USB Subsystem** | USB Host Controller interfaces (`EFI_USB2_HC_PROTOCOL`, `EFI_USB3_HC_PROTOCOL`, EHCI, XHCI TRBs/rings), USB I/O Protocol, standard descriptors, HID report parser, and USB Mass Storage (Bulk-Only Transport & SCSI). |
+| **Storage & Filesystems** | Block I/O, Disk I/O, Simple File System (`EFI_FILE_PROTOCOL`), Partition discovery (MBR, GPT, protective MBR, EBR), `#![no_std]` FAT12/16/32 reader with LFN, and ATA/NVMe/SCSI pass-thru protocols. |
+| **Cryptography & Security** | Constant-time AES-128/256, SHA-1/224/256/384/512, SHA-3, RSA PKCS#1 v1.5 verification, X.509 ASN.1 certificate decoding, Authenticode PE signature verification, Secure Boot key databases (`PK`, `KEK`, `db`, `dbx`), RNG Protocol, and Device Security Protocols. |
+| **TCG / TPM** | TPM 1.2 and TPM 2.0 protocols (`EfiTcg2Protocol`), TCG event log parsing, SHA-1/SHA-256 PCR bank operations, startup commands, and measurements. |
+| **ACPI & SMBIOS** | Full ACPI table generators and bounded parsers (RSDP, RSDT, XSDT, FADT, MADT, MCFG, HPET, DMAR, SRAT, SLIT, SPCR, BGRT, FACS, DSDT, SSDT) and SMBIOS 2.x/3.x entry points and structured record parsers. |
+| **Network Protocols** | SNP (Simple Network), MNP, ARP, VLAN Config, IPv4, IPv6, ICMP, IGMP, NDP, UDPv4/v6, TCPv4/v6, TLS, DHCPv4/v6, DNS, HTTP, REST EX, Redfish Discover, and PXE Base Code. |
+| **Firmware & PI Formats** | Universal Payload (`UNIVERSAL_PAYLOAD_IDENTIFIER`, `'PLDH'`), Intel FSP 2.x headers (`FspInfoHeader`, `'FSPH'`), Platform Runtime Mechanism (PRM), Hand-Off Blocks (HOBs), Firmware Volume/FMP, HII/IFR, DEPEX, PE32/PE32+/TE headers, and Standalone/Traditional MM communication (`EfiMmCommunication2Protocol`). |
+| **Manageability** | IPMI Protocol & KCS register interface, MCTP packet/message dispatch, and PLDM Protocol with base and platform monitoring commands. |
+| **Drivers & Binding** | UEFI Driver Binding Protocol (`EFI_DRIVER_BINDING_PROTOCOL`), Component Name Protocols, Loaded Image Protocol, ARM SCMI Protocol, VirtIO Device Protocol, and native driver lifecycle registries. |
+| **Console & Serial** | Simple Text Input/Output, Simple Pointer & Absolute Pointer protocols, Graphics Output Protocol (GOP) with BLT engine, Serial I/O Protocol (`EFI_SERIAL_IO_PROTOCOL`), and UEFI Shell / Shell Parameters protocols. |
 
 </details>
 
