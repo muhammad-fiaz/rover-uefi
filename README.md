@@ -105,18 +105,28 @@ cargo check --target i686-unknown-uefi
 
 ## Installation
 
-Add `rover-uefi` to your `Cargo.toml`:
+Install using `cargo add`:
 
-```toml
-[dependencies]
-rover-uefi = { path = "boot/rover-uefi" }
+```bash
+# From the official repository
+cargo add --git https://github.com/muhammad-fiaz/rover-uefi.git
+
+# Or from the Rover OS monorepo
+cargo add --git https://github.com/muhammad-fiaz/rover.git rover-uefi
 ```
 
-Or from git:
+Or add `rover-uefi` directly to your `Cargo.toml`:
 
 ```toml
 [dependencies]
+# Standalone repository
+rover-uefi = { git = "https://github.com/muhammad-fiaz/rover-uefi.git" }
+
+# Or monorepo package
 rover-uefi = { git = "https://github.com/muhammad-fiaz/rover.git", package = "rover-uefi" }
+
+# Or local path (within monorepo)
+rover-uefi = { path = "boot/rover-uefi" }
 ```
 
 ---
