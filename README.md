@@ -1,5 +1,7 @@
 <div align="center">
 
+# Rover UEFI
+
 <a href="https://github.com/muhammad-fiaz/rover"><img src="https://img.shields.io/badge/Rust-2024%20Edition-orange.svg?logo=rust" alt="Rust Edition"></a>
 <a href="https://github.com/muhammad-fiaz/rover"><img src="https://img.shields.io/github/stars/muhammad-fiaz/rover" alt="GitHub stars"></a>
 <a href="https://github.com/muhammad-fiaz/rover/issues"><img src="https://img.shields.io/github/issues/muhammad-fiaz/rover" alt="GitHub issues"></a>
@@ -8,10 +10,9 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
 <a href="https://github.com/muhammad-fiaz/rover/actions"><img src="https://img.shields.io/github/actions/workflow/status/muhammad-fiaz/rover/ci.yml?branch=main&label=CI" alt="CI"></a>
 <img src="https://img.shields.io/badge/platforms-x86__64--uefi%20%7C%20aarch64--uefi%20%7C%20i686--uefi-blue" alt="Supported Platforms">
-<img src="https://img.shields.io/badge/dependencies-0%20(zero)-brightgreen" alt="Zero Dependencies">
 <a href="https://pay.muhammadfiaz.com"><img src="https://img.shields.io/badge/Sponsor-pay.muhammadfiaz.com-ff69b4?style=flat&logo=heart" alt="Sponsor"></a>
 <a href="https://github.com/sponsors/muhammad-fiaz"><img src="https://img.shields.io/badge/Sponsor-GitHub-pink?style=social&logo=github" alt="GitHub Sponsors"></a>
-<a href="https://hits.sh/muhammad-fiaz/rover/"><img src="https://hits.sh/muhammad-fiaz/rover.svg?label=Visitors&extraCount=0&color=green" alt="Repo Visitors"></a>
+<a href="https://hits.sh/github.com/muhammad-fiaz/rover-uefi/"><img alt="Hits" src="https://hits.sh/github.com/muhammad-fiaz/rover-uefi.svg"/></a>
 
 <p><em>A modern, feature-rich, cross-platform firmware development library for UEFI and PI specifications in Rust.</em></p>
 
