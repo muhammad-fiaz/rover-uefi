@@ -7,6 +7,7 @@ pub mod entry_point;
 pub mod guid;
 pub mod header;
 pub mod iterator;
+pub mod protocol;
 pub mod records;
 pub mod strings;
 pub mod structure;
@@ -15,6 +16,10 @@ pub mod types;
 pub mod validation;
 
 pub use guid::{SMBIOS_2X_GUID, SMBIOS_3X_GUID};
+pub use protocol::{
+    EFI_SMBIOS_PROTOCOL_GUID, EfiSmbiosAdd, EfiSmbiosGetNext, EfiSmbiosProtocol, EfiSmbiosRemove,
+    EfiSmbiosUpdateString, SmbiosProtocol,
+};
 pub use typed::{
     decode_cache_size_kb, decode_memory_device_size_kb, parse_additional_information,
     parse_baseboard_info, parse_bios_info, parse_bios_language, parse_cache_info,

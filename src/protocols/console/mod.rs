@@ -15,6 +15,7 @@ pub mod output;
 pub mod pointer;
 pub mod shell;
 pub mod text;
+pub mod unicode_collation;
 
 pub use absolute_pointer::{
     ABSOLUTE_POINTER_ATTR_SUPPORTS_ALT_ACTIVE, ABSOLUTE_POINTER_ATTR_SUPPORTS_PRESSURE_AS_Z,
@@ -57,3 +58,9 @@ pub use shell::{
     EfiShellParametersProtocol, EfiShellProtocol, EfiShellSetEnv, ShellFileHandle,
 };
 pub use text::{is_null_terminated, is_printable_terminated, utf16_bytes};
+pub use unicode_collation::{
+    EFI_UNICODE_COLLATION_PROTOCOL_GUID, EFI_UNICODE_COLLATION2_PROTOCOL_GUID,
+    EfiUnicodeCollation2Protocol, EfiUnicodeCollationFatToStr, EfiUnicodeCollationMetaiMatch,
+    EfiUnicodeCollationProtocol, EfiUnicodeCollationStrLwr, EfiUnicodeCollationStrToFat,
+    EfiUnicodeCollationStrUpr, EfiUnicodeCollationStriColl,
+};

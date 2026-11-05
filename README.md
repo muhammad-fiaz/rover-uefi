@@ -38,22 +38,22 @@
 
 | Feature Category | Description |
 |---|---|
-| **Core ABI & Tables** | `extern "efiapi"` calling convention, primitive types (`Char16`, `UIntN`, `EfiGuid`, `EfiHandle`, `EfiStatus`, `EfiTime`), `EfiSystemTable`, `EfiBootServices`, `EfiRuntimeServices`, `EfiConfigurationTable`, and standard table headers. |
-| **Boot Services** | Memory allocation (`allocate_pages`, `allocate_pool`), handle databases, protocol locate/open/install, image load/start/unload, event/timer subsystems, watchdog, memory map parsing, and `exit_boot_services`. |
-| **Runtime Services** | Variable services (`get_variable`, `set_variable`, `get_next_variable_name`), time and wakeup alarms, virtual memory mapping (`set_virtual_address_map`), hardware reset systems, and capsule update queries. |
+| **Core ABI & Tables** | `extern "efiapi"` calling convention, primitive types (`Char16`, `UIntN`, `EfiGuid`, `EfiHandle`, `EfiStatus`, `EfiTime`), `EfiSystemTable`, `EfiBootServices`, `EfiRuntimeServices`, `EfiConfigurationTable`, standard table headers, and DXE Services Table (`EfiDxeServices`) with Global Coherency Domain (GCD) memory and I/O management. |
+| **Boot & PEI Services** | Memory allocation (`allocate_pages`, `allocate_pool`), handle databases, protocol locate/open/install, image load/start/unload, event/timer subsystems, watchdog, memory map parsing, `exit_boot_services`, and full PI PEI Services Table (`EfiPeiServices`) with PPI installation, notification, boot modes, and security dispatch. |
+| **Runtime Services** | Variable services (`get_variable`, `set_variable`, `get_next_variable_name`), time and wakeup alarms, virtual memory mapping (`set_virtual_address_map`), hardware reset systems (`ResetSystem2`), and capsule update queries. |
 | **Device Paths** | Device path nodes and instances (Hardware, ACPI, Messaging, Media, BBS, End), node iteration, validation, and Device Path Utilities (`EFI_DEVICE_PATH_UTILITIES_PROTOCOL`). |
-| **Hardware Architecture** | x86/x86_64 Local APIC, I/O APIC, and structured CPUID feature trees; ARM64 GICv2/v3 distributor/CPU interfaces, system registers, and exception vectors; RISC-V contexts and SBI extensions (Base, Timer, IPI, HSM, SRST, PMU, DBCN); common MMIO, DMA descriptors, and system timers. |
-| **PCI Subsystem** | `EfiPciIoProtocol`, `EfiPciRootBridgeIoProtocol`, Type 0/1 header decoding, BAR resource allocation, capability list traversal, and PCIe configuration space access. |
+| **Hardware Architecture** | x86/x86_64 Local APIC, I/O APIC, and structured CPUID feature trees; IA-32 exception contexts; ARM64 GICv2/v3 distributor/CPU interfaces, system registers, and exception vectors; ARM32 (ARMv7-A) exception contexts; RISC-V contexts and SBI extensions (Base, Timer, IPI, HSM, SRST, PMU, DBCN); LoongArch64 exception contexts and CSR parsing; common MMIO, DMA descriptors, and system timers. |
+| **PCI Subsystem** | `EfiPciIoProtocol`, `EfiPciRootBridgeIoProtocol`, `EfiPciHostBridgeResourceAllocationProtocol`, `EfiPciHotPlugInitProtocol`, CXL 2.0/3.0 protocol, Type 0/1 header decoding, BAR resource allocation, capability list traversal, and PCIe configuration space access. |
 | **USB Subsystem** | USB Host Controller interfaces (`EFI_USB2_HC_PROTOCOL`, `EFI_USB3_HC_PROTOCOL`, EHCI, XHCI TRBs/rings), USB I/O Protocol, standard descriptors, HID report parser, and USB Mass Storage (Bulk-Only Transport & SCSI). |
-| **Storage & Filesystems** | Block I/O, Disk I/O, Simple File System (`EFI_FILE_PROTOCOL`), Partition discovery (MBR, GPT, protective MBR, EBR), `#![no_std]` FAT12/16/32 reader with LFN, and ATA/NVMe/SCSI pass-thru protocols. |
-| **Cryptography & Security** | Constant-time AES-128/256, SHA-1/224/256/384/512, SHA-3, RSA PKCS#1 v1.5 verification, X.509 ASN.1 certificate decoding, Authenticode PE signature verification, Secure Boot key databases (`PK`, `KEK`, `db`, `dbx`), RNG Protocol, and Device Security Protocols. |
+| **Storage & Filesystems** | Block I/O & Block I/O 2, Disk I/O & Disk I/O 2, Simple File System (`EFI_FILE_PROTOCOL`), Storage Security Command Protocol (TCG Opal / IEEE 1667), Erase Block Protocol, Disk Info Protocol, RAM Disk Protocol, SD/MMC Pass-Thru, Partition discovery (MBR, GPT, protective MBR, EBR, Partition Info), `#![no_std]` FAT12/16/32 reader with LFN, and ATA/NVMe/SCSI pass-thru protocols. |
+| **Cryptography & Security** | Constant-time AES-128/256, SHA-1/224/256/384/512, SHA-3, RSA PKCS#1 v1.5 verification, X.509 ASN.1 certificate decoding, Authenticode PE signature verification, Secure Boot key databases (`PK`, `KEK`, `db`, `dbx`), RNG Protocol, PKCS#7 Verification Protocol, Confidential Computing (CC) Measurement Protocol, and Device Security Protocols. |
 | **TCG / TPM** | TPM 1.2 and TPM 2.0 protocols (`EfiTcg2Protocol`), TCG event log parsing, SHA-1/SHA-256 PCR bank operations, startup commands, and measurements. |
-| **ACPI & SMBIOS** | Full ACPI table generators and bounded parsers (RSDP, RSDT, XSDT, FADT, MADT, MCFG, HPET, DMAR, SRAT, SLIT, SPCR, BGRT, FACS, DSDT, SSDT) and SMBIOS 2.x/3.x entry points and structured record parsers. |
-| **Network Protocols** | SNP (Simple Network), MNP, ARP, VLAN Config, IPv4, IPv6, ICMP, IGMP, NDP, UDPv4/v6, TCPv4/v6, TLS, DHCPv4/v6, DNS, HTTP, REST EX, Redfish Discover, and PXE Base Code. |
-| **Firmware & PI Formats** | Universal Payload (`UNIVERSAL_PAYLOAD_IDENTIFIER`, `'PLDH'`), Intel FSP 2.x headers (`FspInfoHeader`, `'FSPH'`), Platform Runtime Mechanism (PRM), Hand-Off Blocks (HOBs), Firmware Volume/FMP, HII/IFR, DEPEX, PE32/PE32+/TE headers, and Standalone/Traditional MM communication (`EfiMmCommunication2Protocol`). |
+| **ACPI & SMBIOS** | Full ACPI table generators and bounded parsers (RSDP, RSDT, XSDT, FADT, MADT, MCFG, HPET, DMAR, SRAT, SLIT, SPCR, BGRT, FACS, DSDT, SSDT), ACPI SDT protocol, SMBIOS Protocol (`EFI_SMBIOS_PROTOCOL`), and SMBIOS 2.x/3.x entry points and structured record parsers. |
+| **Network Protocols** | SNP (Simple Network), MNP, ARP, VLAN Config, IPv4, IPv6, IPv4/v6 Config (`EFI_IP4_CONFIG2_PROTOCOL`, `EFI_IP6_CONFIG_PROTOCOL`), ICMP, IGMP, NDP, UDPv4/v6, TCPv4/v6, TLS, DHCPv4/v6 (`EFI_DHCP4_PROTOCOL`, `EFI_DHCP6_PROTOCOL`), MTFTPv4/v6 (`EFI_MTFTP4_PROTOCOL`, `EFI_MTFTP6_PROTOCOL`), DNS, HTTP, REST EX, Redfish Discover, and PXE Base Code. |
+| **Firmware & PI Formats** | Universal Payload (`UNIVERSAL_PAYLOAD_IDENTIFIER`, `'PLDH'`), Intel FSP 2.x headers (`FspInfoHeader`, `'FSPH'`), Platform Runtime Mechanism (PRM), Hand-Off Blocks (HOBs), Firmware Volume/FMP, HII/IFR, DEPEX, PE32/PE32+/TE headers, FFS Section parsing with UEFI standard LZH decompressor (`EFI_DECOMPRESS_PROTOCOL`), and Standalone/Traditional MM communication (`EFI_MM_COMMUNICATION2_PROTOCOL`, `EFI_MM_SYSTEM_TABLE`). |
 | **Manageability** | IPMI Protocol & KCS register interface, MCTP packet/message dispatch, and PLDM Protocol with base and platform monitoring commands. |
-| **Drivers & Binding** | UEFI Driver Binding Protocol (`EFI_DRIVER_BINDING_PROTOCOL`), Component Name Protocols, Loaded Image Protocol, ARM SCMI Protocol, VirtIO Device Protocol, and native driver lifecycle registries. |
-| **Console & Serial** | Simple Text Input/Output, Simple Pointer & Absolute Pointer protocols, Graphics Output Protocol (GOP) with BLT engine, Serial I/O Protocol (`EFI_SERIAL_IO_PROTOCOL`), and UEFI Shell / Shell Parameters protocols. |
+| **Drivers & Binding** | UEFI Driver Binding Protocol (`EFI_DRIVER_BINDING_PROTOCOL`), Component Name Protocols, Loaded Image Protocol, Driver Health Protocol, Driver Diagnostics Protocols (1 & 2), Platform/Bus Driver Override Protocols, Driver Supported EFI Version, ARM SCMI Protocol, VirtIO Device Protocol, and native driver lifecycle registries. |
+| **Console & Serial** | Simple Text Input/Output, Simple Pointer & Absolute Pointer protocols, Graphics Output Protocol (GOP) with BLT engine, Serial I/O Protocol (`EFI_SERIAL_IO_PROTOCOL`), Unicode Collation Protocols (`EFI_UNICODE_COLLATION_PROTOCOL`, `EFI_UNICODE_COLLATION2_PROTOCOL`), and UEFI Shell / Shell Parameters protocols. |
 
 </details>
 
@@ -213,7 +213,7 @@ pub fn find_table_in_rsdp<'a>(rsdp_bytes: &'a [u8], signature: &[u8; 4]) -> Opti
 Run the comprehensive test suite and linters locally:
 
 ```bash
-# Run unit and integration tests (114 suites, 610+ tests)
+# Run unit and integration tests (129 suites, 700+ tests)
 cargo test --all-features
 
 # Strict lint verification
@@ -245,33 +245,38 @@ rover-uefi/
 ├── src/
 │   ├── lib.rs                  # Crate root, no_std configuration & top-level exports
 │   ├── abi/                    # Primitive types, calling conventions & status codes
-│   ├── arch/                   # Hardware architecture support (x86, ARM64, RISC-V)
+│   ├── arch/                   # Hardware architecture support (x86, ARM64, RISC-V, ARM32, IA-32, LoongArch64)
+│   │   ├── arm32/              # ARMv7-A 32-bit exception contexts
 │   │   ├── arm64/              # ARM64 exception contexts & GICv2/v3 support
 │   │   ├── common/             # MMIO, DMA descriptors, and system timers
+│   │   ├── ia32/               # IA-32 32-bit x86 exception contexts
+│   │   ├── loongarch64/        # LoongArch64 exception contexts & CSR parsing
 │   │   ├── riscv/              # RISC-V contexts & SBI interfaces
 │   │   └── x86/                # APIC, I/O APIC, CPUID, and context handling
 │   ├── base/                   # GUIDs, handles, statuses, events, CRC32, drivers & bounded byte buffers
 │   ├── tables/                 # System, Boot, Runtime, and Configuration tables
 │   ├── services/               # Boot Services and Runtime Services wrappers
 │   └── protocols/              # UEFI & PI protocol interfaces
-│       ├── acpi/               # ACPI table discovery, parsing & validation
-│       ├── console/            # Text I/O, absolute pointer, and shell protocols
-│       ├── core/               # Handle database & protocol opening/closing
+│       ├── acpi/               # ACPI table discovery, parsing, validation & SDT protocol
+│       ├── console/            # Text I/O, absolute pointer, shell & Unicode collation protocols
+│       ├── core/               # Handle database, CPU arch, CPU I/O 2, MP Services & memory attribute
 │       ├── debug/              # Debug support & port communication
 │       ├── device_path/        # Device path nodes, instances & utilities
-│       ├── diagnostic/         # Status codes & timer architectures
-│       ├── driver/             # Driver binding, loaded images, SCMI, VirtIO
-│       ├── firmware/           # Universal Payload, Intel FSP 2.x, PRM, MM/SMM, HOBs
+│       ├── diagnostic/         # Status codes, metronome, timestamp & timer architectures
+│       ├── driver/             # Driver binding, health, diagnostics, overrides & supported versions
+│       ├── firmware/           # Universal Payload, Intel FSP 2.x, PRM, MM/SMM, HOBs, PEI & DXE services, sections & decompression
 │       ├── graphics/           # Graphics Output Protocol (GOP), pixel formats, BLT
+│       ├── i2c/                # I2C host, master, and device protocols
 │       ├── manageability/      # IPMI, MCTP, and PLDM protocols
-│       ├── network/            # SNP, MNP, ARP, VLAN, IPv4/v6, TCP, UDP, DHCP, DNS, HTTP, Redfish
-│       ├── pci/                # PCI I/O, root bridge & configuration spaces
-│       ├── security/           # AES, SHA, RSA, X.509, TPM 1.2/2.0, Secure Boot
+│       ├── network/            # SNP, MNP, ARP, VLAN, IPv4/v6, TCP, UDP, DHCP, MTFTP, DNS, HTTP, Redfish
+│       ├── pci/                # PCI I/O, root bridge, resource allocation, hot plug, CXL & config spaces
+│       ├── security/           # AES, SHA, RSA, X.509, TPM 1.2/2.0, Secure Boot, PKCS#7 & CC measurement
 │       ├── serial/             # Serial I/O protocols
-│       ├── smbios/             # SMBIOS 2.x/3.x table discovery & structure parsers
-│       ├── storage/            # Block I/O, Disk I/O, MBR/GPT partitions, FAT filesystem
+│       ├── smbios/             # SMBIOS 2.x/3.x table discovery, structure parsers & SMBIOS protocol
+│       ├── spi/                # SPI host, master, and device protocols
+│       ├── storage/            # Block I/O, Disk I/O, security, erase, disk info, RAM disk, SD/MMC, FAT
 │       └── usb/                # USB I/O, XHCI, EHCI, HID descriptors & mass storage
-└── tests/                      # 114 native integration test suites
+└── tests/                      # 129 native integration test suites
 ```
 
 </details>

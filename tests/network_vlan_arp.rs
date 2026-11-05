@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-License-Identifier: Apache-2.0
 //! Unit tests for VLAN config and ARP protocols.
 
 use core::mem::size_of;

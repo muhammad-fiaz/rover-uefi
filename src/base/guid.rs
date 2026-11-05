@@ -113,6 +113,18 @@ impl EfiGuid {
         }
     }
 
+    /// Converts the identifier to a 128-bit little-endian integer.
+    #[must_use]
+    pub const fn to_u128_le(self) -> u128 {
+        u128::from_le_bytes(self.to_bytes())
+    }
+
+    /// Creates an identifier from a 128-bit little-endian integer.
+    #[must_use]
+    pub const fn from_u128_le(value: u128) -> Self {
+        Self::from_bytes(value.to_le_bytes())
+    }
+
     /// Returns a pointer to the identifier bytes.
     ///
     /// The pointer refers to `self`, which must outlive every use of
@@ -312,5 +324,24 @@ impl core::fmt::Debug for EfiGuid {
             .field("data3", &self.data3)
             .field("data4", &self.data4)
             .finish()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn u128_le_round_trip() {
+        let guid = EfiGuid::new(
+            0x1234_5678,
+            0x9abc,
+            0xdef0,
+            [0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88],
+        );
+        let u128_val = guid.to_u128_le();
+        let restored = EfiGuid::from_u128_le(u128_val);
+        assert_eq!(guid, restored);
+        assert_eq!(u128_val.to_le_bytes(), guid.to_bytes());
     }
 }

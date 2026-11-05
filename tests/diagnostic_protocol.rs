@@ -69,6 +69,14 @@ fn status_code_helpers() {
     assert_eq!(status_code_subclass(0x0300_0001), 0);
     assert!(validate_status_code_value(0x0300_0001));
     assert!(!validate_status_code_value(0));
+    // Computing unit class (0x00) with non-zero operation
+    assert!(validate_status_code_value(0x0001_0001));
+    // Peripheral class (0x01)
+    assert!(validate_status_code_value(0x0100_0001));
+    // OEM specific class (0x80)
+    assert!(validate_status_code_value(0x8000_0001));
+    // Reserved class (e.g. 0x05)
+    assert!(!validate_status_code_value(0x0500_0001));
     assert!(validate_status_code_data(20, 0, 20));
     assert!(validate_status_code_data(20, 4, 24));
     assert!(!validate_status_code_data(10, 4, 24));

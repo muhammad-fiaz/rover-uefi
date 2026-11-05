@@ -37,6 +37,9 @@ pub const CLASS_IO_BUS: u32 = 0x0200_0000;
 /// The software class.
 pub const CLASS_SOFTWARE: u32 = 0x0300_0000;
 
+/// The OEM-specific class bitmask/range start (values 0x80..0xFF in top byte).
+pub const CLASS_OEM_MASK: u32 = 0x8000_0000;
+
 /// The status-code data header.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[repr(C)]
@@ -49,10 +52,23 @@ pub struct EfiStatusCodeData {
     pub data_type: EfiGuid,
 }
 
-/// Returns whether a status-code value has a defined class.
+/// Returns whether a status-code value has a defined class and valid operation.
+///
+/// Status code classes defined by PI spec:
+/// - 0x00: Computing Unit (`CLASS_COMPUTING_UNIT`)
+/// - 0x01: Peripheral (`CLASS_PERIPHERAL`)
+/// - 0x02: I/O Bus (`CLASS_IO_BUS`)
+/// - 0x03: Software (`CLASS_SOFTWARE`)
+/// - 0x80..0xFF: Reserved for OEM use
+///
+/// An all-zero status code (`0x0000_0000`) is invalid / uninitialized.
 #[must_use]
 pub fn validate_status_code_value(value: u32) -> bool {
-    value != 0 && (value & 0xFF00_0000) != 0
+    if value == 0 {
+        return false;
+    }
+    let class = (value & 0xFF00_0000) >> 24;
+    class <= 0x03 || class >= 0x80
 }
 
 /// Returns the class portion of a status-code value.

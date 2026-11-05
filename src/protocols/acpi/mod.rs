@@ -19,6 +19,7 @@ pub mod header;
 pub mod hpet;
 pub mod madt;
 pub mod mcfg;
+pub mod protocol;
 pub mod root;
 pub mod rsdp;
 pub mod slit;
@@ -37,11 +38,14 @@ pub use dsdt::{AmlView, parse_dsdt};
 pub use facs::{FacsInfo, parse_facs};
 pub use fadt::{FadtInfo, parse_fadt};
 pub use gtdt::{GtdtInfo, parse_gtdt};
-pub use guid::{ACPI_10_GUID, ACPI_20_GUID};
+pub use guid::{ACPI_10_GUID, ACPI_20_GUID, EFI_ACPI_TABLE_PROTOCOL_GUID};
 pub use header::{AcpiHeader, parse_header, signature_matches};
 pub use hpet::{HpetInfo, parse_hpet};
 pub use madt::{MadtHeader, madt_iter, parse_madt_header};
 pub use mcfg::{McfgEntry, mcfg_iter};
+pub use protocol::{
+    AcpiTableProtocol, EfiAcpiTableInstall, EfiAcpiTableProtocol, EfiAcpiTableUninstall,
+};
 pub use root::{rsdt_iter, validate_root_table, xsdt_iter};
 pub use rsdp::{RSDP_SIGNATURE, RsdpInfo, parse_rsdp};
 pub use slit::{SlitInfo, SlitIter, parse_slit, slit_iter};

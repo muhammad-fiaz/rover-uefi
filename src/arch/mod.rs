@@ -20,11 +20,15 @@
 //! the part that executes a privileged instruction is restricted
 //! to the architecture that defines it.
 
+pub mod arm32;
 pub mod arm64;
 pub mod common;
+pub mod ia32;
+pub mod loongarch64;
 pub mod riscv;
 pub mod x86;
 
+pub use arm32::Arm32Registers;
 pub use arm64::context::{ExceptionClass, ExceptionContext, ExceptionSource};
 pub use arm64::gic::{GicCpuInterface, GicDistributor, GicVersion};
 pub use common::dma::{
@@ -35,6 +39,8 @@ pub use common::timer::{
     MILLIS_PER_SEC, MonotonicTimer, NANOS_PER_HOUR, NANOS_PER_MICRO, NANOS_PER_MILLI,
     NANOS_PER_MINUTE, NANOS_PER_SEC, TickAccumulator, Timer, TimerError,
 };
+pub use ia32::{Ia32ExceptionContext, Ia32SegmentSelectors};
+pub use loongarch64::LoongArch64ExceptionContext;
 pub use riscv::context::{TrapCause, TrapContext};
 pub use riscv::sbi::{SbiEcall, SbiError, SbiRet};
 pub use x86::apic::{

@@ -1,0 +1,235 @@
+//! # Multiprocessor (MP) Services Protocol
+//!
+//! Defined by the UEFI Platform Initialization (PI) Specification Volume 2:
+//! Driver Execution Environment Core Interface.
+//!
+//! Provides control over processor cores, processor enumeration, AP startup,
+//! BSP reassignment, and AP enable/disable controls.
+
+use crate::abi::types::{Bool, UIntN};
+use crate::base::{EfiEvent, EfiGuid, EfiStatus};
+use core::ffi::c_void;
+
+/// The `EFI_MP_SERVICES_PROTOCOL_GUID`.
+pub const EFI_MP_SERVICES_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0x3FDD_A604,
+    0x4B59,
+    0x4AB6,
+    [0x99, 0xBE, 0x78, 0xF4, 0x99, 0x69, 0xFA, 0x4A],
+);
+
+// Processor status flags
+/// Processor is the Boot Strap Processor (BSP).
+pub const PROCESSOR_AS_BSP_BIT: u32 = 0x0000_0001;
+/// Processor is enabled.
+pub const PROCESSOR_ENABLED_BIT: u32 = 0x0000_0002;
+/// Processor has healthy diagnostic status.
+pub const PROCESSOR_HEALTH_STATUS_BIT: u32 = 0x0000_0004;
+
+/// Physical location of a processor core.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[repr(C)]
+pub struct EfiCpuPhysicalLocation {
+    /// Zero-based physical package number.
+    pub package: u32,
+    /// Zero-based physical core number within package.
+    pub core: u32,
+    /// Zero-based physical thread number within core.
+    pub thread: u32,
+}
+
+/// Extended physical location with tile / module / die levels.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[repr(C)]
+pub struct EfiCpuPhysicalLocation2 {
+    /// Zero-based physical package number.
+    pub package: u32,
+    /// Zero-based physical die number.
+    pub die: u32,
+    /// Zero-based physical tile number.
+    pub tile: u32,
+    /// Zero-based physical module number.
+    pub module: u32,
+    /// Zero-based physical core number.
+    pub core: u32,
+    /// Zero-based physical thread number.
+    pub thread: u32,
+}
+
+/// Detailed information on a processor.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[repr(C)]
+pub struct EfiProcessorInformation {
+    /// Unique hardware processor identifier (e.g. APIC ID).
+    pub processor_id: u64,
+    /// Bitmask indicating BSP, enabled, and health status.
+    pub status_flag: u32,
+    /// Physical location of processor core.
+    pub location: EfiCpuPhysicalLocation,
+    /// Extended physical location.
+    pub extended_information: EfiCpuPhysicalLocation2,
+}
+
+/// Procedure callback executed on Application Processors.
+pub type EfiApProcedure = unsafe extern "efiapi" fn(buffer: *mut c_void);
+
+/// Function pointer for `EFI_MP_SERVICES_GET_NUMBER_OF_PROCESSORS`.
+pub type EfiMpServicesGetNumberOfProcessors = unsafe extern "efiapi" fn(
+    this: *const EfiMpServicesProtocol,
+    number_of_processors: *mut UIntN,
+    number_of_enabled_processors: *mut UIntN,
+) -> EfiStatus;
+
+/// Function pointer for `EFI_MP_SERVICES_GET_PROCESSOR_INFO`.
+pub type EfiMpServicesGetProcessorInfo = unsafe extern "efiapi" fn(
+    this: *const EfiMpServicesProtocol,
+    processor_number: UIntN,
+    processor_info_buffer: *mut EfiProcessorInformation,
+) -> EfiStatus;
+
+/// Function pointer for `EFI_MP_SERVICES_STARTUP_ALL_APS`.
+pub type EfiMpServicesStartupAllAPs = unsafe extern "efiapi" fn(
+    this: *const EfiMpServicesProtocol,
+    procedure: EfiApProcedure,
+    single_thread: Bool,
+    wait_event: EfiEvent,
+    timeout_in_micro_seconds: UIntN,
+    procedure_argument: *mut c_void,
+    failed_cpu_list: *mut *mut UIntN,
+) -> EfiStatus;
+
+/// Function pointer for `EFI_MP_SERVICES_STARTUP_THIS_AP`.
+pub type EfiMpServicesStartupThisAP = unsafe extern "efiapi" fn(
+    this: *const EfiMpServicesProtocol,
+    procedure: EfiApProcedure,
+    processor_number: UIntN,
+    wait_event: EfiEvent,
+    timeout_in_micro_seconds: UIntN,
+    procedure_argument: *mut c_void,
+    finished: *mut Bool,
+) -> EfiStatus;
+
+/// Function pointer for `EFI_MP_SERVICES_SWITCH_BSP`.
+pub type EfiMpServicesSwitchBsp = unsafe extern "efiapi" fn(
+    this: *const EfiMpServicesProtocol,
+    processor_number: UIntN,
+    enable_old_bsp: Bool,
+) -> EfiStatus;
+
+/// Function pointer for `EFI_MP_SERVICES_ENABLEDISABLEAP`.
+pub type EfiMpServicesEnableDisableAP = unsafe extern "efiapi" fn(
+    this: *const EfiMpServicesProtocol,
+    processor_number: UIntN,
+    enable_ap: Bool,
+    health_flag: *mut u32,
+) -> EfiStatus;
+
+/// Function pointer for `EFI_MP_SERVICES_WHOAMI`.
+pub type EfiMpServicesWhoAmI = unsafe extern "efiapi" fn(
+    this: *const EfiMpServicesProtocol,
+    processor_number: *mut UIntN,
+) -> EfiStatus;
+
+/// The raw ABI structure for `EFI_MP_SERVICES_PROTOCOL`.
+#[derive(Debug)]
+#[repr(C)]
+pub struct EfiMpServicesProtocol {
+    /// Gets total processor count and enabled processor count.
+    pub get_number_of_processors: EfiMpServicesGetNumberOfProcessors,
+    /// Gets detailed processor information by index.
+    pub get_processor_info: EfiMpServicesGetProcessorInfo,
+    /// Dispatches code execution across all application processors.
+    pub startup_all_aps: EfiMpServicesStartupAllAPs,
+    /// Dispatches code execution on a specific application processor.
+    pub startup_this_ap: EfiMpServicesStartupThisAP,
+    /// Reassigns the Boot Strap Processor (BSP).
+    pub switch_bsp: EfiMpServicesSwitchBsp,
+    /// Enables or disables an Application Processor.
+    pub enable_disable_ap: EfiMpServicesEnableDisableAP,
+    /// Returns the caller processor index.
+    pub who_am_i: EfiMpServicesWhoAmI,
+}
+
+/// Safe wrapper around `EFI_MP_SERVICES_PROTOCOL`.
+pub struct MpServices<'a> {
+    protocol: &'a EfiMpServicesProtocol,
+}
+
+impl<'a> MpServices<'a> {
+    /// Creates a new view borrowing the protocol instance.
+    #[must_use]
+    pub const fn new(protocol: &'a EfiMpServicesProtocol) -> Self {
+        Self { protocol }
+    }
+
+    /// Returns the total count of processors and the count of enabled processors.
+    ///
+    /// # Errors
+    /// Returns an error if the query fails.
+    pub fn processor_counts(&self) -> Result<(usize, usize), EfiStatus> {
+        let mut total = UIntN::default();
+        let mut enabled = UIntN::default();
+        // SAFETY: Pointers reference local variables.
+        let status = unsafe {
+            (self.protocol.get_number_of_processors)(
+                self.protocol,
+                core::ptr::from_mut(&mut total),
+                core::ptr::from_mut(&mut enabled),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok((total, enabled))
+        }
+    }
+
+    /// Retrieves processor information for the specified processor index.
+    ///
+    /// # Errors
+    /// Returns an error if the processor index is invalid or query fails.
+    pub fn processor_info(&self, index: usize) -> Result<EfiProcessorInformation, EfiStatus> {
+        let mut info = EfiProcessorInformation {
+            processor_id: 0,
+            status_flag: 0,
+            location: EfiCpuPhysicalLocation {
+                package: 0,
+                core: 0,
+                thread: 0,
+            },
+            extended_information: EfiCpuPhysicalLocation2 {
+                package: 0,
+                die: 0,
+                tile: 0,
+                module: 0,
+                core: 0,
+                thread: 0,
+            },
+        };
+        // SAFETY: Pointer references local variable.
+        let status = unsafe {
+            (self.protocol.get_processor_info)(self.protocol, index, core::ptr::from_mut(&mut info))
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(info)
+        }
+    }
+
+    /// Returns the zero-based index of the currently executing processor core.
+    ///
+    /// # Errors
+    /// Returns an error if the query fails.
+    pub fn current_processor_index(&self) -> Result<usize, EfiStatus> {
+        let mut index = UIntN::default();
+        // SAFETY: Pointer references local variable.
+        let status =
+            unsafe { (self.protocol.who_am_i)(self.protocol, core::ptr::from_mut(&mut index)) };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(index)
+        }
+    }
+}

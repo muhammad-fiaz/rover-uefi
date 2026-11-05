@@ -18,12 +18,14 @@ pub mod diagnostic;
 pub mod driver;
 pub mod firmware;
 pub mod graphics;
+pub mod i2c;
 pub mod manageability;
 pub mod network;
 pub mod pci;
 pub mod security;
 pub mod serial;
 pub mod smbios;
+pub mod spi;
 pub mod storage;
 pub mod usb;
 
