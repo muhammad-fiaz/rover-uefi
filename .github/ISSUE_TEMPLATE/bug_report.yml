@@ -1,0 +1,120 @@
+name: 'Bug Report'
+description: 'Report a bug, ABI mismatch, specification error, or compilation failure in rover-uefi'
+title: '[Bug]: '
+labels: ['bug', 'triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug or issue with `rover-uefi`!
+        Please fill out this template with all relevant Rust toolchain, library version, target triple, and console logs to help diagnose and resolve the issue quickly.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is, including the expected versus actual behavior.
+      placeholder: Describe what failed, unexpected ABI layout, or erroneous return status...
+    validations:
+      required: true
+
+  - type: input
+    id: rover_version
+    attributes:
+      label: rover-uefi Library Version
+      description: Specify the exact crate version, git branch, or commit hash.
+      placeholder: e.g. v0.1.0, commit 499b221, or Cargo.toml git dependency
+    validations:
+      required: true
+
+  - type: input
+    id: rust_version
+    attributes:
+      label: Rust Toolchain Version
+      description: Output of `rustc --version --verbose` or toolchain channel (e.g. 1.85.0 stable / nightly 2024 edition).
+      placeholder: e.g. rustc 1.85.0 (4d91de4e4 2025-02-17) / edition 2024
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target_triple
+    attributes:
+      label: Target Architecture / Triple
+      description: The compilation target triple where the issue occurs.
+      options:
+        - 'x86_64-unknown-uefi (x86_64 UEFI bare-metal)'
+        - 'aarch64-unknown-uefi (ARM64 UEFI bare-metal)'
+        - 'i686-unknown-uefi (32-bit x86 UEFI bare-metal)'
+        - 'x86_64-pc-windows-msvc (Host Windows)'
+        - 'x86_64-unknown-linux-gnu (Host Linux)'
+        - 'aarch64-apple-darwin (Host macOS ARM64)'
+        - 'Other (specify in description)'
+    validations:
+      required: true
+
+  - type: input
+    id: firmware_environment
+    attributes:
+      label: Firmware / Hardware Platform
+      description: Hardware or emulator platform where the issue was observed.
+      placeholder: e.g. QEMU 9.0 + OVMF (x86_64), QEMU ARM Virt + EDK2, Intel 13th Gen UEFI, Raspberry Pi 4 UEFI firmware
+    validations:
+      required: false
+
+  - type: dropdown
+    id: firmware_phase
+    attributes:
+      label: Firmware Execution Phase
+      description: In which phase of execution does the bug manifest?
+      options:
+        - 'Compilation / Build Time (cargo check / clippy / rustc error)'
+        - 'SEC / Temporary RAM Phase'
+        - 'PEI (Pre-EFI Initialization) Phase'
+        - 'DXE (Driver Execution Environment) Phase'
+        - 'BDS (Boot Device Selection) Phase'
+        - 'Runtime Services / Virtual Memory Transition'
+        - 'UEFI OS Loader / Bootloader Entry'
+        - 'Standalone MM / SMM Phase'
+        - 'Host Unit / Integration Testing'
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal Reproducible Example
+      description: Provide a minimal `#![no_std]` Rust code example or reproduction steps.
+      placeholder: |
+        ```rust
+        #![no_std]
+        use rover_uefi::protocols::storage::EfiBlockIoProtocol;
+        // Reproducible snippet...
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Compiler Output / Panic Logs / Serial Console Debug Output
+      description: Paste the full terminal error message, compiler backtrace, or serial log.
+      render: shell
+      placeholder: |
+        Paste output here from:
+        - cargo check / cargo test / cargo build --verbose
+        - QEMU -serial stdio logs
+        - PanicInfo message
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Diagnostic Checklist
+      options:
+        - label: I have verified this behavior on the latest `main` branch.
+          required: true
+        - label: I have checked existing issues and pull requests to ensure this is not a duplicate.
+          required: true
+        - label: I have verified that `#![no_std]` constraints and required target features are satisfied.
+          required: false

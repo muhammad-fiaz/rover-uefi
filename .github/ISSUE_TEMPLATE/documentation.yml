@@ -1,0 +1,43 @@
+name: 'Documentation Improvement'
+description: 'Report missing, incorrect, or unclear documentation'
+title: '[Docs]: '
+labels: ['documentation']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Accurate, high-quality documentation is critical for firmware development. Thank you for reporting!
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Documentation Page or Source Location
+      description: Where is the documentation issue located?
+      placeholder: e.g. README.md, docs.rs, or rustdoc on `src/protocols/firmware/pei.rs`
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: Description of the Problem
+      description: What is inaccurate, misleading, missing, or unclear?
+    validations:
+      required: true
+
+  - type: input
+    id: rust_and_crate_version
+    attributes:
+      label: rover-uefi & Rust Version
+      description: What crate version and rustc version did you view the documentation on?
+      placeholder: e.g. rover-uefi v0.1.0, rustc 1.85.0
+    validations:
+      required: false
+
+  - type: textarea
+    id: suggested_fix
+    attributes:
+      label: Suggested Improvement
+      description: How should the documentation be updated?
+    validations:
+      required: false

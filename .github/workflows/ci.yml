@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-D warnings"
+
+jobs:
+  lint-and-docs:
+    name: Lint, Format & Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.85.0
+          components: rustfmt, clippy
+
+      - name: Check Formatting
+        run: cargo fmt --all -- --check
+
+      - name: Clippy Linter
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Documentation Build
+        run: cargo doc --no-deps
+
+  test-matrix:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.85.0
+
+      - name: Cargo Check
+        run: cargo check --all-targets
+
+      - name: Run All Tests
+        run: cargo test --all-targets
+
+  cross-compile-uefi:
+    name: Bare-Metal UEFI Targets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain with UEFI targets
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.85.0
+          targets: x86_64-unknown-uefi, aarch64-unknown-uefi, i686-unknown-uefi
+
+      - name: Check x86_64-unknown-uefi
+        run: cargo check --target x86_64-unknown-uefi
+
+      - name: Check aarch64-unknown-uefi
+        run: cargo check --target aarch64-unknown-uefi
+
+      - name: Check i686-unknown-uefi
+        run: cargo check --target i686-unknown-uefi

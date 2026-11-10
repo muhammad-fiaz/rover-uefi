@@ -2,13 +2,14 @@
 
 # Rover UEFI
 
-<a href="https://github.com/muhammad-fiaz/rover"><img src="https://img.shields.io/badge/Rust-2024%20Edition-orange.svg?logo=rust" alt="Rust Edition"></a>
-<a href="https://github.com/muhammad-fiaz/rover"><img src="https://img.shields.io/github/stars/muhammad-fiaz/rover" alt="GitHub stars"></a>
-<a href="https://github.com/muhammad-fiaz/rover/issues"><img src="https://img.shields.io/github/issues/muhammad-fiaz/rover" alt="GitHub issues"></a>
-<a href="https://github.com/muhammad-fiaz/rover/pulls"><img src="https://img.shields.io/github/issues-pr/muhammad-fiaz/rover" alt="GitHub pull requests"></a>
-<a href="https://github.com/muhammad-fiaz/rover"><img src="https://img.shields.io/github/last-commit/muhammad-fiaz/rover" alt="GitHub last commit"></a>
+<a href="https://github.com/muhammad-fiaz/rover-uefi"><img src="https://img.shields.io/badge/Rust-2024%20Edition-orange.svg?logo=rust" alt="Rust Edition"></a>
+<a href="https://github.com/muhammad-fiaz/rover-uefi"><img src="https://img.shields.io/github/stars/muhammad-fiaz/rover-uefi" alt="GitHub stars"></a>
+<a href="https://github.com/muhammad-fiaz/rover-uefi/issues"><img src="https://img.shields.io/github/issues/muhammad-fiaz/rover-uefi" alt="GitHub issues"></a>
+<a href="https://github.com/muhammad-fiaz/rover-uefi/pulls"><img src="https://img.shields.io/github/issues-pr/muhammad-fiaz/rover-uefi" alt="GitHub pull requests"></a>
+<a href="https://github.com/muhammad-fiaz/rover-uefi"><img src="https://img.shields.io/github/last-commit/muhammad-fiaz/rover-uefi" alt="GitHub last commit"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
-<a href="https://github.com/muhammad-fiaz/rover/actions"><img src="https://img.shields.io/github/actions/workflow/status/muhammad-fiaz/rover/ci.yml?branch=main&label=CI" alt="CI"></a>
+<a href="https://github.com/muhammad-fiaz/rover-uefi/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/muhammad-fiaz/rover-uefi/ci.yml?branch=main&label=CI" alt="CI"></a>
+<a href="https://github.com/muhammad-fiaz/rover-uefi/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/muhammad-fiaz/rover-uefi/actions/workflows/github-code-scanning/codeql/badge.svg" alt="CodeQL"></a>
 <img src="https://img.shields.io/badge/platforms-x86__64--uefi%20%7C%20aarch64--uefi%20%7C%20i686--uefi-blue" alt="Supported Platforms">
 <a href="https://pay.muhammadfiaz.com"><img src="https://img.shields.io/badge/Sponsor-pay.muhammadfiaz.com-ff69b4?style=flat&logo=heart" alt="Sponsor"></a>
 <a href="https://github.com/sponsors/muhammad-fiaz"><img src="https://img.shields.io/badge/Sponsor-GitHub-pink?style=social&logo=github" alt="GitHub Sponsors"></a>

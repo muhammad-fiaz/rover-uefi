@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions / Community
+    url: https://github.com/muhammad-fiaz/rover-uefi/discussions
+    about: Ask general questions or discuss firmware ideas with the community.
+  - name: Security Vulnerability Reporting
+    url: https://github.com/muhammad-fiaz/rover-uefi/security/policy
+    about: Please report security vulnerabilities privately according to our security policy.

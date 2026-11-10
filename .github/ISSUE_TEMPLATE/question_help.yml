@@ -1,0 +1,67 @@
+name: 'Question & Help'
+description: 'Ask for guidance, usage questions, or architectural clarification'
+title: '[Question]: '
+labels: ['question', 'help wanted']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question about integrating `rover-uefi` into your OS bootloader, hypervisor, or bare-metal environment?
+        Please provide details about your target platform, Rust version, and library setup.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What is your question or use case?
+      description: Describe what you are trying to accomplish and where you need guidance.
+      placeholder: e.g. How do I parse GPT partitions using EfiBlockIoProtocol in a no_std bootloader?
+    validations:
+      required: true
+
+  - type: input
+    id: rover_version
+    attributes:
+      label: rover-uefi Version
+      description: What version of rover-uefi are you using?
+      placeholder: e.g. 0.1.0 or git main branch
+    validations:
+      required: false
+
+  - type: input
+    id: rust_version
+    attributes:
+      label: Rust Toolchain Version
+      description: Output of `rustc --version`
+      placeholder: e.g. rustc 1.85.0 (stable / nightly)
+    validations:
+      required: false
+
+  - type: input
+    id: target_triple
+    attributes:
+      label: Target Architecture / Triple
+      description: Target triple being built for.
+      placeholder: e.g. x86_64-unknown-uefi, aarch64-unknown-uefi, i686-unknown-uefi
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Code Snippet & Context
+      description: Relevant code snippet or configuration from your project.
+      placeholder: |
+        ```rust
+        #![no_std]
+        // Your code...
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: Attempted Approaches & Documentation Reviewed
+      description: What approaches or UEFI/PI specification sections have you reviewed so far?
+    validations:
+      required: false

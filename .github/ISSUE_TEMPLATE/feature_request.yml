@@ -1,0 +1,66 @@
+name: 'Feature Request'
+description: 'Suggest a new UEFI/PI protocol, architecture support, or improvement'
+title: '[Feature]: '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an enhancement to `rover-uefi`!
+        Please fill out this template with details on the proposed feature and relevant specification references.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Missing Capability
+      description: A clear and concise description of what capability is missing or what problem this feature solves.
+      placeholder: e.g. Need native support for UEFI 2.10 protocol X or architecture Y...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution / API Design
+      description: Describe how the protocol, ABI, or wrapper should look in `rover-uefi`.
+      placeholder: Proposed types, functions, or protocol interfaces...
+    validations:
+      required: true
+
+  - type: input
+    id: spec_reference
+    attributes:
+      label: Normative Specification Reference
+      description: Relevant section from UEFI 2.10, PI 1.8, ACPI, or architecture reference manual.
+      placeholder: e.g. UEFI Specification v2.10 Section 14.5 or PI v1.8 Vol 2
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: targets
+    attributes:
+      label: Target Architectures
+      description: Which architectures will benefit from this feature?
+      options:
+        - label: x86_64
+        - label: AArch64 (ARM64)
+        - label: RISC-V (RV64)
+        - label: IA-32 (x86 32-bit)
+        - label: ARM32 (ARMv7-A)
+        - label: LoongArch64
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative designs or temporary workarounds explored.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Contribution
+      options:
+        - label: I would be willing to submit a pull request implementing this feature.
+          required: false
