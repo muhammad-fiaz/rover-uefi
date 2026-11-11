@@ -1,5 +1,5 @@
 name: 'Feature Request'
-description: 'Suggest a new UEFI/PI protocol, architecture support, or improvement'
+description: 'Suggest a new UEFI/PI protocol, architecture support, or library improvement'
 title: '[Feature]: '
 labels: ['enhancement']
 body:
@@ -7,22 +7,24 @@ body:
     attributes:
       value: |
         Thank you for suggesting an enhancement to `rover-uefi`!
-        Please fill out this template with details on the proposed feature and relevant specification references.
+        Please fill out this form with details on the proposed capability and relevant UEFI/PI specification references.
 
   - type: textarea
     id: problem
     attributes:
       label: Problem or Missing Capability
       description: A clear and concise description of what capability is missing or what problem this feature solves.
-      placeholder: e.g. Need native support for UEFI 2.10 protocol X or architecture Y...
+      placeholder: Describe the use case, missing protocol, or architecture backend needed...
     validations:
       required: true
+      min_length: 20
 
   - type: textarea
     id: solution
     attributes:
       label: Proposed Solution / API Design
-      description: Describe how the protocol, ABI, or wrapper should look in `rover-uefi`.
+      description: Describe how the protocol, ABI, or safe wrapper should be structured in `rover-uefi`.
+      render: rust
       placeholder: Proposed types, functions, or protocol interfaces...
     validations:
       required: true
@@ -57,6 +59,15 @@ body:
     validations:
       required: false
 
+  - type: upload
+    id: attachments
+    attributes:
+      label: Relevant Specifications or Mockups
+      description: Upload specification excerpts, diagrams, or architectural charts if applicable.
+    validations:
+      required: false
+      accept: ".png,.jpg,.jpeg,.pdf,.txt,.zip"
+
   - type: checkboxes
     id: checks
     attributes:
@@ -64,3 +75,5 @@ body:
       options:
         - label: I would be willing to submit a pull request implementing this feature.
           required: false
+        - label: I agree to follow this project's [Code of Conduct](https://github.com/muhammad-fiaz/rover-uefi/blob/main/CODE_OF_CONDUCT.md).
+          required: true

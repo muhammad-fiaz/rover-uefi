@@ -17,6 +17,7 @@ body:
       placeholder: e.g. How do I parse GPT partitions using EfiBlockIoProtocol in a no_std bootloader?
     validations:
       required: true
+      min_length: 20
 
   - type: input
     id: rover_version
@@ -50,11 +51,10 @@ body:
     attributes:
       label: Code Snippet & Context
       description: Relevant code snippet or configuration from your project.
+      render: rust
       placeholder: |
-        ```rust
         #![no_std]
         // Your code...
-        ```
     validations:
       required: false
 
@@ -65,3 +65,11 @@ body:
       description: What approaches or UEFI/PI specification sections have you reviewed so far?
     validations:
       required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Community Guidelines
+      options:
+        - label: I agree to follow this project's [Code of Conduct](https://github.com/muhammad-fiaz/rover-uefi/blob/main/CODE_OF_CONDUCT.md).
+          required: true

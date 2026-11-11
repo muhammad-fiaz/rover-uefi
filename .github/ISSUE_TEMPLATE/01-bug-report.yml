@@ -6,24 +6,25 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for reporting a bug or issue with `rover-uefi`!
-        Please fill out this template with all relevant Rust toolchain, library version, target triple, and console logs to help diagnose and resolve the issue quickly.
+        Thank you for reporting an issue in `rover-uefi`!
+        Please fill out this form with all relevant Rust toolchain, library version, target triple, and console logs to help diagnose and resolve the issue quickly.
 
   - type: textarea
     id: description
     attributes:
       label: Bug Description
-      description: A clear and concise description of what the bug is, including the expected versus actual behavior.
+      description: A clear and concise description of what the bug is, including expected versus actual behavior.
       placeholder: Describe what failed, unexpected ABI layout, or erroneous return status...
     validations:
       required: true
+      min_length: 20
 
   - type: input
     id: rover_version
     attributes:
       label: rover-uefi Library Version
       description: Specify the exact crate version, git branch, or commit hash.
-      placeholder: e.g. v0.1.0, commit 499b221, or Cargo.toml git dependency
+      placeholder: e.g. v0.1.0, commit 8baa431, or Cargo.toml dependency
     validations:
       required: true
 
@@ -31,7 +32,7 @@ body:
     id: rust_version
     attributes:
       label: Rust Toolchain Version
-      description: Output of `rustc --version --verbose` or toolchain channel (e.g. 1.85.0 stable / nightly 2024 edition).
+      description: Output of `rustc --version --verbose` or toolchain channel.
       placeholder: e.g. rustc 1.85.0 (4d91de4e4 2025-02-17) / edition 2024
     validations:
       required: true
@@ -49,6 +50,7 @@ body:
         - 'x86_64-unknown-linux-gnu (Host Linux)'
         - 'aarch64-apple-darwin (Host macOS ARM64)'
         - 'Other (specify in description)'
+      default: 0
     validations:
       required: true
 
@@ -57,7 +59,7 @@ body:
     attributes:
       label: Firmware / Hardware Platform
       description: Hardware or emulator platform where the issue was observed.
-      placeholder: e.g. QEMU 9.0 + OVMF (x86_64), QEMU ARM Virt + EDK2, Intel 13th Gen UEFI, Raspberry Pi 4 UEFI firmware
+      placeholder: e.g. QEMU 9.0 + OVMF (x86_64), QEMU ARM Virt, Intel 13th Gen UEFI, Raspberry Pi 4 UEFI firmware
     validations:
       required: false
 
@@ -76,6 +78,7 @@ body:
         - 'UEFI OS Loader / Bootloader Entry'
         - 'Standalone MM / SMM Phase'
         - 'Host Unit / Integration Testing'
+      default: 0
     validations:
       required: true
 
@@ -84,12 +87,11 @@ body:
     attributes:
       label: Minimal Reproducible Example
       description: Provide a minimal `#![no_std]` Rust code example or reproduction steps.
-      placeholder: |
-        ```rust
+      render: rust
+      value: |
         #![no_std]
-        use rover_uefi::protocols::storage::EfiBlockIoProtocol;
+        use rover_uefi::prelude::*;
         // Reproducible snippet...
-        ```
     validations:
       required: true
 
@@ -107,6 +109,15 @@ body:
     validations:
       required: false
 
+  - type: upload
+    id: attachments
+    attributes:
+      label: Screenshots or Diagnostic Dumps
+      description: Drag and drop any relevant screenshots, serial logs, or crash artifacts (.png, .jpg, .log, .txt, .zip).
+    validations:
+      required: false
+      accept: ".png,.jpg,.jpeg,.log,.txt,.zip,.tar.gz"
+
   - type: checkboxes
     id: checks
     attributes:
@@ -118,3 +129,5 @@ body:
           required: true
         - label: I have verified that `#![no_std]` constraints and required target features are satisfied.
           required: false
+        - label: I agree to follow this project's [Code of Conduct](https://github.com/muhammad-fiaz/rover-uefi/blob/main/CODE_OF_CONDUCT.md).
+          required: true

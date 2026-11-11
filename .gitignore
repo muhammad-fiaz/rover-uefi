@@ -1,11 +1,6 @@
 /target/
 **/target/
 
-# Private reference checkouts
-/edk2/
-/edk2-reference/
-/edk2-refernece/
-
 # IDE and OS files
 .idea/
 .vscode/

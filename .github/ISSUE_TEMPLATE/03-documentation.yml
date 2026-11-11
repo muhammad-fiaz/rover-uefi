@@ -1,5 +1,5 @@
 name: 'Documentation Improvement'
-description: 'Report missing, incorrect, or unclear documentation'
+description: 'Report missing, incorrect, or unclear documentation in rover-uefi'
 title: '[Docs]: '
 labels: ['documentation']
 body:
@@ -13,7 +13,7 @@ body:
     attributes:
       label: Documentation Page or Source Location
       description: Where is the documentation issue located?
-      placeholder: e.g. README.md, docs.rs, or rustdoc on `src/protocols/firmware/pei.rs`
+      placeholder: e.g. README.md, docs.rs, or rustdoc comments on `src/protocols/firmware/pei.rs`
     validations:
       required: true
 
@@ -22,8 +22,10 @@ body:
     attributes:
       label: Description of the Problem
       description: What is inaccurate, misleading, missing, or unclear?
+      placeholder: Explain what needs improvement...
     validations:
       required: true
+      min_length: 15
 
   - type: input
     id: rust_and_crate_version
@@ -39,5 +41,16 @@ body:
     attributes:
       label: Suggested Improvement
       description: How should the documentation be updated?
+      placeholder: Provide suggested text, examples, or code snippets...
     validations:
       required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Contribution
+      options:
+        - label: I would be willing to submit a pull request with this documentation update.
+          required: false
+        - label: I agree to follow this project's [Code of Conduct](https://github.com/muhammad-fiaz/rover-uefi/blob/main/CODE_OF_CONDUCT.md).
+          required: true
