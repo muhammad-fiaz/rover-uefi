@@ -2,6 +2,7 @@ name: 'Documentation Improvement'
 description: 'Report missing, incorrect, or unclear documentation in rover-uefi'
 title: '[Docs]: '
 labels: ['documentation']
+type: Task
 body:
   - type: markdown
     attributes:
@@ -26,6 +27,32 @@ body:
     validations:
       required: true
       min_length: 15
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Current importance level assigned to this documentation issue.
+      options:
+        - 'P1 - High (Inaccurate safety guidance, incorrect ABI documentation)'
+        - 'P2 - Medium (Missing protocol documentation, broken example)'
+        - 'P3 - Low (Typo, formatting fix, cosmetic improvement)'
+      default: 1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Estimated Effort
+      description: Relative level of effort for completing this documentation task.
+      options:
+        - 'XS - Trivial (< 1 hour)'
+        - 'S - Small (1-2 hours)'
+        - 'M - Medium (half day)'
+      default: 0
+    validations:
+      required: false
 
   - type: input
     id: rust_and_crate_version

@@ -19,6 +19,19 @@ body:
       required: true
       min_length: 20
 
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Current urgency level of this question.
+      options:
+        - 'High (Project development blocked)'
+        - 'Medium (Active exploration / development)'
+        - 'Low (General curiosity / architecture query)'
+      default: 1
+    validations:
+      required: false
+
   - type: input
     id: rover_version
     attributes:

@@ -2,6 +2,7 @@ name: 'Feature Request'
 description: 'Suggest a new UEFI/PI protocol, architecture support, or library improvement'
 title: '[Feature]: '
 labels: ['enhancement']
+type: Feature
 body:
   - type: markdown
     attributes:
@@ -18,6 +19,34 @@ body:
     validations:
       required: true
       min_length: 20
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Current importance level assigned to this feature request.
+      options:
+        - 'P1 - High (Critical milestone requirement or core specification gap)'
+        - 'P2 - Medium (Valuable enhancement for broad UEFI developer use)'
+        - 'P3 - Low (Nice-to-have, niche hardware protocol, or future roadmap)'
+      default: 1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Estimated Effort
+      description: Relative level of effort estimated for implementing this feature.
+      options:
+        - 'XS - Trivial (Minor API convenience wrapper or constant addition)'
+        - 'S - Small (Single protocol interface with integration test, 1-2 days)'
+        - 'M - Medium (Subsystem driver or multi-protocol stack, 1 week)'
+        - 'L - Large (Major subsystem: e.g. full graphics pipeline, filesystem)'
+        - 'XL - Complex (Full architecture port: e.g. new CPU backend & registers)'
+      default: 1
+    validations:
+      required: false
 
   - type: textarea
     id: solution

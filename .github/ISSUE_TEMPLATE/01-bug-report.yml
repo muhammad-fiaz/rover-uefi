@@ -2,6 +2,7 @@ name: 'Bug Report'
 description: 'Report a bug, ABI mismatch, specification error, or compilation failure in rover-uefi'
 title: '[Bug]: '
 labels: ['bug', 'triage']
+type: Bug
 body:
   - type: markdown
     attributes:
@@ -19,12 +20,41 @@ body:
       required: true
       min_length: 20
 
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Current importance level assigned to this issue.
+      options:
+        - 'P0 - Critical / Blocker (Crash, kernel panic, data corruption, build broken)'
+        - 'P1 - High (Major protocol defect, incorrect ABI layout, spec deviation)'
+        - 'P2 - Medium (Minor defect with workaround, non-critical status code)'
+        - 'P3 - Low (Cosmetic, minor diagnostic message, edge-case warning)'
+      default: 2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Estimated Effort
+      description: Relative level of effort estimated for resolving this issue.
+      options:
+        - 'XS - Trivial (Typo, simple constant fix, single line change)'
+        - 'S - Small (Localized bug fix with test case, 1-2 hours)'
+        - 'M - Medium (Subsystem fix requiring protocol testing, 1-2 days)'
+        - 'L - Large (Substantial rework across multiple modules, 3-5 days)'
+        - 'XL - Complex (Architectural refactor, cross-architecture ABI change)'
+      default: 1
+    validations:
+      required: false
+
   - type: input
     id: rover_version
     attributes:
       label: rover-uefi Library Version
       description: Specify the exact crate version, git branch, or commit hash.
-      placeholder: e.g. v0.1.0, commit 8baa431, or Cargo.toml dependency
+      placeholder: e.g. v0.1.0, commit c65aa67, or Cargo.toml dependency
     validations:
       required: true
 
