@@ -12,9 +12,9 @@ use core::ffi::c_void;
 /// The `EFI_STORAGE_SECURITY_COMMAND_PROTOCOL_GUID`.
 pub const EFI_STORAGE_SECURITY_COMMAND_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     0xC88B_0B6D,
-    0x0BF2,
-    0x4186,
-    [0x82, 0x61, 0x00, 0x12, 0xDD, 0xD2, 0xEE, 0x70],
+    0x0DFC,
+    0x49A7,
+    [0x9C, 0xB4, 0x49, 0x07, 0x4B, 0x4C, 0x3A, 0x78],
 );
 
 /// Function pointer for `EFI_STORAGE_SECURITY_RECEIVE_DATA`.
@@ -62,9 +62,97 @@ impl<'a> StorageSecurityCommand<'a> {
         Self { protocol }
     }
 
+    /// Wraps a raw pointer to [`EfiStorageSecurityCommandProtocol`].
+    ///
+    /// # Safety
+    ///
+    /// If non-null, `proto` must point to a valid and initialized protocol instance.
+    #[must_use]
+    pub unsafe fn from_raw(proto: *const EfiStorageSecurityCommandProtocol) -> Option<Self> {
+        if proto.is_null() {
+            None
+        } else {
+            Some(Self {
+                protocol: unsafe { &*proto },
+            })
+        }
+    }
+
     /// Returns the underlying protocol reference.
     #[must_use]
     pub const fn protocol(&self) -> &'a EfiStorageSecurityCommandProtocol {
         self.protocol
+    }
+
+    /// Receives security protocol data from a storage medium.
+    ///
+    /// Returns the number of bytes transferred into `payload_buffer`.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if the security protocol command fails.
+    pub fn receive_data(
+        &self,
+        media_id: u32,
+        timeout_100ns: u64,
+        security_protocol_id: u8,
+        security_protocol_specific_data: u16,
+        payload_buffer: &mut [u8],
+    ) -> Result<usize, EfiStatus> {
+        let mut transfer_size: UIntN = 0;
+        let buffer_size = payload_buffer.len() as UIntN;
+
+        let status = unsafe {
+            (self.protocol.receive_data)(
+                self.protocol,
+                media_id,
+                timeout_100ns,
+                security_protocol_id,
+                security_protocol_specific_data,
+                buffer_size,
+                payload_buffer.as_mut_ptr().cast::<c_void>(),
+                core::ptr::from_mut(&mut transfer_size),
+            )
+        };
+
+        if status == EfiStatus::SUCCESS || status == EfiStatus::WARN_BUFFER_TOO_SMALL {
+            Ok(transfer_size as usize)
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Sends security protocol data to a storage medium.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if the security protocol command fails.
+    pub fn send_data(
+        &self,
+        media_id: u32,
+        timeout_100ns: u64,
+        security_protocol_id: u8,
+        security_protocol_specific_data: u16,
+        payload_buffer: &[u8],
+    ) -> Result<(), EfiStatus> {
+        let buffer_size = payload_buffer.len() as UIntN;
+
+        let status = unsafe {
+            (self.protocol.send_data)(
+                self.protocol,
+                media_id,
+                timeout_100ns,
+                security_protocol_id,
+                security_protocol_specific_data,
+                buffer_size,
+                payload_buffer.as_ptr().cast::<c_void>(),
+            )
+        };
+
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
     }
 }
