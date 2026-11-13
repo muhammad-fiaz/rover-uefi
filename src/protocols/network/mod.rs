@@ -13,6 +13,7 @@ pub mod arp_protocol;
 pub mod dhcp_protocol;
 pub mod dns;
 pub mod dpc;
+pub mod eap;
 pub mod enumeration;
 pub mod guid;
 pub mod http;
@@ -71,6 +72,15 @@ pub use dns::protocol::{EfiDns4Protocol, EfiDns6Protocol};
 pub use dpc::{
     DPC_PROTOCOL_GUID, DispatchDpcFn, Dpc, DpcProcedure, DpcProtocol, QueueDpcFn, TPL_APPLICATION,
     TPL_CALLBACK, TPL_HIGH_LEVEL, TPL_NOTIFY,
+};
+pub use eap::{
+    EFI_EAP_CONFIGURATION_PROTOCOL_GUID, EFI_EAP_MANAGEMENT_PROTOCOL_GUID,
+    EFI_EAP_MANAGEMENT2_PROTOCOL_GUID, EFI_EAP_PROTOCOL_GUID, Eap, EapConfigDataType,
+    EapConfiguration, EapManagement2, EapolSupplicantPaeState, EfiEapBuildResponsePacket,
+    EfiEapConfigurationGetData, EfiEapConfigurationProtocol, EfiEapConfigurationSetData,
+    EfiEapGetKey, EfiEapManagement2Protocol, EfiEapProtocol, EfiEapRegisterAuthMethod,
+    EfiEapSetDesiredAuthMethod, EfiEapolPortInfo, EfiEapolSupplicantPaeConfiguration, eap_type,
+    pae_capabilities, supplicant_field_mask,
 };
 pub use guid::{
     ARP_PROTOCOL_GUID as ARP_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID as ARP_SB_GUID, DNS4_GUID,
