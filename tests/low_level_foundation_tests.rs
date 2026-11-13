@@ -15,10 +15,11 @@ use rover_uefi::arch::riscv::{
     sv39_vpn1_index, sv39_vpn2_index,
 };
 use rover_uefi::arch::x86::{
-    ApicBase, Cr0Flags, Cr3, Cr4Flags, DescriptorTablePointer, EferFlags, Idt, IdtEntry, PageTable,
-    PageTableEntry, PageTableFlags, PatRegister, SegmentDescriptor, SegmentSelector,
-    TaskStateSegment64, Xcr0Flags, canonicalize_48, canonicalize_57, page_offset_1g,
-    page_offset_2m, page_offset_4k, pd_index, pdpt_index, pml4_index, pml5_index, pt_index,
+    ApicBase, CpuMicrocodeDate, CpuMicrocodeHeader, CpuMicrocodeProcessorSignature, Cr0Flags, Cr3,
+    Cr4Flags, DescriptorTablePointer, EferFlags, Idt, IdtEntry, PageTable, PageTableEntry,
+    PageTableFlags, PatRegister, SegmentDescriptor, SegmentSelector, TaskStateSegment64, Xcr0Flags,
+    calculate_microcode_checksum, canonicalize_48, canonicalize_57, page_offset_1g, page_offset_2m,
+    page_offset_4k, pd_index, pdpt_index, pml4_index, pml5_index, pt_index,
 };
 use rover_uefi::base::{
     MemoryRange, compare_bytes, compare_bytes_raw, copy_bytes, fill_bytes, move_bytes,
@@ -576,4 +577,75 @@ fn test_memory_primitives_copy_move_fill_zero() {
         secure_zero_memory(secret.as_mut_ptr(), 16);
     }
     assert_eq!(secret, [0u8; 16]);
+}
+
+#[test]
+fn test_x86_microcode_patch_structures() {
+    let date = CpuMicrocodeDate::new(0x2024, 0x07, 0x15);
+    assert_eq!(date.decoded_year(), 2024);
+    assert_eq!(date.decoded_month(), 7);
+    assert_eq!(date.decoded_day(), 15);
+
+    // Signature for Intel Core i7 (Haswell / Broadwell / Skylake example)
+    let sig = CpuMicrocodeProcessorSignature::from_raw(0x0008_06E9);
+    assert_eq!(sig.stepping(), 0x9);
+    assert_eq!(sig.model(), 0xE);
+    assert_eq!(sig.family(), 0x6);
+    assert_eq!(sig.extended_model(), 0x8);
+    assert_eq!(sig.extended_family(), 0x0);
+    assert_eq!(sig.effective_family(), 6);
+    assert_eq!(sig.effective_model(), 0x8E);
+
+    let dwords = [0x1234_5678, 0x9ABC_DEF0, 0x1122_3344];
+    let chk = calculate_microcode_checksum(&dwords);
+    let mut all_dwords = [0u32; 4];
+    all_dwords[0..3].copy_from_slice(&dwords);
+    all_dwords[3] = chk;
+
+    let mut sum: u32 = 0;
+    for &dw in &all_dwords {
+        sum = sum.wrapping_add(dw);
+    }
+    assert_eq!(sum, 0);
+
+    let mut raw_header = [0u8; 2048];
+    // Populate header
+    let header_ptr = raw_header.as_mut_ptr().cast::<CpuMicrocodeHeader>();
+    unsafe {
+        (*header_ptr).header_version = 1;
+        (*header_ptr).update_revision = 0x10;
+        (*header_ptr).date = date;
+        (*header_ptr).processor_signature = sig;
+        (*header_ptr).loader_revision = 1;
+        (*header_ptr).processor_flags = 0x02; // Platform ID bit 1
+        (*header_ptr).data_size = 2000;
+        (*header_ptr).total_size = 2048;
+    }
+
+    // Calculate whole patch checksum
+    let mut sum: u32 = 0;
+    let mut offset = 0;
+    while offset < 2048 {
+        if offset != 16 {
+            // Checksum field offset is 16
+            let chunk = [
+                raw_header[offset],
+                raw_header[offset + 1],
+                raw_header[offset + 2],
+                raw_header[offset + 3],
+            ];
+            sum = sum.wrapping_add(u32::from_le_bytes(chunk));
+        }
+        offset += 4;
+    }
+    let patch_chk = 0u32.wrapping_sub(sum);
+    unsafe {
+        (*header_ptr).checksum = patch_chk;
+    }
+
+    let header = unsafe { &*header_ptr };
+    assert!(header.verify_checksum(&raw_header));
+    assert!(header.matches_processor(0x0008_06E9, 0x02));
+    assert!(!header.matches_processor(0x0008_06E9, 0x04));
+    assert!(!header.matches_processor(0x0009_06EA, 0x02));
 }

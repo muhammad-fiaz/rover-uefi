@@ -20,6 +20,7 @@ pub mod gdt;
 pub mod hpet;
 pub mod idt;
 pub mod io;
+pub mod microcode;
 pub mod msr;
 pub mod paging;
 pub mod pic;
@@ -41,6 +42,10 @@ pub use control_regs::{
     write_cr0, write_cr3, write_cr4, write_xcr0,
 };
 pub use io::{Port8, Port16, Port32, in_u8, in_u16, in_u32, io_wait, out_u8, out_u16, out_u32};
+pub use microcode::{
+    CpuMicrocodeDate, CpuMicrocodeExtendedTableEntry, CpuMicrocodeExtendedTableHeader,
+    CpuMicrocodeHeader, CpuMicrocodeProcessorSignature, calculate_microcode_checksum,
+};
 pub use msr::{
     ApicBase, EferFlags, IA32_APIC_BASE, IA32_EFER, IA32_FMASK, IA32_FS_BASE, IA32_GS_BASE,
     IA32_KERNEL_GS_BASE, IA32_LSTAR, IA32_MTRR_CAP, IA32_MTRR_DEF_TYPE, IA32_PAT, IA32_STAR,
