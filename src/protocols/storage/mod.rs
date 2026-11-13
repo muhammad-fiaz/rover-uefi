@@ -9,6 +9,7 @@
 
 pub mod ata_passthru;
 pub mod block_io;
+pub mod block_io_crypto;
 pub mod disk_info;
 pub mod disk_io;
 pub mod erase_block;
@@ -37,6 +38,17 @@ pub use ata_passthru::{
     EfiAtaStatusBlock, devsleep as ata_devsleep, puis as ata_puis,
 };
 pub use block_io::{BlockIo, BlockIo2, EfiBlockIo2Protocol, EfiBlockIoMedia, EfiBlockIoProtocol};
+pub use block_io_crypto::{
+    BlockIoCrypto, EFI_BLOCK_IO_CRYPTO_ALGO_GUID_AES_CBC_BITLOCKER,
+    EFI_BLOCK_IO_CRYPTO_ALGO_GUID_AES_XTS, EFI_BLOCK_IO_CRYPTO_INDEX_ANY,
+    EFI_BLOCK_IO_CRYPTO_PROTOCOL_GUID, EfiBlockIoCryptoCapabilities, EfiBlockIoCryptoCapability,
+    EfiBlockIoCryptoConfigurationTableEntry, EfiBlockIoCryptoFlush,
+    EfiBlockIoCryptoGetCapabilities, EfiBlockIoCryptoGetConfiguration, EfiBlockIoCryptoIvInput,
+    EfiBlockIoCryptoIvInputAesCbcBitlocker, EfiBlockIoCryptoIvInputAesXts,
+    EfiBlockIoCryptoProtocol, EfiBlockIoCryptoReadExtended, EfiBlockIoCryptoReset,
+    EfiBlockIoCryptoResponseConfigurationEntry, EfiBlockIoCryptoSetConfiguration,
+    EfiBlockIoCryptoToken, EfiBlockIoCryptoWriteExtended,
+};
 pub use disk_info::{
     EFI_DISK_INFO_AHCI_INTERFACE_GUID, EFI_DISK_INFO_IDE_INTERFACE_GUID,
     EFI_DISK_INFO_NVME_INTERFACE_GUID, EFI_DISK_INFO_PROTOCOL_GUID,
