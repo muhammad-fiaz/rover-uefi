@@ -60,3 +60,75 @@ pub struct EfiMctpProtocol {
     /// Submits an MCTP message and waits for response.
     pub submit_command: EfiMctpSubmitCommand,
 }
+
+/// Safe idiomatic client wrapper for [`EfiMctpProtocol`].
+pub struct MctpProtocol<'a> {
+    proto: &'a mut EfiMctpProtocol,
+}
+
+impl<'a> MctpProtocol<'a> {
+    /// Wraps a mutable reference to an EFI MCTP protocol instance.
+    pub fn new(proto: &'a mut EfiMctpProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Submits an MCTP message across the transport interface and awaits a response.
+    ///
+    /// # Errors
+    /// Returns an error status if transmission fails or times out.
+    #[allow(clippy::too_many_arguments, clippy::cast_possible_truncation)]
+    pub fn submit_message(
+        &mut self,
+        mctp_type: u8,
+        source_eid: Option<u8>,
+        dest_eid: Option<u8>,
+        integrity_check: bool,
+        request: &[u8],
+        req_timeout_ms: u32,
+        response: &mut [u8],
+        resp_timeout_ms: u32,
+    ) -> Result<(usize, u32), EfiStatus> {
+        let src_val = source_eid.unwrap_or(0);
+        let src_ptr = if source_eid.is_some() {
+            core::ptr::addr_of!(src_val)
+        } else {
+            core::ptr::null()
+        };
+
+        let dst_val = dest_eid.unwrap_or(0);
+        let dst_ptr = if dest_eid.is_some() {
+            core::ptr::addr_of!(dst_val)
+        } else {
+            core::ptr::null()
+        };
+
+        let req_ptr = request.as_ptr();
+        let req_size = request.len() as u32;
+        let resp_ptr = response.as_mut_ptr();
+        let mut resp_size = response.len() as u32;
+        let mut add_err: u32 = 0;
+
+        let status = unsafe {
+            (self.proto.submit_command)(
+                self.proto,
+                mctp_type,
+                src_ptr,
+                dst_ptr,
+                integrity_check,
+                req_ptr,
+                req_size,
+                req_timeout_ms,
+                resp_ptr,
+                &raw mut resp_size,
+                resp_timeout_ms,
+                &raw mut add_err,
+            )
+        };
+
+        if status == EfiStatus::SUCCESS {
+            Ok((resp_size as usize, add_err))
+        } else {
+            Err(status)
+        }
+    }
+}

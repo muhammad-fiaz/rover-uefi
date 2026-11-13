@@ -65,3 +65,55 @@ pub struct EfiPldmProtocol {
     /// Submits a PLDM command and receives response.
     pub submit_command: EfiPldmSubmitCommand,
 }
+
+/// Safe idiomatic client wrapper for [`EfiPldmProtocol`].
+pub struct PldmProtocol<'a> {
+    proto: &'a mut EfiPldmProtocol,
+}
+
+impl<'a> PldmProtocol<'a> {
+    /// Wraps a mutable reference to an EFI PLDM protocol instance.
+    pub fn new(proto: &'a mut EfiPldmProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Submits a PLDM command byte stream and receives the response.
+    ///
+    /// # Errors
+    /// Returns an error status if transmission fails or response is not received.
+    #[allow(clippy::cast_possible_truncation)]
+    pub fn submit_command(
+        &mut self,
+        pldm_type: u8,
+        command: u8,
+        src_tid: u8,
+        dst_tid: u8,
+        request: &[u8],
+        response: &mut [u8],
+    ) -> Result<usize, EfiStatus> {
+        let req_ptr = request.as_ptr();
+        let req_size = request.len() as u32;
+        let resp_ptr = response.as_mut_ptr();
+        let mut resp_size = response.len() as u32;
+
+        let status = unsafe {
+            (self.proto.submit_command)(
+                self.proto,
+                pldm_type,
+                command,
+                src_tid,
+                dst_tid,
+                req_ptr,
+                req_size,
+                resp_ptr,
+                &raw mut resp_size,
+            )
+        };
+
+        if status == EfiStatus::SUCCESS {
+            Ok(resp_size as usize)
+        } else {
+            Err(status)
+        }
+    }
+}

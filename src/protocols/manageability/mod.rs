@@ -34,10 +34,12 @@ pub use ipmi_sel::{
     sensor_type,
 };
 pub use mctp::{
-    EfiMctpProtocol, EfiMctpSubmitCommand, MCTP_PROTOCOL_GUID, message_type as mctp_type,
+    EfiMctpProtocol, EfiMctpSubmitCommand, MCTP_PROTOCOL_GUID, MctpProtocol,
+    message_type as mctp_type,
 };
 pub use pldm::{
-    EfiPldmProtocol, EfiPldmSubmitCommand, PLDM_PROTOCOL_GUID, base_cmd as pldm_base_cmd, pldm_type,
+    EfiPldmProtocol, EfiPldmSubmitCommand, PLDM_PROTOCOL_GUID, PldmProtocol,
+    base_cmd as pldm_base_cmd, pldm_type,
 };
 pub use pldm_smbios::{
     PLDM_SMBIOS_TRANSFER_PROTOCOL_GUID, PLDM_SMBIOS_TRANSFER_PROTOCOL_VERSION,
