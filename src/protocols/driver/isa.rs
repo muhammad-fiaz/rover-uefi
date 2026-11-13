@@ -45,3 +45,82 @@ pub struct EfiIsaHcProtocol {
     /// Closes an I/O aperture.
     pub close_io_aperture: Option<EfiIsaHcCloseIo>,
 }
+
+/// Safe wrapper around [`EfiIsaHcProtocol`].
+pub struct IsaHostController<'a> {
+    proto: &'a EfiIsaHcProtocol,
+}
+
+impl<'a> IsaHostController<'a> {
+    /// Wraps a reference to [`EfiIsaHcProtocol`].
+    #[must_use]
+    pub const fn new(proto: &'a EfiIsaHcProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Wraps a raw pointer to [`EfiIsaHcProtocol`].
+    ///
+    /// # Safety
+    ///
+    /// If non-null, `proto` must point to an initialized and valid protocol instance.
+    #[must_use]
+    pub unsafe fn from_raw(proto: *const EfiIsaHcProtocol) -> Option<Self> {
+        if proto.is_null() {
+            None
+        } else {
+            Some(Self {
+                proto: unsafe { &*proto },
+            })
+        }
+    }
+
+    /// Returns the ISA host controller protocol version.
+    #[must_use]
+    pub const fn version(&self) -> u32 {
+        self.proto.version
+    }
+
+    /// Opens an I/O aperture for `io_address..io_address + io_length`.
+    ///
+    /// Returns the opened aperture handle on success.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if opening aperture fails or function is missing.
+    pub fn open_io_aperture(&self, io_address: u16, io_length: u16) -> Result<u64, EfiStatus> {
+        let Some(func) = self.proto.open_io_aperture else {
+            return Err(EfiStatus::UNSUPPORTED);
+        };
+        let mut handle = 0u64;
+        let status = unsafe {
+            func(
+                self.proto,
+                io_address,
+                io_length,
+                core::ptr::from_mut(&mut handle),
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            Ok(handle)
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Closes a previously opened I/O aperture handle.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if closing aperture fails or function is missing.
+    pub fn close_io_aperture(&self, aperture_handle: u64) -> Result<(), EfiStatus> {
+        let Some(func) = self.proto.close_io_aperture else {
+            return Err(EfiStatus::UNSUPPORTED);
+        };
+        let status = unsafe { func(self.proto, aperture_handle) };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
+}

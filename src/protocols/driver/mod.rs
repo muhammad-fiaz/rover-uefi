@@ -29,6 +29,7 @@ pub mod realm_aperture;
 pub mod reset_filter;
 pub mod scmi;
 pub mod sd_mmc_override;
+pub mod super_io;
 pub mod supported_version;
 pub mod virtio;
 pub mod xen;
@@ -115,7 +116,7 @@ pub use iommu::{
 };
 pub use isa::{
     EFI_ISA_HC_PROTOCOL_GUID, EFI_ISA_HC_SERVICE_BINDING_PROTOCOL_GUID, EfiIsaHcCloseIo,
-    EfiIsaHcOpenIo, EfiIsaHcProtocol,
+    EfiIsaHcOpenIo, EfiIsaHcProtocol, IsaHostController,
 };
 pub use loaded_image::{EfiLoadedImageProtocol, LoadedImage};
 pub use non_discoverable::{
@@ -177,6 +178,12 @@ pub use sd_mmc_override::{
     SD_MMC_DRIVER_STRENGTH_IGNORE, SD_MMC_OVERRIDE_PROTOCOL_GUID, SD_MMC_OVERRIDE_PROTOCOL_VERSION,
     SdDriverStrengthType, SdMmcBusMode, SdMmcCapabilityFn, SdMmcNotifyPhaseFn,
     SdMmcOperatingParameters, SdMmcOverride, SdMmcOverrideProtocol, SdMmcPhaseType,
+};
+pub use super_io::{
+    AcpiResourceHeaderPtr, EFI_SIO_CONTROL_PROTOCOL_GUID, EFI_SIO_PROTOCOL_GUID,
+    EfiSioControlDisable, EfiSioControlEnable, EfiSioControlProtocol, EfiSioGetResources,
+    EfiSioModify, EfiSioPossibleResources, EfiSioProtocol, EfiSioRegisterAccess,
+    EfiSioRegisterModify, EfiSioSetResources, SuperIo, SuperIoControl,
 };
 pub use supported_version::{
     EFI_DRIVER_SUPPORTED_EFI_VERSION_PROTOCOL_GUID, EfiDriverSupportedEfiVersionProtocol,
