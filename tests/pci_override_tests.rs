@@ -137,8 +137,7 @@ fn test_incompatible_pci_device_support() {
         check_device: mock_check_device,
     };
 
-    let client =
-        unsafe { IncompatiblePciDeviceSupport::from_raw(core::ptr::from_ref(&raw_proto)) };
+    let client = unsafe { IncompatiblePciDeviceSupport::from_raw(core::ptr::from_ref(&raw_proto)) };
 
     // Device with special resource requirement
     let res = unsafe { client.check_device(0x8086, 0x1234, 0, 0, 0) };

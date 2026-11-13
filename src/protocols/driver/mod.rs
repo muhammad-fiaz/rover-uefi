@@ -127,10 +127,13 @@ pub use non_discoverable::{
     NonDiscoverableDeviceDmaType, NonDiscoverableDeviceInit, NonDiscoverableDeviceProtocol,
 };
 pub use override_protocol::{
-    EFI_BUS_SPECIFIC_DRIVER_OVERRIDE_PROTOCOL_GUID, EFI_PLATFORM_DRIVER_OVERRIDE_PROTOCOL_GUID,
-    EfiBusSpecificDriverOverrideGetDriver, EfiBusSpecificDriverOverrideProtocol,
-    EfiPlatformDriverOverrideDriverLoaded, EfiPlatformDriverOverrideGetDriver,
-    EfiPlatformDriverOverrideGetDriverPath, EfiPlatformDriverOverrideProtocol,
+    BusSpecificDriverOverride, DriverFamilyOverride,
+    EFI_BUS_SPECIFIC_DRIVER_OVERRIDE_PROTOCOL_GUID, EFI_DRIVER_FAMILY_OVERRIDE_PROTOCOL_GUID,
+    EFI_PLATFORM_DRIVER_OVERRIDE_PROTOCOL_GUID, EfiBusSpecificDriverOverrideGetDriver,
+    EfiBusSpecificDriverOverrideProtocol, EfiDriverFamilyOverrideGetVersion,
+    EfiDriverFamilyOverrideProtocol, EfiPlatformDriverOverrideDriverLoaded,
+    EfiPlatformDriverOverrideGetDriver, EfiPlatformDriverOverrideGetDriverPath,
+    EfiPlatformDriverOverrideProtocol, PlatformDriverOverride,
 };
 pub use ovmf::{
     OVMF_LOADED_X86_LINUX_KERNEL_PROTOCOL_GUID, OVMF_SEV_MEMORY_ACCEPTANCE_PROTOCOL_GUID,
