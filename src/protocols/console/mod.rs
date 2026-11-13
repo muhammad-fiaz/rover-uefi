@@ -60,10 +60,14 @@ pub use ps2_policy::{
     EFI_PS2_POLICY_PROTOCOL_GUID, EfiPs2InitHardware, EfiPs2PolicyProtocol,
 };
 pub use shell::{
-    EFI_SHELL_DYNAMIC_COMMAND_PROTOCOL_GUID, EFI_SHELL_PARAMETERS_PROTOCOL_GUID,
-    EFI_SHELL_PROTOCOL_GUID, EfiShellDynamicCommandProtocol, EfiShellExecute, EfiShellGetEnv,
-    EfiShellParametersProtocol, EfiShellProtocol, EfiShellSetEnv, Shell, ShellCommandGetHelp,
-    ShellCommandHandler, ShellFileHandle, ShellParameters,
+    ARG_FIRST_CHAR_IS_ESC, ARG_FIRST_HALF_QUOTED, ARG_IS_QUOTED, ARG_NO_ATTRIB,
+    ARG_PARTIALLY_QUOTED, EFI_SHELL_DYNAMIC_COMMAND_PROTOCOL_GUID,
+    EFI_SHELL_PARAMETERS_PROTOCOL_GUID, EFI_SHELL_PROTOCOL_GUID, EfiShellArgInfo,
+    EfiShellDynamicCommandProtocol, EfiShellExecute, EfiShellGetEnv, EfiShellInterface,
+    EfiShellParametersProtocol, EfiShellProtocol, EfiShellSetEnv, SHELL_ALIAS_VARIABLE_GUID,
+    SHELL_ENVIRONMENT_PROTOCOL_GUID, SHELL_ENVIRONMENT2_EXTENSION_GUID,
+    SHELL_INTERFACE_PROTOCOL_GUID, SHELL_MAP_GUID, SHELL_VARIABLE_GUID, Shell, ShellCommandGetHelp,
+    ShellCommandHandler, ShellFileHandle, ShellInterface, ShellParameters,
 };
 pub use text::{is_null_terminated, is_printable_terminated, utf16_bytes};
 pub use unicode_collation::{
