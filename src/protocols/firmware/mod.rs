@@ -5,6 +5,7 @@
 
 pub mod arch_protocols;
 pub mod capsule_arch;
+pub mod capsule_policy;
 pub mod decompress;
 pub mod depex;
 pub mod dt_fixup;
@@ -55,6 +56,14 @@ pub use arch_protocols::{
     EfiTimerArchProtocol, EfiWatchdogTimerArchProtocol,
 };
 pub use capsule_arch::EFI_CAPSULE_ARCH_PROTOCOL_GUID;
+pub use capsule_policy::{
+    CAPSULE_UPDATE_POLICY_PROTOCOL_GUID, CapsuleUpdatePolicy,
+    CapsuleUpdatePolicyCheckSystemEnvironment, CapsuleUpdatePolicyCheckSystemPower,
+    CapsuleUpdatePolicyCheckSystemThermal,
+    CapsuleUpdatePolicyIsLockFmpDeviceAtLockEventGuidRequired,
+    CapsuleUpdatePolicyIsLowestSupportedVersionCheckRequired, CapsuleUpdatePolicyProtocol,
+    last_attempt_status,
+};
 pub use decompress::{
     DecompressInfo, EFI_DECOMPRESS_PROTOCOL_GUID, EfiDecompress, EfiDecompressGetInfo,
     EfiDecompressProtocol, UEFI_DECOMPRESS_SCRATCH_SIZE, decompress_uefi, get_decompress_info,
