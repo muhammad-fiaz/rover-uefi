@@ -6,21 +6,21 @@
 use core::mem::size_of;
 use rover_uefi::arch::arm64::{
     PSCI_AFFINITY_OFF, PSCI_AFFINITY_ON, PSCI_CPU_OFF, PSCI_CPU_ON_SMC64, PSCI_SYSTEM_OFF,
-    PSCI_SYSTEM_RESET, PSCI_VERSION, Pl011Uart, PsciStatus, SMCCC_ARCH_FEATURES,
-    SMCCC_ARCH_SOC_ID, SMCCC_RET_INVALID_PARAMETER, SMCCC_RET_NOT_REQUIRED,
-    SMCCC_RET_NOT_SUPPORTED, SMCCC_RET_SUCCESS, SMCCC_VERSION, SmcccFunctionId, SmcccOwner,
-    SmcccResult, compute_pl011_divisors, parse_psci_version, pl011_fr, psci_target_cpu64,
+    PSCI_SYSTEM_RESET, PSCI_VERSION, Pl011Uart, PsciStatus, SMCCC_ARCH_FEATURES, SMCCC_ARCH_SOC_ID,
+    SMCCC_RET_INVALID_PARAMETER, SMCCC_RET_NOT_REQUIRED, SMCCC_RET_NOT_SUPPORTED,
+    SMCCC_RET_SUCCESS, SMCCC_VERSION, SmcccFunctionId, SmcccOwner, SmcccResult,
+    compute_pl011_divisors, parse_psci_version, pl011_fr, psci_target_cpu64,
 };
 use rover_uefi::arch::x86::{
     ACPI_PM_TIMER_FREQUENCY_HZ, CMOS_ADDRESS_PORT, CMOS_DATA_PORT, CMOS_NMI_DISABLE_BIT,
     CMOS_REG_CENTURY, CMOS_REG_HOURS, CMOS_REG_MINUTES, CMOS_REG_MONTH, CMOS_REG_SECONDS,
-    CMOS_REG_YEAR, ChainedPic, CmosDateTime, HPET_DEFAULT_BASE_ADDRESS, HpetController,
-    ICW1_INIT, ICW4_8086, PIC_EOI, PIC_MASK_ALL, PIC1_COMMAND, PIC1_DATA, PIC2_COMMAND,
-    PIC2_DATA, PIT_BASE_FREQUENCY_HZ, PIT_CHANNEL0_DATA, PIT_COMMAND_PORT, PitAccessMode,
-    PitChannel, PitOperatingMode, STATUS_A_UPDATE_IN_PROGRESS, STATUS_B_24_HOUR_MODE,
-    STATUS_B_BINARY_MODE, UART_BASE_CLOCK_HZ, UART_MAX_BAUD, Uart16550, bcd_to_binary,
-    binary_to_bcd, build_pit_command, compute_pit_divisor, compute_uart_baud_divisor,
-    microseconds_to_pm_timer_ticks, pm_timer_elapsed_microseconds, uart_com_port, uart_lsr,
+    CMOS_REG_YEAR, ChainedPic, CmosDateTime, HPET_DEFAULT_BASE_ADDRESS, HpetController, ICW1_INIT,
+    ICW4_8086, PIC_EOI, PIC_MASK_ALL, PIC1_COMMAND, PIC1_DATA, PIC2_COMMAND, PIC2_DATA,
+    PIT_BASE_FREQUENCY_HZ, PIT_CHANNEL0_DATA, PIT_COMMAND_PORT, PitAccessMode, PitChannel,
+    PitOperatingMode, STATUS_A_UPDATE_IN_PROGRESS, STATUS_B_24_HOUR_MODE, STATUS_B_BINARY_MODE,
+    UART_BASE_CLOCK_HZ, UART_MAX_BAUD, Uart16550, bcd_to_binary, binary_to_bcd, build_pit_command,
+    compute_pit_divisor, compute_uart_baud_divisor, microseconds_to_pm_timer_ticks,
+    pm_timer_elapsed_microseconds, uart_com_port, uart_lsr,
 };
 use rover_uefi::base::EfiGuid;
 use rover_uefi::protocols::console::shell::*;

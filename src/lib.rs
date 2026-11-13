@@ -18,4 +18,5 @@ pub mod arch;
 pub mod base;
 pub mod protocols;
 pub mod services;
+pub mod sync;
 pub mod tables;

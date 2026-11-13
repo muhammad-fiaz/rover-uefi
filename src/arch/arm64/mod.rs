@@ -8,11 +8,27 @@
 //! * `context` describes the exception context and the system
 //!   registers that hold it.
 
+pub mod cache;
 pub mod context;
 pub mod gic;
+pub mod mmu;
 pub mod pl011;
 pub mod psci;
 pub mod smccc;
+pub mod sysreg;
+
+pub use mmu::{
+    ARM64_BLOCK_SIZE_1G, ARM64_BLOCK_SIZE_2M, ARM64_ENTRIES_PER_TABLE, ARM64_PAGE_SIZE_4K,
+    ArmDescriptorFlags, ArmTableDescriptor, MAIR_ATTR_DEVICE_NGNRE, MAIR_ATTR_DEVICE_NGNRNE,
+    MAIR_ATTR_NORMAL_NON_CACHEABLE, MAIR_ATTR_NORMAL_WRITE_BACK, MairEl1, TcrEl1, read_mair_el1,
+    read_tcr_el1, read_ttbr0_el1, tlbi_vaae1, tlbi_vmalle1, write_mair_el1, write_tcr_el1,
+    write_ttbr0_el1,
+};
+pub use sysreg::{
+    CpacrEl1, CurrentEl, Daif, MidrEl1, MpidrEl1, SctlrEl1, enable_fp_simd, read_cpacr_el1,
+    read_current_el, read_daif, read_midr_el1, read_mpidr_el1, read_sctlr_el1, read_vbar_el1,
+    write_sctlr_el1, write_vbar_el1,
+};
 
 pub use pl011::{
     Pl011BaudDivisors, Pl011Uart, compute_pl011_divisors, cr as pl011_cr, fr as pl011_fr,

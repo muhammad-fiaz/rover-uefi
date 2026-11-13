@@ -9,10 +9,20 @@
 //!   arithmetic around a periodic tick.
 //! * `dma` describes the buffers that a device transfers
 //!   directly.
+//! * `cache` describes the operations that maintain instruction
+//!   and data caches.
 
+pub mod cache;
 pub mod dma;
 pub mod mmio;
 pub mod timer;
+
+pub use cache::{
+    CACHE_LINE_SIZE_DEFAULT, cache_line_align_down, cache_line_align_up, cache_line_span,
+    invalidate_instruction_cache, invalidate_instruction_cache_range, writeback_data_cache,
+    writeback_data_cache_range, writeback_invalidate_data_cache,
+    writeback_invalidate_data_cache_range,
+};
 
 pub use dma::{
     DMA_MAX_SEGMENTS, DMA_MIN_ALIGNMENT, DMA_PAGE_ALIGNMENT, DmaBuffer, DmaDirection, DmaError,
