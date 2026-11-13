@@ -29,8 +29,10 @@ pub use dma::{
     DmaSegment, DmaSegmentList, contiguous_buffer, contiguous_segment, is_aligned,
 };
 pub use mmio::{
-    read_u8, read_u16, read_u32, read_u64, read_usize, write_u8, write_u16, write_u32, write_u64,
-    write_usize,
+    MmioReg, and_u8, and_u16, and_u32, and_u64, and_usize, compiler_barrier, memory_barrier,
+    modify_u8, modify_u16, modify_u32, modify_u64, modify_usize, or_u8, or_u16, or_u32, or_u64,
+    or_usize, read_memory_barrier, read_u8, read_u16, read_u32, read_u64, read_usize,
+    write_memory_barrier, write_u8, write_u16, write_u32, write_u64, write_usize,
 };
 pub use timer::{
     MILLIS_PER_SEC, MonotonicTimer, NANOS_PER_HOUR, NANOS_PER_MICRO, NANOS_PER_MILLI,

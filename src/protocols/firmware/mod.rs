@@ -25,6 +25,7 @@ pub mod memory_attribute;
 pub mod memory_test;
 pub mod mm_base;
 pub mod mm_communication;
+pub mod mm_dispatch;
 pub mod mm_system_table;
 pub mod pecoff;
 pub mod pei;
@@ -150,6 +151,24 @@ pub use mm_communication::{
     EfiMmCommunicate, EfiMmCommunicate2, EfiMmCommunicateHeader, EfiMmCommunication2Protocol,
     EfiMmCommunicationProtocol, MM_COMMUNICATION_PROTOCOL_GUID, MM_COMMUNICATION2_PROTOCOL_GUID,
     MmCommunication, MmCommunication2,
+};
+pub use mm_dispatch::{
+    EFI_MM_GPI_DISPATCH_PROTOCOL_GUID, EFI_MM_IO_TRAP_DISPATCH_PROTOCOL_GUID,
+    EFI_MM_PERIODIC_TIMER_DISPATCH_PROTOCOL_GUID, EFI_MM_POWER_BUTTON_DISPATCH_PROTOCOL_GUID,
+    EFI_MM_STANDBY_BUTTON_DISPATCH_PROTOCOL_GUID, EFI_MM_SW_DISPATCH_PROTOCOL_GUID,
+    EFI_MM_SX_DISPATCH_PROTOCOL_GUID, EFI_MM_USB_DISPATCH_PROTOCOL_GUID,
+    EFI_SMM_GPI_DISPATCH2_PROTOCOL_GUID, EFI_SMM_IO_TRAP_DISPATCH2_PROTOCOL_GUID,
+    EFI_SMM_PERIODIC_TIMER_DISPATCH2_PROTOCOL_GUID, EFI_SMM_POWER_BUTTON_DISPATCH2_PROTOCOL_GUID,
+    EFI_SMM_STANDBY_BUTTON_DISPATCH2_PROTOCOL_GUID, EFI_SMM_SW_DISPATCH2_PROTOCOL_GUID,
+    EFI_SMM_SX_DISPATCH2_PROTOCOL_GUID, EFI_SMM_USB_DISPATCH2_PROTOCOL_GUID, MmGpiDispatch,
+    MmGpiDispatchProtocol, MmGpiRegisterContext, MmIoTrapContext, MmIoTrapDispatch,
+    MmIoTrapDispatchProtocol, MmIoTrapRegisterContext, MmIoTrapType, MmPeriodicTimerContext,
+    MmPeriodicTimerDispatch, MmPeriodicTimerDispatchProtocol, MmPeriodicTimerRegisterContext,
+    MmPowerButtonDispatch, MmPowerButtonDispatchProtocol, MmPowerButtonRegisterContext,
+    MmStandbyButtonDispatch, MmStandbyButtonDispatchProtocol, MmStandbyButtonRegisterContext,
+    MmSwContext, MmSwDispatch, MmSwDispatchProtocol, MmSwRegisterContext, MmSxDispatch,
+    MmSxDispatchProtocol, MmSxRegisterContext, MmUsbDispatch, MmUsbDispatchProtocol,
+    MmUsbRegisterContext, PowerButtonPhase, SleepPhase, SleepType, StandbyButtonPhase, UsbMmiType,
 };
 pub use mm_system_table::{
     EFI_MM_SYSTEM_TABLE_GUID, EFI_SMM_SYSTEM_TABLE2_GUID, EfiMmAllocatePages, EfiMmAllocatePool,

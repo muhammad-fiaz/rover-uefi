@@ -128,6 +128,249 @@ pub fn io_wait() {
     }
 }
 
+/// Reads a stream of 8-bit bytes from an x86 I/O port into `buffer` (`rep insb`).
+///
+/// # Safety
+///
+/// Direct port reads can trigger hardware side effects on peripheral buses.
+/// The destination buffer must be valid for writes.
+#[inline]
+pub unsafe fn ins_u8(port: u16, buffer: &mut [u8]) {
+    if buffer.is_empty() {
+        return;
+    }
+    #[cfg(target_arch = "x86_64")]
+    unsafe {
+        core::arch::asm!(
+            "cld",
+            "rep insb",
+            in("dx") port,
+            inout("rcx") buffer.len() => _,
+            inout("rdi") buffer.as_mut_ptr() => _,
+            options(nostack)
+        );
+    }
+    #[cfg(target_arch = "x86")]
+    unsafe {
+        core::arch::asm!(
+            "cld",
+            "rep insb",
+            in("dx") port,
+            inout("ecx") buffer.len() => _,
+            inout("edi") buffer.as_mut_ptr() => _,
+            options(nostack)
+        );
+    }
+    #[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
+    {
+        let _ = (port, buffer);
+    }
+}
+
+/// Writes a stream of 8-bit bytes from `buffer` to an x86 I/O port (`rep outsb`).
+///
+/// # Safety
+///
+/// Direct port writes alter chipset registers and device controllers.
+#[inline]
+pub unsafe fn outs_u8(port: u16, buffer: &[u8]) {
+    if buffer.is_empty() {
+        return;
+    }
+    #[cfg(target_arch = "x86_64")]
+    unsafe {
+        core::arch::asm!(
+            "cld",
+            "rep outsb",
+            in("dx") port,
+            inout("rcx") buffer.len() => _,
+            inout("rsi") buffer.as_ptr() => _,
+            options(nostack)
+        );
+    }
+    #[cfg(target_arch = "x86")]
+    unsafe {
+        let ptr = buffer.as_ptr();
+        let len = buffer.len();
+        core::arch::asm!(
+            "push esi",
+            "mov esi, {ptr}",
+            "cld",
+            "rep outsb",
+            "pop esi",
+            ptr = in(reg) ptr,
+            in("dx") port,
+            inout("ecx") len => _,
+        );
+    }
+    #[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
+    {
+        let _ = (port, buffer);
+    }
+}
+
+/// Reads a stream of 16-bit words from an x86 I/O port into `buffer` (`rep insw`).
+///
+/// # Safety
+///
+/// Direct port reads can trigger hardware side effects on peripheral buses.
+/// The destination buffer must be valid for writes.
+#[inline]
+pub unsafe fn ins_u16(port: u16, buffer: &mut [u16]) {
+    if buffer.is_empty() {
+        return;
+    }
+    #[cfg(target_arch = "x86_64")]
+    unsafe {
+        core::arch::asm!(
+            "cld",
+            "rep insw",
+            in("dx") port,
+            inout("rcx") buffer.len() => _,
+            inout("rdi") buffer.as_mut_ptr() => _,
+            options(nostack)
+        );
+    }
+    #[cfg(target_arch = "x86")]
+    unsafe {
+        core::arch::asm!(
+            "cld",
+            "rep insw",
+            in("dx") port,
+            inout("ecx") buffer.len() => _,
+            inout("edi") buffer.as_mut_ptr() => _,
+            options(nostack)
+        );
+    }
+    #[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
+    {
+        let _ = (port, buffer);
+    }
+}
+
+/// Writes a stream of 16-bit words from `buffer` to an x86 I/O port (`rep outsw`).
+///
+/// # Safety
+///
+/// Direct port writes alter chipset registers and device controllers.
+#[inline]
+pub unsafe fn outs_u16(port: u16, buffer: &[u16]) {
+    if buffer.is_empty() {
+        return;
+    }
+    #[cfg(target_arch = "x86_64")]
+    unsafe {
+        core::arch::asm!(
+            "cld",
+            "rep outsw",
+            in("dx") port,
+            inout("rcx") buffer.len() => _,
+            inout("rsi") buffer.as_ptr() => _,
+            options(nostack)
+        );
+    }
+    #[cfg(target_arch = "x86")]
+    unsafe {
+        let ptr = buffer.as_ptr();
+        let len = buffer.len();
+        core::arch::asm!(
+            "push esi",
+            "mov esi, {ptr}",
+            "cld",
+            "rep outsw",
+            "pop esi",
+            ptr = in(reg) ptr,
+            in("dx") port,
+            inout("ecx") len => _,
+        );
+    }
+    #[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
+    {
+        let _ = (port, buffer);
+    }
+}
+
+/// Reads a stream of 32-bit double words from an x86 I/O port into `buffer` (`rep insd`).
+///
+/// # Safety
+///
+/// Direct port reads can trigger hardware side effects on peripheral buses.
+/// The destination buffer must be valid for writes.
+#[inline]
+pub unsafe fn ins_u32(port: u16, buffer: &mut [u32]) {
+    if buffer.is_empty() {
+        return;
+    }
+    #[cfg(target_arch = "x86_64")]
+    unsafe {
+        core::arch::asm!(
+            "cld",
+            "rep insd",
+            in("dx") port,
+            inout("rcx") buffer.len() => _,
+            inout("rdi") buffer.as_mut_ptr() => _,
+            options(nostack)
+        );
+    }
+    #[cfg(target_arch = "x86")]
+    unsafe {
+        core::arch::asm!(
+            "cld",
+            "rep insd",
+            in("dx") port,
+            inout("ecx") buffer.len() => _,
+            inout("edi") buffer.as_mut_ptr() => _,
+            options(nostack)
+        );
+    }
+    #[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
+    {
+        let _ = (port, buffer);
+    }
+}
+
+/// Writes a stream of 32-bit double words from `buffer` to an x86 I/O port (`rep outsd`).
+///
+/// # Safety
+///
+/// Direct port writes alter chipset registers and device controllers.
+#[inline]
+pub unsafe fn outs_u32(port: u16, buffer: &[u32]) {
+    if buffer.is_empty() {
+        return;
+    }
+    #[cfg(target_arch = "x86_64")]
+    unsafe {
+        core::arch::asm!(
+            "cld",
+            "rep outsd",
+            in("dx") port,
+            inout("rcx") buffer.len() => _,
+            inout("rsi") buffer.as_ptr() => _,
+            options(nostack)
+        );
+    }
+    #[cfg(target_arch = "x86")]
+    unsafe {
+        let ptr = buffer.as_ptr();
+        let len = buffer.len();
+        core::arch::asm!(
+            "push esi",
+            "mov esi, {ptr}",
+            "cld",
+            "rep outsd",
+            "pop esi",
+            ptr = in(reg) ptr,
+            in("dx") port,
+            inout("ecx") len => _,
+        );
+    }
+    #[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
+    {
+        let _ = (port, buffer);
+    }
+}
+
 /// Strongly typed wrapper for an 8-bit I/O port.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Port8 {
@@ -139,6 +382,12 @@ impl Port8 {
     #[must_use]
     pub const fn new(port: u16) -> Self {
         Self { port }
+    }
+
+    /// Returns the port number.
+    #[must_use]
+    pub const fn port(&self) -> u16 {
+        self.port
     }
 
     /// Reads an 8-bit value from this port.
@@ -161,6 +410,26 @@ impl Port8 {
     pub unsafe fn write(&self, value: u8) {
         unsafe { out_u8(self.port, value) }
     }
+
+    /// Reads multiple 8-bit bytes from this port into `buffer`.
+    ///
+    /// # Safety
+    ///
+    /// Caller must guarantee that reading from this port is safe in current hardware context.
+    #[inline]
+    pub unsafe fn read_buffer(&self, buffer: &mut [u8]) {
+        unsafe { ins_u8(self.port, buffer) }
+    }
+
+    /// Writes multiple 8-bit bytes from `buffer` to this port.
+    ///
+    /// # Safety
+    ///
+    /// Caller must guarantee that writing to this port does not violate hardware contracts.
+    #[inline]
+    pub unsafe fn write_buffer(&self, buffer: &[u8]) {
+        unsafe { outs_u8(self.port, buffer) }
+    }
 }
 
 /// Strongly typed wrapper for a 16-bit I/O port.
@@ -174,6 +443,12 @@ impl Port16 {
     #[must_use]
     pub const fn new(port: u16) -> Self {
         Self { port }
+    }
+
+    /// Returns the port number.
+    #[must_use]
+    pub const fn port(&self) -> u16 {
+        self.port
     }
 
     /// Reads a 16-bit value from this port.
@@ -196,6 +471,26 @@ impl Port16 {
     pub unsafe fn write(&self, value: u16) {
         unsafe { out_u16(self.port, value) }
     }
+
+    /// Reads multiple 16-bit words from this port into `buffer`.
+    ///
+    /// # Safety
+    ///
+    /// Caller must guarantee that reading from this port is safe in current hardware context.
+    #[inline]
+    pub unsafe fn read_buffer(&self, buffer: &mut [u16]) {
+        unsafe { ins_u16(self.port, buffer) }
+    }
+
+    /// Writes multiple 16-bit words from `buffer` to this port.
+    ///
+    /// # Safety
+    ///
+    /// Caller must guarantee that writing to this port does not violate hardware contracts.
+    #[inline]
+    pub unsafe fn write_buffer(&self, buffer: &[u16]) {
+        unsafe { outs_u16(self.port, buffer) }
+    }
 }
 
 /// Strongly typed wrapper for a 32-bit I/O port.
@@ -209,6 +504,12 @@ impl Port32 {
     #[must_use]
     pub const fn new(port: u16) -> Self {
         Self { port }
+    }
+
+    /// Returns the port number.
+    #[must_use]
+    pub const fn port(&self) -> u16 {
+        self.port
     }
 
     /// Reads a 32-bit value from this port.
@@ -230,5 +531,25 @@ impl Port32 {
     #[inline]
     pub unsafe fn write(&self, value: u32) {
         unsafe { out_u32(self.port, value) }
+    }
+
+    /// Reads multiple 32-bit double words from this port into `buffer`.
+    ///
+    /// # Safety
+    ///
+    /// Caller must guarantee that reading from this port is safe in current hardware context.
+    #[inline]
+    pub unsafe fn read_buffer(&self, buffer: &mut [u32]) {
+        unsafe { ins_u32(self.port, buffer) }
+    }
+
+    /// Writes multiple 32-bit double words from `buffer` to this port.
+    ///
+    /// # Safety
+    ///
+    /// Caller must guarantee that writing to this port does not violate hardware contracts.
+    #[inline]
+    pub unsafe fn write_buffer(&self, buffer: &[u32]) {
+        unsafe { outs_u32(self.port, buffer) }
     }
 }

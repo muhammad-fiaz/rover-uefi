@@ -42,7 +42,10 @@ pub use control_regs::{
     Cr0Flags, Cr3, Cr4Flags, Xcr0Flags, read_cr0, read_cr2, read_cr3, read_cr4, read_xcr0,
     write_cr0, write_cr3, write_cr4, write_xcr0,
 };
-pub use io::{Port8, Port16, Port32, in_u8, in_u16, in_u32, io_wait, out_u8, out_u16, out_u32};
+pub use io::{
+    Port8, Port16, Port32, in_u8, in_u16, in_u32, ins_u8, ins_u16, ins_u32, io_wait, out_u8,
+    out_u16, out_u32, outs_u8, outs_u16, outs_u32,
+};
 pub use microcode::{
     CpuMicrocodeDate, CpuMicrocodeExtendedTableEntry, CpuMicrocodeExtendedTableHeader,
     CpuMicrocodeHeader, CpuMicrocodeProcessorSignature, calculate_microcode_checksum,

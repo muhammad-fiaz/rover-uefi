@@ -27,10 +27,16 @@ pub const CSR_SATP: u32 = 0x180;
 pub const CSR_MSTATUS: u32 = 0x300;
 /// Machine ISA and Extensions register (`misa`).
 pub const CSR_MISA: u32 = 0x301;
+/// Machine Exception Delegation register (`medeleg`).
+pub const CSR_MEDELEG: u32 = 0x302;
+/// Machine Interrupt Delegation register (`mideleg`).
+pub const CSR_MIDELEG: u32 = 0x303;
 /// Machine Interrupt-Enable register (`mie`).
 pub const CSR_MIE: u32 = 0x304;
 /// Machine Trap-Vector Base Address register (`mtvec`).
 pub const CSR_MTVEC: u32 = 0x305;
+/// Machine Counter Enable register (`mcounteren`).
+pub const CSR_MCOUNTEREN: u32 = 0x306;
 /// Machine Scratch register (`mscratch`).
 pub const CSR_MSCRATCH: u32 = 0x340;
 /// Machine Exception Program Counter (`mepc`).
@@ -41,6 +47,178 @@ pub const CSR_MCAUSE: u32 = 0x342;
 pub const CSR_MTVAL: u32 = 0x343;
 /// Machine Interrupt-Pending register (`mip`).
 pub const CSR_MIP: u32 = 0x344;
+
+/// Physical Memory Protection Configuration Register 0 (`pmpcfg0`).
+pub const CSR_PMPCFG0: u32 = 0x3A0;
+/// Physical Memory Protection Configuration Register 1 (`pmpcfg1`, RV32 only).
+pub const CSR_PMPCFG1: u32 = 0x3A1;
+/// Physical Memory Protection Configuration Register 2 (`pmpcfg2`).
+pub const CSR_PMPCFG2: u32 = 0x3A2;
+/// Physical Memory Protection Configuration Register 3 (`pmpcfg3`, RV32 only).
+pub const CSR_PMPCFG3: u32 = 0x3A3;
+
+/// Physical Memory Protection Address Register 0 (`pmpaddr0`).
+pub const CSR_PMPADDR0: u32 = 0x3B0;
+/// Physical Memory Protection Address Register 1 (`pmpaddr1`).
+pub const CSR_PMPADDR1: u32 = 0x3B1;
+/// Physical Memory Protection Address Register 2 (`pmpaddr2`).
+pub const CSR_PMPADDR2: u32 = 0x3B2;
+/// Physical Memory Protection Address Register 3 (`pmpaddr3`).
+pub const CSR_PMPADDR3: u32 = 0x3B3;
+/// Physical Memory Protection Address Register 4 (`pmpaddr4`).
+pub const CSR_PMPADDR4: u32 = 0x3B4;
+/// Physical Memory Protection Address Register 5 (`pmpaddr5`).
+pub const CSR_PMPADDR5: u32 = 0x3B5;
+/// Physical Memory Protection Address Register 6 (`pmpaddr6`).
+pub const CSR_PMPADDR6: u32 = 0x3B6;
+/// Physical Memory Protection Address Register 7 (`pmpaddr7`).
+pub const CSR_PMPADDR7: u32 = 0x3B7;
+/// Physical Memory Protection Address Register 8 (`pmpaddr8`).
+pub const CSR_PMPADDR8: u32 = 0x3B8;
+/// Physical Memory Protection Address Register 9 (`pmpaddr9`).
+pub const CSR_PMPADDR9: u32 = 0x3B9;
+/// Physical Memory Protection Address Register 10 (`pmpaddr10`).
+pub const CSR_PMPADDR10: u32 = 0x3BA;
+/// Physical Memory Protection Address Register 11 (`pmpaddr11`).
+pub const CSR_PMPADDR11: u32 = 0x3BB;
+/// Physical Memory Protection Address Register 12 (`pmpaddr12`).
+pub const CSR_PMPADDR12: u32 = 0x3BC;
+/// Physical Memory Protection Address Register 13 (`pmpaddr13`).
+pub const CSR_PMPADDR13: u32 = 0x3BD;
+/// Physical Memory Protection Address Register 14 (`pmpaddr14`).
+pub const CSR_PMPADDR14: u32 = 0x3BE;
+/// Physical Memory Protection Address Register 15 (`pmpaddr15`).
+pub const CSR_PMPADDR15: u32 = 0x3BF;
+
+/// Address matching modes for Physical Memory Protection (`pmpcfg.A`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[repr(u8)]
+pub enum PmpAddressMode {
+    /// Null region: disabled.
+    Off = 0,
+    /// Top of Range.
+    Tor = 1,
+    /// Naturally aligned 4-byte region.
+    Na4 = 2,
+    /// Naturally aligned power-of-two region (`>= 8` bytes).
+    Napot = 3,
+}
+
+impl PmpAddressMode {
+    /// Decodes a 2-bit raw integer into a PMP address matching mode.
+    #[must_use]
+    pub const fn from_raw(raw: u8) -> Self {
+        match raw & 0x03 {
+            0 => Self::Off,
+            1 => Self::Tor,
+            2 => Self::Na4,
+            3 => Self::Napot,
+            _ => unreachable!(),
+        }
+    }
+}
+
+/// Physical Memory Protection configuration entry (1 byte per entry).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub struct PmpConfig(pub u8);
+
+impl PmpConfig {
+    /// Read permission (`R`, bit 0).
+    pub const R: u8 = 1 << 0;
+    /// Write permission (`W`, bit 1).
+    pub const W: u8 = 1 << 1;
+    /// Execute permission (`X`, bit 2).
+    pub const X: u8 = 1 << 2;
+    /// Address-matching mode mask (`A`, bits 3..4).
+    pub const A_MASK: u8 = 0b11 << 3;
+    /// Lock bit (`L`, bit 7).
+    pub const L: u8 = 1 << 7;
+
+    /// Creates a new PMP configuration descriptor.
+    #[allow(clippy::fn_params_excessive_bools)]
+    #[must_use]
+    pub const fn new(
+        read: bool,
+        write: bool,
+        exec: bool,
+        mode: PmpAddressMode,
+        lock: bool,
+    ) -> Self {
+        let mut val = 0u8;
+        if read {
+            val |= Self::R;
+        }
+        if write {
+            val |= Self::W;
+        }
+        if exec {
+            val |= Self::X;
+        }
+        val |= (mode as u8) << 3;
+        if lock {
+            val |= Self::L;
+        }
+        Self(val)
+    }
+
+    /// Returns `true` if read access is permitted.
+    #[must_use]
+    pub const fn is_readable(&self) -> bool {
+        (self.0 & Self::R) != 0
+    }
+
+    /// Returns `true` if write access is permitted.
+    #[must_use]
+    pub const fn is_writable(&self) -> bool {
+        (self.0 & Self::W) != 0
+    }
+
+    /// Returns `true` if execute access is permitted.
+    #[must_use]
+    pub const fn is_executable(&self) -> bool {
+        (self.0 & Self::X) != 0
+    }
+
+    /// Returns `true` if the entry is locked.
+    #[must_use]
+    pub const fn is_locked(&self) -> bool {
+        (self.0 & Self::L) != 0
+    }
+
+    /// Returns the address-matching mode.
+    #[must_use]
+    pub const fn address_mode(&self) -> PmpAddressMode {
+        PmpAddressMode::from_raw((self.0 & Self::A_MASK) >> 3)
+    }
+
+    /// Returns the raw 8-bit configuration value.
+    #[must_use]
+    pub const fn to_raw(&self) -> u8 {
+        self.0
+    }
+}
+
+/// Decodes a Naturally Aligned Power-of-Two (NAPOT) encoded `pmpaddr` value into `(base_address, size_bytes)`.
+#[must_use]
+pub fn decode_pmp_napot(pmpaddr: u64) -> (u64, u64) {
+    let trailing_ones = (!pmpaddr).trailing_zeros();
+    let size = 1u64 << (trailing_ones + 3);
+    let mask = (1u64 << (trailing_ones + 1)) - 1;
+    let base = (pmpaddr & !mask) << 2;
+    (base, size)
+}
+
+/// Encodes a base address and power-of-two size (`>= 8` bytes) into a NAPOT `pmpaddr` register value.
+#[must_use]
+pub fn encode_pmp_napot(base: u64, size: u64) -> Option<u64> {
+    if size < 8 || !size.is_power_of_two() || (base % size) != 0 {
+        return None;
+    }
+    let k = size.trailing_zeros().checked_sub(3)?;
+    let mask = (1u64 << k) - 1;
+    let pmpaddr = (base >> 2) | mask;
+    Some(pmpaddr)
+}
 
 /// Cycle counter (`cycle`).
 pub const CSR_CYCLE: u32 = 0xC00;
