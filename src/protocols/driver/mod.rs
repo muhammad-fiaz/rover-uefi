@@ -6,7 +6,10 @@ pub mod bds;
 pub mod binding;
 pub mod component_name;
 pub mod diagnostics;
+pub mod fdt_client;
+pub mod gpio;
 pub mod guid;
+pub mod hardware_interrupt;
 pub mod health;
 pub mod iommu;
 pub mod isa;
@@ -31,9 +34,30 @@ pub use diagnostics::{
     EfiDriverDiagnosticType, EfiDriverDiagnostics2Protocol, EfiDriverDiagnostics2RunDiagnostics,
     EfiDriverDiagnosticsProtocol, EfiDriverDiagnosticsRunDiagnostics,
 };
+pub use fdt_client::{
+    FDT_CLIENT_PROTOCOL_GUID, FdtClient, FdtClientFindCompatibleNode,
+    FdtClientFindCompatibleNodeProperty, FdtClientFindCompatibleNodeReg,
+    FdtClientFindMemoryNodeReg, FdtClientFindNextCompatibleNode, FdtClientFindNextMemoryNodeReg,
+    FdtClientGetNodeProperty, FdtClientGetOrInsertChosenNode, FdtClientProtocol,
+    FdtClientSetNodeProperty,
+};
+pub use gpio::{
+    EMBEDDED_GPIO_PROTOCOL_GUID, EmbeddedGpio, EmbeddedGpioGet, EmbeddedGpioGetMode,
+    EmbeddedGpioProtocol, EmbeddedGpioSet, EmbeddedGpioSetPull, GpioMode, GpioPin, GpioPull,
+    PLATFORM_GPIO_PROTOCOL_GUID,
+};
 pub use guid::{
     COMPONENT_NAME_GUID, COMPONENT_NAME2_GUID, DRIVER_BINDING_GUID, LOADED_IMAGE_DEVICE_PATH_GUID,
     LOADED_IMAGE_GUID,
+};
+pub use hardware_interrupt::{
+    HARDWARE_INTERRUPT_PROTOCOL_GUID, HARDWARE_INTERRUPT2_PROTOCOL_GUID, HardwareInterrupt,
+    HardwareInterrupt2, HardwareInterrupt2Disable, HardwareInterrupt2Enable,
+    HardwareInterrupt2EndOfInterrupt, HardwareInterrupt2GetState, HardwareInterrupt2GetTriggerType,
+    HardwareInterrupt2Protocol, HardwareInterrupt2Register, HardwareInterrupt2SetTriggerType,
+    HardwareInterruptDisable, HardwareInterruptEnable, HardwareInterruptEndOfInterrupt,
+    HardwareInterruptGetState, HardwareInterruptHandler, HardwareInterruptProtocol,
+    HardwareInterruptRegister, HardwareInterruptSource, HardwareInterruptTriggerType,
 };
 pub use health::{
     EFI_DRIVER_HEALTH_PROTOCOL_GUID, EfiDriverHealthGetHealthStatus, EfiDriverHealthHiiMessage,

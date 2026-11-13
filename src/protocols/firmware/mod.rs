@@ -9,6 +9,7 @@ pub mod decompress;
 pub mod depex;
 pub mod dt_fixup;
 pub mod dxe_services;
+pub mod esrt;
 pub mod firmvol;
 pub mod fmp;
 pub mod fsp;
@@ -16,6 +17,7 @@ pub mod ftw;
 pub mod hii;
 pub mod hob;
 pub mod ifr;
+pub mod lock_box;
 pub mod memory_accept;
 pub mod memory_attribute;
 pub mod memory_test;
@@ -26,6 +28,7 @@ pub mod pecoff;
 pub mod pei;
 pub mod ppi;
 pub mod prm;
+pub mod progress;
 pub mod sections;
 pub mod smm_access2;
 pub mod smm_control2;
@@ -59,6 +62,18 @@ pub use dxe_services::{
     EfiProcessFirmwareVolume, EfiRemoveIoSpace, EfiRemoveMemorySpace, EfiSetMemorySpaceAttributes,
     EfiSetMemorySpaceCapabilities,
 };
+pub use esrt::{
+    ESRT_FW_TYPE_DEVICEFIRMWARE, ESRT_FW_TYPE_SYSTEMFIRMWARE, ESRT_FW_TYPE_UEFIDRIVER,
+    ESRT_FW_TYPE_UNKNOWN, ESRT_MANAGEMENT_PROTOCOL_GUID, EfiSystemResourceEntry,
+    EfiSystemResourceTable, EsrtGetEntry, EsrtLockRepository, EsrtManagement,
+    EsrtManagementProtocol, EsrtRegisterEntry, EsrtSyncFmp, EsrtUnregisterEntry, EsrtUpdateEntry,
+    LAST_ATTEMPT_STATUS_ERROR_AUTH_ERROR, LAST_ATTEMPT_STATUS_ERROR_INCORRECT_VERSION,
+    LAST_ATTEMPT_STATUS_ERROR_INSUFFICIENT_RESOURCES, LAST_ATTEMPT_STATUS_ERROR_INVALID_FORMAT,
+    LAST_ATTEMPT_STATUS_ERROR_PWR_EVT_AC, LAST_ATTEMPT_STATUS_ERROR_PWR_EVT_BATT,
+    LAST_ATTEMPT_STATUS_ERROR_UNSATISFIED_DEPENDENCIES, LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL,
+    LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MAX,
+    LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MIN, LAST_ATTEMPT_STATUS_SUCCESS,
+};
 pub use fsp::{
     FSP_IA32, FSP_INFO_HEADER_OFFSET, FSP_INFO_HEADER_SIGNATURE, FSP_X64, FspInfoHeader,
     FspMemoryInit, FspNotifyParams, FspNotifyPhase, FspPhase, FspSiliconInit, FspTempRamExit,
@@ -70,6 +85,15 @@ pub use ftw::{
     EfiFaultTolerantWriteGetMaxBlockSize, EfiFaultTolerantWriteProtocol,
     EfiFaultTolerantWriteRestart, EfiFaultTolerantWriteWrite, FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
     FAULT_TOLERANT_WRITE_SMM_PROTOCOL_GUID, FaultTolerantWrite,
+};
+pub use lock_box::{
+    LOCK_BOX_ATTRIBUTE_RESTORE_IN_PLACE, LOCK_BOX_ATTRIBUTE_RESTORE_IN_S3_ONLY,
+    LOCK_BOX_PROTOCOL_GUID, LockBoxDescriptor, SMM_LOCK_BOX_COMMAND_RESTORE,
+    SMM_LOCK_BOX_COMMAND_RESTORE_ALL_IN_PLACE, SMM_LOCK_BOX_COMMAND_SAVE,
+    SMM_LOCK_BOX_COMMAND_SET_ATTRIBUTES, SMM_LOCK_BOX_COMMAND_UPDATE,
+    SMM_LOCK_BOX_COMMUNICATION_GUID, SmmLockBoxParameterHeader, SmmLockBoxParameterRestore,
+    SmmLockBoxParameterRestoreAllInPlace, SmmLockBoxParameterSave,
+    SmmLockBoxParameterSetAttributes, SmmLockBoxParameterUpdate,
 };
 pub use memory_accept::{
     AcceptMemory, MEMORY_ACCEPT_PROTOCOL_GUID, MemoryAccept, MemoryAcceptProtocol,
@@ -133,6 +157,10 @@ pub use prm::{
     PRM_DATA_BUFFER_HEADER_SIGNATURE, PRM_HANDLER_NAME_MAXIMUM_LENGTH, PrmConfigProtocol,
     PrmContextBuffer, PrmDataBufferHeader, PrmHandler, PrmModuleContextBuffers,
     PrmRuntimeMmioRange, PrmRuntimeMmioRanges,
+};
+pub use progress::{
+    FIRMWARE_MANAGEMENT_PROGRESS_PROTOCOL_GUID, FIRMWARE_MANAGEMENT_PROGRESS_VERSION,
+    FirmwareManagementProgress, FirmwareManagementProgressProtocol,
 };
 pub use sections::{
     CompressionSectionHeader, EFI_NOT_COMPRESSED, EFI_SECTION_ALL, EFI_SECTION_COMPATIBILITY16,

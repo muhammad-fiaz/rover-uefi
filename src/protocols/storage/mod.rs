@@ -16,6 +16,7 @@ pub mod filesystem;
 pub mod guid;
 pub mod load_file;
 pub mod media_sanitize;
+pub mod mmc_host;
 pub mod nvdimm;
 pub mod nvme_passthru;
 pub mod partition;
@@ -59,6 +60,19 @@ pub use media_sanitize::{
     BlockMediaClear, BlockMediaFormat, BlockMediaPurge, MEDIA_SANITIZE_PROTOCOL_GUID,
     MEDIA_SANITIZE_PROTOCOL_REVISION, MediaSanitize, MediaSanitizeProtocol,
     format_action as media_format_action, purge_action as media_purge_action,
+};
+pub use mmc_host::{
+    EMBEDDED_MMC_HOST_PROTOCOL_GUID, EMMC_TIMING_BACKWARD, EMMC_TIMING_HS26, EMMC_TIMING_HS52,
+    EMMC_TIMING_HS52_DDR_1V2, EMMC_TIMING_HS52_DDR_1V8, EMMC_TIMING_HS200_SDR_1V2,
+    EMMC_TIMING_HS200_SDR_1V8, EMMC_TIMING_HS400_DDR_1V2, EMMC_TIMING_HS400_DDR_1V8, MMC_ACMD41,
+    MMC_ACMD51, MMC_CMD_LONG_RESPONSE, MMC_CMD_NO_CRC_RESPONSE, MMC_CMD_WAIT_RESPONSE, MMC_CMD0,
+    MMC_CMD1, MMC_CMD2, MMC_CMD3, MMC_CMD5, MMC_CMD6, MMC_CMD7, MMC_CMD8, MMC_CMD9, MMC_CMD11,
+    MMC_CMD12, MMC_CMD13, MMC_CMD16, MMC_CMD17, MMC_CMD18, MMC_CMD20, MMC_CMD23, MMC_CMD24,
+    MMC_CMD25, MMC_CMD55, MMC_HOST_PROTOCOL_REVISION, MMC_RESPONSE_TYPE_R1, MMC_RESPONSE_TYPE_R1B,
+    MMC_RESPONSE_TYPE_R2, MMC_RESPONSE_TYPE_R3, MMC_RESPONSE_TYPE_R6, MMC_RESPONSE_TYPE_R7,
+    MmcBuildDevicePath, MmcHost, MmcHostProtocol, MmcIsCardPresent, MmcIsMultiBlock, MmcIsReadOnly,
+    MmcNotifyState, MmcReadBlockData, MmcReceiveResponse, MmcSendCommand, MmcSetIos, MmcState,
+    MmcWriteBlockData, mmc_cmd,
 };
 pub use nvdimm::{
     EFI_NVDIMM_LABEL_INDEX_ALIGN, EFI_NVDIMM_LABEL_INDEX_SIG_LEN, EFI_NVDIMM_LABEL_PROTOCOL_GUID,

@@ -5,10 +5,27 @@
 //! and device-tree/bootconfig handoff across mobile platforms, tablets, and emulators.
 
 pub mod avb;
+pub mod avf;
 pub mod boot_control;
 pub mod boot_img;
+pub mod boot_memory;
+pub mod debug;
 pub mod fastboot;
 pub mod os_config;
+
+pub use avf::{
+    Avf, GBL_EFI_AVF_PROTOCOL_GUID, GBL_EFI_AVF_PROTOCOL_REVISION, GblEfiAvfProtocol,
+    GblEfiAvfReadSecretKeeperPublicKey, GblEfiAvfReadVendorDiceHandover,
+};
+pub use boot_memory::{
+    BootMemory, GBL_EFI_BOOT_MEMORY_PROTOCOL_GUID, GBL_EFI_BOOT_MEMORY_PROTOCOL_REVISION,
+    GblEfiBootBufferType, GblEfiBootMemoryGetBootBuffer, GblEfiBootMemoryGetPartitionBuffer,
+    GblEfiBootMemoryProtocol, GblEfiBootMemorySyncPartitionBuffer, partition_buffer_flag,
+};
+pub use debug::{
+    GBL_EFI_DEBUG_PROTOCOL_GUID, GBL_EFI_DEBUG_PROTOCOL_REVISION, GblDebug, GblEfiDebugErrorTag,
+    GblEfiDebugFatalError, GblEfiDebugProtocol,
+};
 
 pub use avb::{
     Avb, GBL_EFI_AVB_PROTOCOL_GUID, GBL_EFI_AVB_PROTOCOL_REVISION, GblEfiAvbKeyValidationStatus,
