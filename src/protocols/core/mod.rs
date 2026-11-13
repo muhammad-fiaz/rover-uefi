@@ -16,6 +16,7 @@ pub mod interface;
 pub mod memory_attribute;
 pub mod mp_services;
 pub mod open;
+pub mod regex;
 pub mod reset_notification;
 
 pub use crate::arch::riscv::{
@@ -54,6 +55,13 @@ pub use mp_services::{
     PROCESSOR_AS_BSP_BIT, PROCESSOR_ENABLED_BIT, PROCESSOR_HEALTH_STATUS_BIT,
 };
 pub use open::{close, open};
+pub use regex::{
+    CompiledRegex, EFI_REGEX_SYNTAX_TYPE_ECMA_262_GUID, EFI_REGEX_SYNTAX_TYPE_PERL_GUID,
+    EFI_REGEX_SYNTAX_TYPE_POSIX_EXTENDED_GUID, EFI_REGULAR_EXPRESSION_PROTOCOL_GUID,
+    EfiRegexCapture, EfiRegularExpressionGetInfo, EfiRegularExpressionMatch,
+    EfiRegularExpressionProtocol, MAX_REGEX_ELEMENTS, RegularExpression, regex_match,
+    regex_match_str,
+};
 pub use reset_notification::{
     EfiRegisterResetNotify, EfiResetNotificationProtocol, EfiUnregisterResetNotify,
     PLATFORM_SPECIFIC_RESET_FILTER_PROTOCOL_GUID, PLATFORM_SPECIFIC_RESET_HANDLER_PROTOCOL_GUID,

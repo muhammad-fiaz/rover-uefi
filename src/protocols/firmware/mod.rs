@@ -119,6 +119,21 @@ pub use ftw::{
     EfiFaultTolerantWriteRestart, EfiFaultTolerantWriteWrite, FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
     FaultTolerantWrite, SMM_FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
 };
+pub use hii::{
+    EFI_HII_CONFIG_ROUTING_PROTOCOL_GUID, EFI_HII_DATABASE_PROTOCOL_GUID,
+    EFI_HII_FONT_PROTOCOL_GUID, EFI_HII_IMAGE_DECODER_NAME_JPEG_GUID,
+    EFI_HII_IMAGE_DECODER_NAME_PNG_GUID, EFI_HII_IMAGE_DECODER_PROTOCOL_GUID,
+    EFI_HII_IMAGE_PROTOCOL_GUID, EFI_HII_POPUP_PROTOCOL_GUID,
+    EFI_HII_SET_KEYBOARD_LAYOUT_EVENT_GUID, EFI_HII_STRING_PROTOCOL_GUID, EFI_STRING_ID_NULL,
+    EfiHiiDatabaseNotify, EfiHiiDatabaseProtocol, EfiHiiFontProtocol, EfiHiiHandle,
+    EfiHiiImageDecoderProtocol, EfiHiiKeyboardLayout, EfiHiiPackageListHeader, EfiHiiPopupProtocol,
+    EfiHiiStringProtocol, EfiImageOutput, EfiKeyDescriptor, EfiStringId, FontDisplayInfo, FontInfo,
+    HII_CONFIG_ACCESS_GUID, HII_DATABASE_GUID, HII_FONT_ALTER_GUID, HII_FORMS_GUID,
+    HII_STRING_PACKAGE_GUID, HiiConfigRouting, HiiDatabase, HiiFont, HiiImageDecoder,
+    HiiImageDecoderColorType, HiiImageDecoderHeader, HiiPackageHeader, HiiPackageType, HiiPopup,
+    HiiPopupSelection, HiiPopupStyle, HiiPopupType, HiiRowInfo, HiiString, hii_out_flags,
+    is_known_package_type, notify_type as hii_notify_type, parse_package_header,
+};
 pub use lock_box::{
     LOCK_BOX_ATTRIBUTE_RESTORE_IN_PLACE, LOCK_BOX_ATTRIBUTE_RESTORE_IN_S3_ONLY,
     LOCK_BOX_PROTOCOL_GUID, LockBoxDescriptor, SMM_LOCK_BOX_COMMAND_RESTORE,

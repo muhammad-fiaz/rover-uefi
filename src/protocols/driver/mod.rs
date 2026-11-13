@@ -134,9 +134,10 @@ pub use realm_aperture::{
     RealmApertureOpen,
 };
 pub use reset_filter::{
-    EfiPlatformSpecificResetFilterProtocol, EfiResetFilter,
-    PLATFORM_SPECIFIC_RESET_FILTER_PROTOCOL_GUID, PLATFORM_SPECIFIC_RESET_HANDLER_PROTOCOL_GUID,
-    PlatformSpecificResetFilter,
+    EfiPlatformSpecificResetFilterProtocol, EfiPlatformSpecificResetHandlerProtocol,
+    EfiResetFilter, PLATFORM_SPECIFIC_RESET_FILTER_PROTOCOL_GUID,
+    PLATFORM_SPECIFIC_RESET_HANDLER_PROTOCOL_GUID, PlatformSpecificResetFilter,
+    PlatformSpecificResetHandler,
 };
 pub use scmi::{
     ARM_SCMI_BASE_PROTOCOL_GUID, ARM_SCMI_CLOCK_PROTOCOL_GUID, ARM_SCMI_PERFORMANCE_PROTOCOL_GUID,

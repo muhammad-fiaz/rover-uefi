@@ -45,6 +45,9 @@ pub struct PlatformSpecificResetFilter {
 }
 
 impl PlatformSpecificResetFilter {
+    /// Platform Specific Reset Filter Protocol `GUID`.
+    pub const GUID: EfiGuid = PLATFORM_SPECIFIC_RESET_FILTER_PROTOCOL_GUID;
+
     /// Wraps a Reset Filter protocol interface pointer.
     ///
     /// # Safety
@@ -68,6 +71,52 @@ impl PlatformSpecificResetFilter {
         };
         unsafe {
             let func = (*self.proto).reset_filter;
+            func(reset_type, reset_status, size, ptr);
+        }
+    }
+}
+
+/// Low-level Platform Specific Reset Handler Protocol ABI table.
+#[derive(Debug)]
+#[repr(C)]
+pub struct EfiPlatformSpecificResetHandlerProtocol {
+    /// Handler function called after standard reset notifications.
+    pub reset_handler: EfiResetFilter,
+}
+
+/// Safe client wrapper around the Platform Specific Reset Handler Protocol.
+#[derive(Debug, Clone, Copy)]
+pub struct PlatformSpecificResetHandler {
+    proto: *const EfiPlatformSpecificResetHandlerProtocol,
+}
+
+impl PlatformSpecificResetHandler {
+    /// Platform Specific Reset Handler Protocol `GUID`.
+    pub const GUID: EfiGuid = PLATFORM_SPECIFIC_RESET_HANDLER_PROTOCOL_GUID;
+
+    /// Wraps a Reset Handler protocol interface pointer.
+    ///
+    /// # Safety
+    ///
+    /// `proto` must point to a valid, live `EfiPlatformSpecificResetHandlerProtocol` structure.
+    #[must_use]
+    pub const unsafe fn from_raw(proto: *const EfiPlatformSpecificResetHandlerProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Invokes the platform reset handler hook.
+    pub fn invoke_handler(
+        &self,
+        reset_type: ResetType,
+        reset_status: EfiStatus,
+        reset_data: Option<&mut [u8]>,
+    ) {
+        let (ptr, size) = match reset_data {
+            Some(buf) => (buf.as_mut_ptr().cast::<c_void>(), buf.len()),
+            None => (core::ptr::null_mut(), 0),
+        };
+        unsafe {
+            let func = (*self.proto).reset_handler;
             func(reset_type, reset_status, size, ptr);
         }
     }
