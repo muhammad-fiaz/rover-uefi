@@ -5,6 +5,7 @@
 pub mod ata_policy;
 pub mod bds;
 pub mod binding;
+pub mod boot_manager_policy;
 pub mod component_name;
 pub mod config_manager;
 pub mod diagnostics;
@@ -41,6 +42,13 @@ pub use ata_policy::{
 };
 pub use bds::{BdsArchProtocol, EFI_BDS_ARCH_PROTOCOL_GUID, EfiBdsArchProtocol, EfiBdsEntry};
 pub use binding::{DriverBinding, EfiDriverBindingProtocol};
+pub use boot_manager_policy::{
+    BootManagerPolicy, EFI_BOOT_MANAGER_POLICY_CONNECT_ALL_GUID,
+    EFI_BOOT_MANAGER_POLICY_CONSOLE_GUID, EFI_BOOT_MANAGER_POLICY_NETWORK_GUID,
+    EFI_BOOT_MANAGER_POLICY_PROTOCOL_GUID, EFI_BOOT_MANAGER_POLICY_PROTOCOL_REVISION,
+    EFI_BOOT_MANAGER_POLICY_STORAGE_GUID, EfiBootManagerPolicyConnectDeviceClass,
+    EfiBootManagerPolicyConnectDevicePath, EfiBootManagerPolicyProtocol,
+};
 pub use component_name::{
     ComponentName, ComponentName2, EfiComponentName2Protocol, EfiComponentNameProtocol,
 };
