@@ -11,10 +11,12 @@ pub mod application;
 pub mod arp_protocol;
 pub mod dhcp_protocol;
 pub mod dns;
+pub mod dpc;
 pub mod enumeration;
 pub mod guid;
 pub mod http;
 pub mod http_boot_callback;
+pub mod http_callback;
 pub mod ip;
 pub mod ip_config;
 pub mod ip_protocol;
@@ -41,6 +43,7 @@ pub mod usb_ethernet;
 pub mod validation;
 pub mod vlan_config;
 pub mod wifi2;
+pub mod wifi_profile_sync;
 
 pub use arp_protocol::{
     ARP_PROTOCOL_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID, EfiArpAdd, EfiArpCancel,
@@ -52,6 +55,10 @@ pub use dhcp_protocol::{
     EfiDhcp4State, EfiDhcp6ModeData, EfiDhcp6Protocol, EfiDhcp6State,
 };
 pub use dns::protocol::{EfiDns4Protocol, EfiDns6Protocol};
+pub use dpc::{
+    DPC_PROTOCOL_GUID, DispatchDpcFn, Dpc, DpcProcedure, DpcProtocol, QueueDpcFn, TPL_APPLICATION,
+    TPL_CALLBACK, TPL_HIGH_LEVEL, TPL_NOTIFY,
+};
 pub use guid::{
     ARP_PROTOCOL_GUID as ARP_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID as ARP_SB_GUID, DNS4_GUID,
     DNS6_GUID, HTTP_GUID, IP4_GUID, IP6_GUID, MANAGED_NETWORK_GUID, PXE_BASE_CODE_GUID,
@@ -63,6 +70,10 @@ pub use http::protocol::{EfiHttpProtocol, Http};
 pub use http_boot_callback::{
     EFI_HTTP_BOOT_CALLBACK_PROTOCOL_GUID, EfiHttpBootCallback, EfiHttpBootCallbackDataType,
     EfiHttpBootCallbackProtocol,
+};
+pub use http_callback::{
+    HTTP_CALLBACK_PROTOCOL_GUID, HttpCallback, HttpCallbackEvent, HttpCallbackFn,
+    HttpCallbackProtocol,
 };
 pub use ip_config::{
     EFI_IP4_CONFIG2_PROTOCOL_GUID, EFI_IP6_CONFIG_PROTOCOL_GUID, EfiIp4Config2DataType,
@@ -128,6 +139,12 @@ pub use usb_ethernet::{
 pub use vlan_config::{
     EfiVlanConfigFind, EfiVlanConfigProtocol, EfiVlanConfigRemove, EfiVlanConfigSet,
     EfiVlanFindData, VLAN_CONFIG_PROTOCOL_GUID,
+};
+pub use wifi_profile_sync::{
+    WIFI_MAX_KEY_LEN, WIFI_MAX_SSID_LEN, WIFI_PROFILE_SYNC_PROTOCOL_GUID,
+    WIFI_PROFILE_SYNC_PROTOCOL_REVISION, WifiGetConnectStateFn, WifiNetworkProfile,
+    WifiProfileGetFn, WifiProfileSync, WifiProfileSyncProtocol, WifiSecuritySuite,
+    WifiSetConnectStateFn,
 };
 pub use wifi2::{
     EFI_MAX_SSID_LEN, EFI_WIFI2_PROTOCOL_GUID, EFI_WIRELESS_MAC_CONNECTION_II_PROTOCOL_GUID,

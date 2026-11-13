@@ -8,8 +8,8 @@ use rover_uefi::protocols::driver::reset_filter::{
     PLATFORM_SPECIFIC_RESET_HANDLER_PROTOCOL_GUID, PlatformSpecificResetFilter,
 };
 use rover_uefi::protocols::firmware::ftw::{
-    EfiFaultTolerantWriteProtocol, FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
-    FAULT_TOLERANT_WRITE_SMM_PROTOCOL_GUID, FaultTolerantWrite,
+    EfiFaultTolerantWriteProtocol, FAULT_TOLERANT_WRITE_PROTOCOL_GUID, FaultTolerantWrite,
+    SMM_FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
 };
 use rover_uefi::protocols::firmware::memory_test::{
     EfiGenericMemoryTestProtocol, GENERIC_MEMORY_TEST_PROTOCOL_GUID, GenericMemoryTest,
@@ -120,7 +120,7 @@ unsafe extern "efiapi" fn mock_get_last_write(
 fn test_fault_tolerant_write() {
     assert_ne!(
         FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
-        FAULT_TOLERANT_WRITE_SMM_PROTOCOL_GUID
+        SMM_FAULT_TOLERANT_WRITE_PROTOCOL_GUID
     );
 
     let proto = EfiFaultTolerantWriteProtocol {

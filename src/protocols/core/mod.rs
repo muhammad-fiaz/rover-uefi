@@ -56,5 +56,6 @@ pub use mp_services::{
 pub use open::{close, open};
 pub use reset_notification::{
     EfiRegisterResetNotify, EfiResetNotificationProtocol, EfiUnregisterResetNotify,
+    PLATFORM_SPECIFIC_RESET_FILTER_PROTOCOL_GUID, PLATFORM_SPECIFIC_RESET_HANDLER_PROTOCOL_GUID,
     RESET_NOTIFICATION_PROTOCOL_GUID, ResetNotificationProtocol,
 };

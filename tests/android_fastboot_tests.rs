@@ -1,6 +1,10 @@
 //! Tests for Android Fastboot and GBL Fastboot protocols.
 
-#![allow(clippy::expect_used, clippy::unwrap_used, clippy::manual_c_str_literals)]
+#![allow(
+    clippy::expect_used,
+    clippy::unwrap_used,
+    clippy::manual_c_str_literals
+)]
 
 use core::ffi::c_void;
 use rover_uefi::base::EfiStatus;

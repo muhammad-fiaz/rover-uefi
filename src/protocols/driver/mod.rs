@@ -2,6 +2,7 @@
 //!
 //! Driver binding, component naming and loaded images.
 
+pub mod ata_policy;
 pub mod bds;
 pub mod binding;
 pub mod component_name;
@@ -19,14 +20,20 @@ pub mod loaded_image;
 pub mod non_discoverable;
 pub mod override_protocol;
 pub mod ovmf;
+pub mod ps2_policy;
 pub mod qemu_fw_cfg;
 pub mod realm_aperture;
 pub mod reset_filter;
 pub mod scmi;
+pub mod sd_mmc_override;
 pub mod supported_version;
 pub mod virtio;
 pub mod xen;
 
+pub use ata_policy::{
+    ATA_ATAPI_POLICY_PROTOCOL_GUID, ATA_ATAPI_POLICY_VERSION, AtaAtapiPolicy,
+    AtaAtapiPolicyProtocol,
+};
 pub use bds::{BdsArchProtocol, EFI_BDS_ARCH_PROTOCOL_GUID, EfiBdsArchProtocol, EfiBdsEntry};
 pub use binding::{DriverBinding, EfiDriverBindingProtocol};
 pub use component_name::{
@@ -112,6 +119,10 @@ pub use ovmf::{
     OVMF_LOADED_X86_LINUX_KERNEL_PROTOCOL_GUID, OVMF_SEV_MEMORY_ACCEPTANCE_PROTOCOL_GUID,
     OvmfLoadedX86LinuxKernel, OvmfSevAllowUnacceptedMemory, OvmfSevMemoryAcceptanceProtocol,
 };
+pub use ps2_policy::{
+    KEYBOARD_LIGHT_CAPSLOCK, KEYBOARD_LIGHT_NUMLOCK, KEYBOARD_LIGHT_SCROLLLOCK,
+    PS2_POLICY_PROTOCOL_GUID, Ps2InitHardwareFn, Ps2Policy, Ps2PolicyProtocol,
+};
 pub use qemu_fw_cfg::{
     FW_CFG_F_DMA, FW_CFG_IO_DATA, FW_CFG_IO_DMA_ADDRESS, FW_CFG_IO_SELECTOR, FwCfgDmaAccess,
     FwCfgFile, QEMU_FW_CFG_FNAME_SIZE, QEMU_RAMFB_GUID, QemuRamfbConfig, RAMFB_FOURCC_XRGB8888,
@@ -130,6 +141,12 @@ pub use reset_filter::{
 pub use scmi::{
     ARM_SCMI_BASE_PROTOCOL_GUID, ARM_SCMI_CLOCK_PROTOCOL_GUID, ARM_SCMI_PERFORMANCE_PROTOCOL_GUID,
     EfiScmiBaseProtocol, EfiScmiClockProtocol, EfiScmiPerformanceProtocol,
+};
+pub use sd_mmc_override::{
+    EmmcDriverStrengthType, SD_MMC_BUS_WIDTH_IGNORE, SD_MMC_CLOCK_FREQ_IGNORE,
+    SD_MMC_DRIVER_STRENGTH_IGNORE, SD_MMC_OVERRIDE_PROTOCOL_GUID, SD_MMC_OVERRIDE_PROTOCOL_VERSION,
+    SdDriverStrengthType, SdMmcBusMode, SdMmcCapabilityFn, SdMmcNotifyPhaseFn,
+    SdMmcOperatingParameters, SdMmcOverride, SdMmcOverrideProtocol, SdMmcPhaseType,
 };
 pub use supported_version::{
     EFI_DRIVER_SUPPORTED_EFI_VERSION_PROTOCOL_GUID, EfiDriverSupportedEfiVersionProtocol,

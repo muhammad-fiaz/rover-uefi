@@ -116,7 +116,7 @@ pub use ftw::{
     EfiFaultTolerantWriteAbort, EfiFaultTolerantWriteAllocate, EfiFaultTolerantWriteGetLastWrite,
     EfiFaultTolerantWriteGetMaxBlockSize, EfiFaultTolerantWriteProtocol,
     EfiFaultTolerantWriteRestart, EfiFaultTolerantWriteWrite, FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
-    FAULT_TOLERANT_WRITE_SMM_PROTOCOL_GUID, FaultTolerantWrite,
+    FaultTolerantWrite, SMM_FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
 };
 pub use lock_box::{
     LOCK_BOX_ATTRIBUTE_RESTORE_IN_PLACE, LOCK_BOX_ATTRIBUTE_RESTORE_IN_S3_ONLY,

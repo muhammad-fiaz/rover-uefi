@@ -14,12 +14,12 @@ pub const FAULT_TOLERANT_WRITE_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     [0x97, 0x86, 0x8D, 0x4B, 0xFC, 0xB7, 0xC8, 0x81],
 );
 
-/// SMM Fault Tolerant Write Protocol GUID: `{a6a57d97-1528-4e89-8d77-62a22533ca9b}`.
-pub const FAULT_TOLERANT_WRITE_SMM_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
-    0xA6A5_7D97,
-    0x1528,
-    0x4E89,
-    [0x8D, 0x77, 0x62, 0xA2, 0x25, 0x33, 0xCA, 0x9B],
+/// SMM Fault Tolerant Write Protocol GUID: `{3868fc3b-7e45-43a7-906c-4ba47de1754d}`.
+pub const SMM_FAULT_TOLERANT_WRITE_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0x3868_FC3B,
+    0x7E45,
+    0x43A7,
+    [0x90, 0x6C, 0x4B, 0xA4, 0x7D, 0xE1, 0x75, 0x4D],
 );
 
 /// Function pointer for `GetMaxBlockSize`.
