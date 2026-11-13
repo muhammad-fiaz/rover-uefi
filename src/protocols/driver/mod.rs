@@ -165,8 +165,12 @@ pub use reset_filter::{
     PlatformSpecificResetHandler,
 };
 pub use scmi::{
-    ARM_SCMI_BASE_PROTOCOL_GUID, ARM_SCMI_CLOCK_PROTOCOL_GUID, ARM_SCMI_PERFORMANCE_PROTOCOL_GUID,
-    EfiScmiBaseProtocol, EfiScmiClockProtocol, EfiScmiPerformanceProtocol,
+    ARM_SCMI_BASE_PROTOCOL_GUID, ARM_SCMI_CLOCK_PROTOCOL_GUID, ARM_SCMI_CLOCK2_PROTOCOL_GUID,
+    ARM_SCMI_PERFORMANCE_PROTOCOL_GUID, EfiScmiBaseProtocol, EfiScmiClock2Protocol,
+    EfiScmiClockProtocol, EfiScmiPerformanceProtocol, SCMI_BASE_PROTOCOL_VERSION_V1,
+    SCMI_BASE_PROTOCOL_VERSION_V2, SCMI_CLOCK_PROTOCOL_VERSION, SCMI_CLOCK2_PROTOCOL_VERSION,
+    SCMI_MAX_STR_LEN, ScmiBase, ScmiClock, ScmiClock2, ScmiClockRate, ScmiClockRateFormat,
+    ScmiClockRateRange,
 };
 pub use sd_mmc_override::{
     EmmcDriverStrengthType, SD_MMC_BUS_WIDTH_IGNORE, SD_MMC_CLOCK_FREQ_IGNORE,

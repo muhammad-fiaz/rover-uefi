@@ -57,11 +57,44 @@ unsafe extern "efiapi" fn dummy_scmi_base_total(
     EfiStatus::SUCCESS
 }
 
+unsafe extern "efiapi" fn dummy_scmi_discover_vendor(
+    _this: *mut EfiScmiBaseProtocol,
+    _vendor_identifier: *mut [u8; 16],
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_scmi_discover_sub_vendor(
+    _this: *mut EfiScmiBaseProtocol,
+    _vendor_identifier: *mut [u8; 16],
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_scmi_discover_impl_version(
+    _this: *mut EfiScmiBaseProtocol,
+    _implementation_version: *mut u32,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_scmi_discover_list_protocols(
+    _this: *mut EfiScmiBaseProtocol,
+    _protocol_list_size: *mut u32,
+    _protocol_list: *mut u8,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
 #[test]
 fn test_scmi_base_protocol() {
     let mut scmi = EfiScmiBaseProtocol {
         get_version: dummy_scmi_base_version,
-        get_total_num_protocols: dummy_scmi_base_total,
+        get_total_protocols: dummy_scmi_base_total,
+        discover_vendor: dummy_scmi_discover_vendor,
+        discover_sub_vendor: dummy_scmi_discover_sub_vendor,
+        discover_implementation_version: dummy_scmi_discover_impl_version,
+        discover_list_protocols: dummy_scmi_discover_list_protocols,
     };
 
     let mut ver = 0u32;
