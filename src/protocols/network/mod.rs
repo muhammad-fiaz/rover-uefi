@@ -47,7 +47,6 @@ pub use dhcp_protocol::{
     EfiDhcp4State, EfiDhcp6ModeData, EfiDhcp6Protocol, EfiDhcp6State,
 };
 pub use dns::protocol::{EfiDns4Protocol, EfiDns6Protocol};
-pub use http::protocol::{EfiHttpProtocol, Http};
 pub use guid::{
     ARP_PROTOCOL_GUID as ARP_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID as ARP_SB_GUID, DNS4_GUID,
     DNS6_GUID, HTTP_GUID, IP4_GUID, IP6_GUID, MANAGED_NETWORK_GUID, PXE_BASE_CODE_GUID,
@@ -55,6 +54,7 @@ pub use guid::{
     REST_EX_SERVICE_BINDING_PROTOCOL_GUID as REST_EX_SB_GUID, SIMPLE_NETWORK_GUID, TCP4_GUID,
     TCP6_GUID, UDP4_GUID, UDP6_GUID, VLAN_CONFIG_PROTOCOL_GUID as VLAN_CONFIG_GUID,
 };
+pub use http::protocol::{EfiHttpProtocol, Http};
 pub use http_boot_callback::{
     EFI_HTTP_BOOT_CALLBACK_PROTOCOL_GUID, EfiHttpBootCallback, EfiHttpBootCallbackDataType,
     EfiHttpBootCallbackProtocol,

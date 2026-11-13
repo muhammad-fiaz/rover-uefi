@@ -15,15 +15,17 @@
 <a href="https://github.com/sponsors/muhammad-fiaz"><img src="https://img.shields.io/badge/Sponsor-GitHub-pink?style=social&logo=github" alt="GitHub Sponsors"></a>
 <a href="https://hits.sh/github.com/muhammad-fiaz/rover-uefi/"><img alt="Hits" src="https://hits.sh/github.com/muhammad-fiaz/rover-uefi.svg"/></a>
 
-<p><em>A modern, feature-rich, cross-platform firmware development library for UEFI and PI specifications in Rust.</em></p>
+<p><em>Modern, feature-rich, cross-platform UEFI and PI firmware development in Rust.</em></p>
 
-<b><a href="#features">Features</a> |
-<a href="#prerequisites-and-supported-platforms">Supported Platforms</a> |
-<a href="#quick-start">Quick Start</a> |
-<a href="#project-structure">Project Structure</a> |
-<a href="#acknowledgements">Acknowledgements</a> |
-<a href="#contributing">Contributing</a> |
-<a href="SECURITY.md">Security</a></b>
+<p>
+<a href="#features">Features</a> &bull;
+<a href="#prerequisites-and-supported-platforms">Supported Platforms</a> &bull;
+<a href="#quick-start">Quick Start</a> &bull;
+<a href="#project-structure">Architecture</a> &bull;
+<a href="#acknowledgements">Acknowledgements</a> &bull;
+<a href="#contributing">Contributing</a> &bull;
+<a href="SECURITY.md">Security</a>
+</p>
 
 </div>
 
