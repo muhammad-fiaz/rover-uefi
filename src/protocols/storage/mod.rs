@@ -29,8 +29,10 @@ pub mod tape_io;
 pub mod ufs;
 
 pub use ata_passthru::{
-    ATA_PASS_THRU_PROTOCOL_GUID as ATA_PASS_THRU_GUID, EfiAtaCommandBlock,
-    EfiAtaPassThruCommandPacket, EfiAtaPassThruMode, EfiAtaPassThruProtocol, EfiAtaStatusBlock,
+    ATA_ATAPI_POLICY_PROTOCOL_GUID, ATA_ATAPI_POLICY_VERSION,
+    ATA_PASS_THRU_PROTOCOL_GUID as ATA_PASS_THRU_GUID, AtaAtapiPolicy, EfiAtaAtapiPolicyProtocol,
+    EfiAtaCommandBlock, EfiAtaPassThruCommandPacket, EfiAtaPassThruMode, EfiAtaPassThruProtocol,
+    EfiAtaStatusBlock, devsleep as ata_devsleep, puis as ata_puis,
 };
 pub use block_io::{BlockIo, BlockIo2, EfiBlockIo2Protocol, EfiBlockIoMedia, EfiBlockIoProtocol};
 pub use disk_info::{

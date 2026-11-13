@@ -5,7 +5,7 @@
 //!
 //! Provides direct low-level ATA command submission to ports and port multipliers.
 
-use crate::base::{EfiEvent, EfiStatus};
+use crate::base::{EfiEvent, EfiGuid, EfiStatus};
 use crate::protocols::device_path::EfiDevicePath;
 use core::ffi::c_void;
 
@@ -189,4 +189,91 @@ pub struct EfiAtaPassThruProtocol {
     pub reset_port: EfiAtaPassThruResetPort,
     /// Resets an individual ATA device.
     pub reset_device: EfiAtaPassThruResetDevice,
+}
+
+/// ATA ATAPI Policy Protocol GUID.
+///
+/// `{e59cd769-5083-4f26-9094-6c919f916c4e}`
+pub const ATA_ATAPI_POLICY_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0xE59C_D769,
+    0x5083,
+    0x4F26,
+    [0x90, 0x94, 0x6C, 0x91, 0x9F, 0x91, 0x6C, 0x4E],
+);
+
+/// ATA ATAPI Policy Protocol revision (1.0).
+pub const ATA_ATAPI_POLICY_VERSION: u32 = 0x0001_0000;
+
+/// Power-Up In Standby (PUIS) settings.
+pub mod puis {
+    /// Disable PUIS feature.
+    pub const DISABLE: u8 = 0;
+    /// Enable PUIS feature.
+    pub const ENABLE: u8 = 1;
+    /// Retain current non-volatile hardware PUIS setting.
+    pub const KEEP_HARDWARE: u8 = 2;
+}
+
+/// Device Sleep (`DevSleep`) settings.
+pub mod devsleep {
+    /// Disable Device Sleep.
+    pub const DISABLE: u8 = 0;
+    /// Enable Device Sleep.
+    pub const ENABLE: u8 = 1;
+}
+
+/// EFI ATA ATAPI Policy Protocol structure.
+///
+/// Produced by platform firmware and consumed by ATA/ATAPI pass-thru driver
+/// to configure Power-Up In Standby and aggressive Device Sleep modes.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(C)]
+pub struct EfiAtaAtapiPolicyProtocol {
+    /// Protocol version ([`ATA_ATAPI_POLICY_VERSION`]).
+    pub version: u32,
+    /// 0: Disable PUIS, 1: Enable PUIS, other: Keep hardware setting.
+    pub puis_enable: u8,
+    /// 0: Disable Device Sleep, 1: Enable Device Sleep.
+    pub device_sleep_enable: u8,
+    /// 0: Disable Aggressive Device Sleep, 1: Enable Aggressive Device Sleep.
+    pub aggressive_device_sleep_enable: u8,
+    /// Reserved byte for structure alignment.
+    pub reserved: u8,
+}
+
+/// Safe client wrapper around [`EfiAtaAtapiPolicyProtocol`].
+pub struct AtaAtapiPolicy<'a> {
+    proto: &'a EfiAtaAtapiPolicyProtocol,
+}
+
+impl<'a> AtaAtapiPolicy<'a> {
+    /// Wraps a reference to [`EfiAtaAtapiPolicyProtocol`].
+    #[must_use]
+    pub const fn new(proto: &'a EfiAtaAtapiPolicyProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Returns protocol specification version.
+    #[must_use]
+    pub const fn version(&self) -> u32 {
+        self.proto.version
+    }
+
+    /// Returns whether Power-Up In Standby is explicitly enabled.
+    #[must_use]
+    pub const fn is_puis_enabled(&self) -> bool {
+        self.proto.puis_enable == puis::ENABLE
+    }
+
+    /// Returns whether Device Sleep is enabled.
+    #[must_use]
+    pub const fn is_device_sleep_enabled(&self) -> bool {
+        self.proto.device_sleep_enable == devsleep::ENABLE
+    }
+
+    /// Returns whether Aggressive Device Sleep is enabled.
+    #[must_use]
+    pub const fn is_aggressive_device_sleep_enabled(&self) -> bool {
+        self.proto.aggressive_device_sleep_enable == devsleep::ENABLE
+    }
 }

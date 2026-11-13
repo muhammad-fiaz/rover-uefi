@@ -55,8 +55,13 @@ pub use cc_measurement::{
 };
 pub use device_security::{
     DEVICE_IDENTIFIER_REVISION, DEVICE_IDENTIFIER_TYPE_PCI_GUID, DEVICE_IDENTIFIER_TYPE_USB_GUID,
-    DEVICE_SECURITY_PROTOCOL_GUID, DEVICE_SECURITY_PROTOCOL_REVISION, EfiDeviceAuthenticate,
-    EfiDeviceIdentifier, EfiDeviceSecurityProtocol,
+    DEVICE_SECURITY_POLICY_PROTOCOL_GUID, DEVICE_SECURITY_POLICY_PROTOCOL_REVISION,
+    DEVICE_SECURITY_POLICY_REVISION, DEVICE_SECURITY_PROTOCOL_GUID,
+    DEVICE_SECURITY_PROTOCOL_REVISION, DEVICE_SECURITY_STATE_REVISION, DeviceSecurity,
+    DeviceSecurityPolicy, DeviceSecurityPolicyData, DeviceSecurityStateData, EfiDeviceAuthenticate,
+    EfiDeviceIdentifier, EfiDeviceSecurityGetDevicePolicy, EfiDeviceSecurityNotifyDeviceState,
+    EfiDeviceSecurityPolicyProtocol, EfiDeviceSecurityProtocol, TPM2_SERVICE_FFA_GUID,
+    policy as device_security_policy, security_state as device_security_state, tpm2_ffa,
 };
 pub use ecc::{Curve, EcdsaError, Modulus, Point, PublicKey, Signature};
 pub use guid::{

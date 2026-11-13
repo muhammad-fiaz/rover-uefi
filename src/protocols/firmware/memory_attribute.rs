@@ -152,3 +152,127 @@ impl<'a> MemoryAttribute<'a> {
         }
     }
 }
+
+/// SMM Memory Attribute Protocol GUID.
+///
+/// `{69b792ea-39ce-402d-a2a6-f721de351dfe}`
+pub const SMM_MEMORY_ATTRIBUTE_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0x69B7_92EA,
+    0x39CE,
+    0x402D,
+    [0xA2, 0xA6, 0xF7, 0x21, 0xDE, 0x35, 0x1D, 0xFE],
+);
+
+/// Function pointer prototype to retrieve memory attributes in SMM.
+pub type SmmGetMemoryAttributes = unsafe extern "efiapi" fn(
+    this: *const SmmMemoryAttributeProtocol,
+    base_address: EfiPhysicalAddress,
+    length: u64,
+    attributes: *mut u64,
+) -> EfiStatus;
+
+/// Function pointer prototype to set memory attributes in SMM.
+pub type SmmSetMemoryAttributes = unsafe extern "efiapi" fn(
+    this: *const SmmMemoryAttributeProtocol,
+    base_address: EfiPhysicalAddress,
+    length: u64,
+    attributes: u64,
+) -> EfiStatus;
+
+/// Function pointer prototype to clear memory attributes in SMM.
+pub type SmmClearMemoryAttributes = unsafe extern "efiapi" fn(
+    this: *const SmmMemoryAttributeProtocol,
+    base_address: EfiPhysicalAddress,
+    length: u64,
+    attributes: u64,
+) -> EfiStatus;
+
+/// SMM Memory Attribute Protocol.
+///
+/// Provides retrieval and modification services for page table attributes in the EFI SMM environment.
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct SmmMemoryAttributeProtocol {
+    /// Retrieve attributes for a given memory region in SMM.
+    pub get_memory_attributes: Option<SmmGetMemoryAttributes>,
+    /// Set attributes for a given memory region in SMM.
+    pub set_memory_attributes: Option<SmmSetMemoryAttributes>,
+    /// Clear attributes for a given memory region in SMM.
+    pub clear_memory_attributes: Option<SmmClearMemoryAttributes>,
+}
+
+/// Safe client wrapper for the SMM Memory Attribute protocol.
+#[derive(Debug)]
+pub struct SmmMemoryAttribute<'a> {
+    protocol: &'a SmmMemoryAttributeProtocol,
+}
+
+impl<'a> SmmMemoryAttribute<'a> {
+    /// Create a new safe view of the SMM Memory Attribute protocol.
+    #[must_use]
+    pub fn new(protocol: &'a SmmMemoryAttributeProtocol) -> Self {
+        Self { protocol }
+    }
+
+    /// Retrieve the memory attributes for a designated region in SMM.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus::UNSUPPORTED` if not implemented, or the status returned by firmware.
+    pub fn get_attributes(&self, base: EfiPhysicalAddress, length: u64) -> Result<u64, EfiStatus> {
+        let mut attrs = 0u64;
+        if let Some(get_fn) = self.protocol.get_memory_attributes {
+            let status = unsafe { get_fn(self.protocol, base, length, &raw mut attrs) };
+            if status == EfiStatus::SUCCESS {
+                Ok(attrs)
+            } else {
+                Err(status)
+            }
+        } else {
+            Err(EfiStatus::UNSUPPORTED)
+        }
+    }
+
+    /// Set memory attributes for a designated region in SMM.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus::UNSUPPORTED` if not implemented, or the status returned by firmware.
+    pub fn set_attributes(
+        &self,
+        base: EfiPhysicalAddress,
+        length: u64,
+        attrs: u64,
+    ) -> Result<(), EfiStatus> {
+        if let Some(set_fn) = self.protocol.set_memory_attributes {
+            let status = unsafe { set_fn(self.protocol, base, length, attrs) };
+            if status == EfiStatus::SUCCESS {
+                Ok(())
+            } else {
+                Err(status)
+            }
+        } else {
+            Err(EfiStatus::UNSUPPORTED)
+        }
+    }
+
+    /// Clear memory attributes for a designated region in SMM.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus::UNSUPPORTED` if not implemented, or the status returned by firmware.
+    pub fn clear_attributes(
+        &self,
+        base: EfiPhysicalAddress,
+        length: u64,
+        attrs: u64,
+    ) -> Result<(), EfiStatus> {
+        if let Some(clear_fn) = self.protocol.clear_memory_attributes {
+            let status = unsafe { clear_fn(self.protocol, base, length, attrs) };
+            if status == EfiStatus::SUCCESS {
+                Ok(())
+            } else {
+                Err(status)
+            }
+        } else {
+            Err(EfiStatus::UNSUPPORTED)
+        }
+    }
+}

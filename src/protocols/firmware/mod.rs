@@ -33,6 +33,7 @@ pub mod sections;
 pub mod smm_access2;
 pub mod smm_control2;
 pub mod smm_cpu;
+pub mod swap_address_range;
 pub mod universal_payload;
 
 pub use arch_protocols::{
@@ -101,6 +102,8 @@ pub use memory_accept::{
 pub use memory_attribute::{
     EFI_MEMORY_ATTRIBUTE_PROTOCOL_GUID, EfiClearMemoryAttributes, EfiGetMemoryAttributes,
     EfiMemoryAttributeProtocol, EfiSetMemoryAttributes, MemoryAttribute,
+    SMM_MEMORY_ATTRIBUTE_PROTOCOL_GUID, SmmClearMemoryAttributes, SmmGetMemoryAttributes,
+    SmmMemoryAttribute, SmmMemoryAttributeProtocol, SmmSetMemoryAttributes,
     memory_attribute as memory_attr_flags,
 };
 pub use memory_test::{
@@ -185,6 +188,12 @@ pub use smm_cpu::{
     EfiSmmCpuProtocol, EfiSmmReadSaveState, EfiSmmSaveStateIoInfo, EfiSmmSaveStateIoType,
     EfiSmmSaveStateIoWidth, EfiSmmSaveStateRegister, EfiSmmWriteSaveState, SMM_CPU_PROTOCOL_GUID,
     SmmCpu,
+};
+pub use swap_address_range::{
+    EfiGetRangeLocation, EfiGetRtcPowerStatus, EfiGetSwapLockCapability, EfiGetSwapState,
+    EfiSetSwapLock, EfiSetSwapState, EfiSwapAddressRangeProtocol,
+    SMM_SWAP_ADDRESS_RANGE_PROTOCOL_GUID, SWAP_ADDRESS_RANGE_PROTOCOL_GUID, SwapAddressRange,
+    SwapRangeLocation, swap_lock,
 };
 pub use universal_payload::{
     UNIVERSAL_PAYLOAD_IDENTIFIER, UniversalPayloadEntryPoint, UniversalPayloadGenericHeader,
