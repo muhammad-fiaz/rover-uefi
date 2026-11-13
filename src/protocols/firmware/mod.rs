@@ -3,6 +3,7 @@
 //! Typed parsing for firmware image and volume formats and PI protocols.
 //! Parsers are bounded and borrow from caller supplied slices.
 
+pub mod arch_protocols;
 pub mod capsule_arch;
 pub mod decompress;
 pub mod depex;
@@ -22,6 +23,16 @@ pub mod prm;
 pub mod sections;
 pub mod universal_payload;
 
+pub use arch_protocols::{
+    EFI_CPU_ARCH_PROTOCOL_GUID, EFI_METRONOME_ARCH_PROTOCOL_GUID,
+    EFI_MONOTONIC_COUNTER_ARCH_PROTOCOL_GUID, EFI_REAL_TIME_CLOCK_ARCH_PROTOCOL_GUID,
+    EFI_RESET_ARCH_PROTOCOL_GUID, EFI_RUNTIME_ARCH_PROTOCOL_GUID, EFI_SECURITY_ARCH_PROTOCOL_GUID,
+    EFI_SECURITY2_ARCH_PROTOCOL_GUID, EFI_TIMER_ARCH_PROTOCOL_GUID,
+    EFI_VARIABLE_ARCH_PROTOCOL_GUID, EFI_VARIABLE_WRITE_ARCH_PROTOCOL_GUID,
+    EFI_WATCHDOG_TIMER_ARCH_PROTOCOL_GUID, EfiCpuArchProtocol, EfiCpuFlushType, EfiCpuInitType,
+    EfiMetronomeArchProtocol, EfiSecurity2ArchProtocol, EfiSecurityArchProtocol,
+    EfiTimerArchProtocol, EfiWatchdogTimerArchProtocol,
+};
 pub use capsule_arch::EFI_CAPSULE_ARCH_PROTOCOL_GUID;
 pub use decompress::{
     DecompressInfo, EFI_DECOMPRESS_PROTOCOL_GUID, EfiDecompress, EfiDecompressGetInfo,
