@@ -10,9 +10,12 @@ use core::ffi::c_void;
 use rover_uefi::base::EfiStatus;
 use rover_uefi::protocols::spi::{
     EFI_SPI_CONFIGURATION_GUID, EFI_SPI_HC_PROTOCOL_GUID, EFI_SPI_NOR_FLASH_PROTOCOL_GUID,
-    EfiSpiBusTransaction, EfiSpiHcProtocol, EfiSpiNorFlashProtocol, EfiSpiNorFlashProtocolEx,
-    SPI_NOR_FLASH_PROTOCOL_EX_GUID, SpiHcProtocol, SpiNorFlashProtocol, SpiNorFlashProtocolEx,
-    SpiTransactionType, hc_attributes,
+    EFI_SPI_SMM_CONFIGURATION_PROTOCOL_GUID, EFI_SPI_SMM_HC_PROTOCOL_GUID,
+    EFI_SPI_SMM_NOR_FLASH_PROTOCOL_GUID, EfiSpiBus, EfiSpiBusTransaction,
+    EfiSpiConfigurationProtocol, EfiSpiHcProtocol, EfiSpiIoProtocol, EfiSpiNorFlashProtocol,
+    EfiSpiNorFlashProtocolEx, SPI_IO_SUPPORTS_4_BIT_DATA_BUS_WIDTH, SPI_NOR_FLASH_PROTOCOL_EX_GUID,
+    SPI_SMM_NOR_FLASH_PROTOCOL_EX_GUID, SpiConfiguration, SpiHcProtocol, SpiIo,
+    SpiNorFlashProtocol, SpiNorFlashProtocolEx, SpiTransactionType, hc_attributes,
 };
 
 #[test]
@@ -32,6 +35,22 @@ fn test_spi_guids() {
     assert_eq!(
         SPI_NOR_FLASH_PROTOCOL_EX_GUID.to_u128_le(),
         0x9ba9_5bfe_8e56_5284_46b5_7ff9_99de_f701
+    );
+    assert_eq!(
+        EFI_SPI_SMM_HC_PROTOCOL_GUID.to_u128_le(),
+        0xcb3e_e7ff_2c5c_548a_4470_2093_e9f0_2217
+    );
+    assert_eq!(
+        EFI_SPI_SMM_CONFIGURATION_PROTOCOL_GUID.to_u128_le(),
+        0x59ef_9d9c_4cfd_aaa3_45fd_171b_995c_6eca
+    );
+    assert_eq!(
+        EFI_SPI_SMM_NOR_FLASH_PROTOCOL_GUID.to_u128_le(),
+        0x9a2c_666d_ff87_0486_4666_fe14_aab1_8f19
+    );
+    assert_eq!(
+        SPI_SMM_NOR_FLASH_PROTOCOL_EX_GUID.to_u128_le(),
+        0xa294_d428_e49c_3eb9_4ba5_caa9_6743_5ded
     );
 }
 
@@ -218,4 +237,129 @@ fn test_spi_hc() {
         read_buffer: core::ptr::null_mut(),
     };
     assert!(unsafe { hc.execute_transaction(&mut trans) }.is_ok());
+}
+
+unsafe extern "efiapi" fn mock_io_transaction(
+    _this: *const EfiSpiIoProtocol,
+    transaction_type: SpiTransactionType,
+    _debug_trans: bool,
+    _clock_hz: u32,
+    _bus_width: u32,
+    _frame_size: u32,
+    write_bytes: u32,
+    write_buffer: *const u8,
+    read_bytes: u32,
+    read_buffer: *mut u8,
+) -> EfiStatus {
+    match transaction_type {
+        SpiTransactionType::FullDuplex => {
+            if write_bytes != read_bytes || write_buffer.is_null() || read_buffer.is_null() {
+                return EfiStatus::BAD_BUFFER_SIZE;
+            }
+            for i in 0..read_bytes {
+                unsafe { *read_buffer.add(i as usize) = *write_buffer.add(i as usize) ^ 0xFF };
+            }
+            EfiStatus::SUCCESS
+        }
+        SpiTransactionType::WriteOnly => {
+            if write_bytes == 0 || write_buffer.is_null() {
+                return EfiStatus::BAD_BUFFER_SIZE;
+            }
+            EfiStatus::SUCCESS
+        }
+        SpiTransactionType::ReadOnly => {
+            if read_bytes == 0 || read_buffer.is_null() {
+                return EfiStatus::BAD_BUFFER_SIZE;
+            }
+            for i in 0..read_bytes {
+                unsafe { *read_buffer.add(i as usize) = 0xAA };
+            }
+            EfiStatus::SUCCESS
+        }
+        SpiTransactionType::WriteThenRead => {
+            if write_bytes == 0
+                || write_buffer.is_null()
+                || read_bytes == 0
+                || read_buffer.is_null()
+            {
+                return EfiStatus::BAD_BUFFER_SIZE;
+            }
+            for i in 0..read_bytes {
+                unsafe { *read_buffer.add(i as usize) = 0x55 };
+            }
+            EfiStatus::SUCCESS
+        }
+    }
+}
+
+unsafe extern "efiapi" fn mock_io_update_peripheral(
+    _this: *const EfiSpiIoProtocol,
+    _spi_peripheral: *const c_void,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+#[test]
+fn test_spi_io() {
+    let raw = EfiSpiIoProtocol {
+        spi_peripheral: core::ptr::null(),
+        original_spi_peripheral: core::ptr::null(),
+        frame_size_support_mask: 0x0000_0080,
+        maximum_transfer_bytes: 4096,
+        attributes: SPI_IO_SUPPORTS_4_BIT_DATA_BUS_WIDTH,
+        legacy_spi_protocol: core::ptr::null(),
+        transaction: mock_io_transaction,
+        update_spi_peripheral: mock_io_update_peripheral,
+    };
+
+    let io = SpiIo::new(&raw);
+    assert_eq!(io.maximum_transfer_bytes(), 4096);
+    assert_eq!(io.frame_size_support_mask(), 0x0000_0080);
+    assert_eq!(io.attributes(), SPI_IO_SUPPORTS_4_BIT_DATA_BUS_WIDTH);
+
+    let tx = [0x01, 0x02, 0x03];
+    let mut rx = [0u8; 3];
+    assert!(io.full_duplex(&tx, &mut rx, 1, 8, 10_000_000).is_ok());
+    assert_eq!(rx, [0xFE, 0xFD, 0xFC]);
+
+    let mut mismatched_rx = [0u8; 2];
+    assert_eq!(
+        io.full_duplex(&tx, &mut mismatched_rx, 1, 8, 10_000_000)
+            .err(),
+        Some(EfiStatus::BAD_BUFFER_SIZE)
+    );
+
+    assert!(io.write_only(&tx, 1, 8, 10_000_000).is_ok());
+
+    let mut read_data = [0u8; 4];
+    assert!(io.read_only(&mut read_data, 1, 8, 10_000_000).is_ok());
+    assert_eq!(read_data, [0xAA, 0xAA, 0xAA, 0xAA]);
+
+    assert!(
+        io.write_then_read(&tx, &mut read_data, 1, 8, 10_000_000)
+            .is_ok()
+    );
+    assert_eq!(read_data, [0x55, 0x55, 0x55, 0x55]);
+}
+
+#[test]
+fn test_spi_configuration() {
+    let bus0 = EfiSpiBus {
+        friendly_name: core::ptr::null(),
+        peripheral_list: core::ptr::null(),
+        controller_path: core::ptr::null(),
+        clock: None,
+        clock_parameter: core::ptr::null_mut(),
+    };
+    let bus_list = [core::ptr::from_ref(&bus0)];
+
+    let raw = EfiSpiConfigurationProtocol {
+        bus_count: 1,
+        bus_list: bus_list.as_ptr(),
+    };
+
+    let cfg = SpiConfiguration::new(&raw);
+    assert_eq!(cfg.bus_count(), 1);
+    assert!(cfg.bus(0).is_some());
+    assert!(cfg.bus(1).is_none());
 }
