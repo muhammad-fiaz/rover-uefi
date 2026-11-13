@@ -15,6 +15,7 @@ pub mod dns;
 pub mod dpc;
 pub mod eap;
 pub mod enumeration;
+pub mod ftp4;
 pub mod guid;
 pub mod http;
 pub mod http_boot_callback;
@@ -82,6 +83,14 @@ pub use eap::{
     EfiEapGetKey, EfiEapManagement2Protocol, EfiEapProtocol, EfiEapRegisterAuthMethod,
     EfiEapSetDesiredAuthMethod, EfiEapolPortInfo, EfiEapolSupplicantPaeConfiguration, eap_type,
     pae_capabilities, supplicant_field_mask,
+};
+pub use ftp4::{
+    EFI_FTP4_PROTOCOL_GUID, EFI_FTP4_SERVICE_BINDING_PROTOCOL_GUID, EfiFtp4Close,
+    EfiFtp4CommandToken, EfiFtp4ConfigData, EfiFtp4Configure, EfiFtp4Connect,
+    EfiFtp4ConnectionToken, EfiFtp4DataCallback, EfiFtp4GetModeData, EfiFtp4Poll, EfiFtp4Protocol,
+    EfiFtp4ReadDirectory, EfiFtp4ReadFile, EfiFtp4WriteFile, FILE_STRUCT_FILE, FILE_STRUCT_PAGE,
+    FILE_STRUCT_RECORD, Ftp4, REP_TYPE_ASCII, REP_TYPE_EBCDIC, REP_TYPE_IMAGE, REP_TYPE_LOCAL,
+    TRANS_MODE_BLOCK, TRANS_MODE_COMPRESSED, TRANS_MODE_STREAM,
 };
 pub use guid::{
     ARP_PROTOCOL_GUID as ARP_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID as ARP_SB_GUID, DNS4_GUID,
