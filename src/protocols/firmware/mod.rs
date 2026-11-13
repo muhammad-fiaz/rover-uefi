@@ -21,6 +21,7 @@ pub mod ftw;
 pub mod hii;
 pub mod hob;
 pub mod ifr;
+pub mod legacy_region2;
 pub mod lock_box;
 pub mod memory_accept;
 pub mod memory_attribute;
@@ -161,6 +162,12 @@ pub use hii::{
     HiiImageDecoderColorType, HiiImageDecoderHeader, HiiPackageHeader, HiiPackageType, HiiPopup,
     HiiPopupSelection, HiiPopupStyle, HiiPopupType, HiiRowInfo, HiiString, hii_out_flags,
     is_known_package_type, notify_type as hii_notify_type, parse_package_header,
+};
+pub use legacy_region2::{
+    EFI_LEGACY_REGION2_PROTOCOL_GUID, EfiLegacyRegion2BootLock, EfiLegacyRegion2Decode,
+    EfiLegacyRegion2Lock, EfiLegacyRegion2Protocol, EfiLegacyRegion2Unlock, EfiLegacyRegionGetInfo,
+    LEGACY_REGION_END, LEGACY_REGION_SIZE, LEGACY_REGION_START, LegacyRegion2,
+    LegacyRegionAttribute, LegacyRegionDescriptor,
 };
 pub use lock_box::{
     LOCK_BOX_ATTRIBUTE_RESTORE_IN_PLACE, LOCK_BOX_ATTRIBUTE_RESTORE_IN_S3_ONLY,
