@@ -14,6 +14,7 @@ pub mod dns;
 pub mod enumeration;
 pub mod guid;
 pub mod http;
+pub mod http_boot_callback;
 pub mod ip;
 pub mod ip_config;
 pub mod ip_protocol;
@@ -30,6 +31,7 @@ pub mod simple_network;
 pub mod stack;
 pub mod tcp;
 pub mod tls;
+pub mod tls_protocol;
 pub mod types;
 pub mod udp;
 pub mod validation;
@@ -50,6 +52,10 @@ pub use guid::{
     REDFISH_DISCOVER_PROTOCOL_GUID as REDFISH_DISCOVER_GUID, REST_EX_PROTOCOL_GUID as REST_EX_GUID,
     REST_EX_SERVICE_BINDING_PROTOCOL_GUID as REST_EX_SB_GUID, SIMPLE_NETWORK_GUID, TCP4_GUID,
     TCP6_GUID, UDP4_GUID, UDP6_GUID, VLAN_CONFIG_PROTOCOL_GUID as VLAN_CONFIG_GUID,
+};
+pub use http_boot_callback::{
+    EFI_HTTP_BOOT_CALLBACK_PROTOCOL_GUID, EfiHttpBootCallback, EfiHttpBootCallbackDataType,
+    EfiHttpBootCallbackProtocol,
 };
 pub use ip_config::{
     EFI_IP4_CONFIG2_PROTOCOL_GUID, EFI_IP6_CONFIG_PROTOCOL_GUID, EfiIp4Config2DataType,
@@ -75,6 +81,12 @@ pub use rest_ex::{
     EfiRestExServiceAccessMode, EfiRestExServiceInfoHeader, EfiRestExServiceInfoV10,
     EfiRestExServiceInfoVer, EfiRestExServiceType, EfiRestExToken, EfiRestGetTime,
     EfiRestSendReceive, REST_EX_PROTOCOL_GUID, REST_EX_SERVICE_BINDING_PROTOCOL_GUID,
+};
+pub use tls_protocol::{
+    EFI_TLS_CONFIGURATION_PROTOCOL_GUID, EFI_TLS_PROTOCOL_GUID,
+    EFI_TLS_SERVICE_BINDING_PROTOCOL_GUID, EfiTlsConfigDataType, EfiTlsConfigurationGetData,
+    EfiTlsConfigurationProtocol, EfiTlsConfigurationSetData, EfiTlsCryptMode, EfiTlsFragmentData,
+    EfiTlsProtocol, EfiTlsSessionDataType,
 };
 pub use vlan_config::{
     EfiVlanConfigFind, EfiVlanConfigProtocol, EfiVlanConfigRemove, EfiVlanConfigSet,
