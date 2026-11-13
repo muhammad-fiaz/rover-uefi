@@ -29,7 +29,7 @@ fn push_u64(buffer: &mut Vec<u8>, value: u64) {
 
 fn make_hob(hob_type: u16, payload: &[u8]) -> Vec<u8> {
     let mut padded = payload.to_vec();
-    while !(padded.len() + 8).is_multiple_of(8) {
+    while (padded.len() + 8) % 8 != 0 {
         padded.push(0);
     }
     let total = 8 + padded.len();

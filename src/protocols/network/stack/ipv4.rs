@@ -198,7 +198,7 @@ pub fn layout_fragments(
     max_payload: usize,
     out: &mut [FragmentLayout],
 ) -> Result<usize, StackError> {
-    if max_payload == 0 || !max_payload.is_multiple_of(IPV4_FRAGMENT_UNIT) {
+    if max_payload == 0 || max_payload % IPV4_FRAGMENT_UNIT != 0 {
         return Err(StackError::InvalidState);
     }
     let mut count = 0_usize;

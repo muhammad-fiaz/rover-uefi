@@ -386,18 +386,18 @@ pub type EfiLocateProtocol =
 /// Install multiple protocol interfaces.
 ///
 /// The function installs one or more interfaces
-/// described by the variadic list of `GUID` and
+/// described by the list of `GUID` and
 /// interface pairs.
 pub type EfiInstallMultipleProtocolInterfaces =
-    unsafe extern "efiapi" fn(*mut EfiHandle, ...) -> EfiStatus;
+    unsafe extern "efiapi" fn(*mut EfiHandle, *const c_void) -> EfiStatus;
 
 /// Uninstall multiple protocol interfaces.
 ///
 /// The function removes one or more interfaces
-/// described by the variadic list of `GUID` and
+/// described by the list of `GUID` and
 /// interface pairs.
 pub type EfiUninstallMultipleProtocolInterfaces =
-    unsafe extern "efiapi" fn(EfiHandle, ...) -> EfiStatus;
+    unsafe extern "efiapi" fn(EfiHandle, *const c_void) -> EfiStatus;
 
 /// Compute a 32-bit CRC.
 ///

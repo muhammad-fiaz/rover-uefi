@@ -19,7 +19,7 @@ pub fn is_buffer_aligned(address: UIntN, full_align: u32) -> bool {
     if align == 0 {
         return true;
     }
-    address.is_multiple_of(align)
+    address % align == 0
 }
 
 /// Returns the block count for a buffer size.
@@ -32,7 +32,7 @@ pub fn block_count(buffer_size: UIntN, block_size: u32) -> Option<UIntN> {
         return None;
     }
     let block = UIntN::try_from(block_size).ok()?;
-    if block == 0 || !buffer_size.is_multiple_of(block) {
+    if block == 0 || buffer_size % block != 0 {
         return None;
     }
     Some(buffer_size / block)

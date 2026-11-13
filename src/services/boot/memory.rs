@@ -127,7 +127,7 @@ pub struct MemoryDescriptor {
 /// the buffer length must be an exact multiple of it.
 #[must_use]
 pub fn validate_memory_map_buffer(buffer_len: usize, descriptor_size: usize) -> bool {
-    descriptor_size >= MEMORY_DESCRIPTOR_SIZE && buffer_len.is_multiple_of(descriptor_size)
+    descriptor_size >= MEMORY_DESCRIPTOR_SIZE && buffer_len % descriptor_size == 0
 }
 
 /// Validates a returned memory map.

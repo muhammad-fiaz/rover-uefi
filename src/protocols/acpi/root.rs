@@ -30,7 +30,7 @@ pub fn validate_root_table(buffer: &[u8], is_xsdt: bool) -> bool {
     if total < 36 {
         return false;
     }
-    (total - 36).is_multiple_of(entry_size)
+    (total - 36) % entry_size == 0
 }
 
 /// Iterates RSDT addresses.

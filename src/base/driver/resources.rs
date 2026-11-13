@@ -101,7 +101,7 @@ impl DmaBuffer {
         if length == 0 || alignment == 0 || !alignment.is_power_of_two() {
             return None;
         }
-        if alignment > 1 && !address.is_multiple_of(alignment) {
+        if alignment > 1 && address % alignment != 0 {
             return None;
         }
         Some(Self {

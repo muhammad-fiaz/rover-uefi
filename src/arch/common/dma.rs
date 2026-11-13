@@ -195,7 +195,7 @@ pub fn is_aligned(address: u64, alignment: usize) -> bool {
         return false;
     }
     match u64::try_from(alignment) {
-        Ok(modulus) => modulus != 0 && address.is_multiple_of(modulus),
+        Ok(modulus) => modulus != 0 && address % modulus == 0,
         Err(_) => false,
     }
 }

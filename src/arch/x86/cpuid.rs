@@ -106,7 +106,8 @@ impl Cpuid for HostCpuid {
             // register. It is available on every processor of
             // this target, it has no memory side effect and it
             // cannot fault.
-            let result = core::arch::x86_64::__cpuid_count(leaf, subleaf);
+            #[allow(unused_unsafe)]
+            let result = unsafe { core::arch::x86_64::__cpuid_count(leaf, subleaf) };
             CpuidResult::new(result.eax, result.ebx, result.ecx, result.edx)
         }
         #[cfg(not(target_arch = "x86_64"))]

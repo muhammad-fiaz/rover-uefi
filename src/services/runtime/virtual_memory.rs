@@ -35,7 +35,7 @@ pub fn validate_descriptor_size(descriptor_size: UIntN) -> bool {
 /// not a multiple of the stride.
 #[must_use]
 pub fn descriptor_count(map_size: UIntN, descriptor_size: UIntN) -> Option<UIntN> {
-    if descriptor_size == 0 || !map_size.is_multiple_of(descriptor_size) {
+    if descriptor_size == 0 || map_size % descriptor_size != 0 {
         return None;
     }
     Some(map_size / descriptor_size)

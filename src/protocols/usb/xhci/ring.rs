@@ -30,7 +30,7 @@ impl<'a> TransferRing<'a> {
     /// number of TRBs.
     #[must_use]
     pub fn new(bytes: &'a mut [u8], cycle: bool) -> Option<Self> {
-        if bytes.is_empty() || !bytes.len().is_multiple_of(TRB_SIZE) {
+        if bytes.is_empty() || bytes.len() % TRB_SIZE != 0 {
             return None;
         }
         Some(Self {
@@ -181,7 +181,7 @@ impl<'a> EventRingSegment<'a> {
     /// of TRBs.
     #[must_use]
     pub fn new(bytes: &'a [u8], cycle: bool) -> Option<Self> {
-        if bytes.is_empty() || !bytes.len().is_multiple_of(TRB_SIZE) {
+        if bytes.is_empty() || bytes.len() % TRB_SIZE != 0 {
             return None;
         }
         Some(Self {
