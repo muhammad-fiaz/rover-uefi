@@ -59,8 +59,10 @@ pub use ps2_policy::{
     EFI_PS2_POLICY_PROTOCOL_GUID, EfiPs2InitHardware, EfiPs2PolicyProtocol,
 };
 pub use shell::{
-    EFI_SHELL_PARAMETERS_PROTOCOL_GUID, EFI_SHELL_PROTOCOL_GUID, EfiShellExecute, EfiShellGetEnv,
-    EfiShellParametersProtocol, EfiShellProtocol, EfiShellSetEnv, ShellFileHandle,
+    EFI_SHELL_DYNAMIC_COMMAND_PROTOCOL_GUID, EFI_SHELL_PARAMETERS_PROTOCOL_GUID,
+    EFI_SHELL_PROTOCOL_GUID, EfiShellDynamicCommandProtocol, EfiShellExecute, EfiShellGetEnv,
+    EfiShellParametersProtocol, EfiShellProtocol, EfiShellSetEnv, Shell, ShellCommandGetHelp,
+    ShellCommandHandler, ShellFileHandle, ShellParameters,
 };
 pub use text::{is_null_terminated, is_printable_terminated, utf16_bytes};
 pub use unicode_collation::{

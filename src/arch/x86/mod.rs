@@ -11,8 +11,28 @@
 //! * `cpuid` describes the processor identification.
 
 pub mod apic;
+pub mod cmos;
 pub mod context;
 pub mod cpuid;
+pub mod pic;
+pub mod pit;
+
+pub use cmos::{
+    CMOS_ADDRESS_PORT, CMOS_DATA_PORT, CMOS_NMI_DISABLE_BIT, CMOS_REG_CENTURY,
+    CMOS_REG_DAY_OF_MONTH, CMOS_REG_DAY_OF_WEEK, CMOS_REG_HOURS, CMOS_REG_MINUTES, CMOS_REG_MONTH,
+    CMOS_REG_SECONDS, CMOS_REG_STATUS_A, CMOS_REG_STATUS_B, CMOS_REG_STATUS_C, CMOS_REG_STATUS_D,
+    CMOS_REG_YEAR, CmosDateTime, STATUS_A_UPDATE_IN_PROGRESS, STATUS_B_24_HOUR_MODE,
+    STATUS_B_BINARY_MODE, bcd_to_binary, binary_to_bcd,
+};
+pub use pic::{
+    ChainedPic, ICW1_ICW4, ICW1_INIT, ICW4_8086, PIC_EOI, PIC_MASK_ALL, PIC1_COMMAND, PIC1_DATA,
+    PIC2_COMMAND, PIC2_DATA,
+};
+pub use pit::{
+    PIT_BASE_FREQUENCY_HZ, PIT_CHANNEL0_DATA, PIT_CHANNEL1_DATA, PIT_CHANNEL2_DATA,
+    PIT_COMMAND_PORT, PitAccessMode, PitChannel, PitOperatingMode, build_pit_command,
+    compute_pit_divisor,
+};
 
 pub use apic::{
     APIC_EOI, APIC_ICR_HIGH, APIC_ICR_LOW, APIC_ID, APIC_LVT_TIMER, APIC_SVR, APIC_TIMER_CURCNT,
