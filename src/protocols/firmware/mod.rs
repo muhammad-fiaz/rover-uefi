@@ -24,6 +24,7 @@ pub mod ifr;
 pub mod lock_box;
 pub mod memory_accept;
 pub mod memory_attribute;
+pub mod memory_profile;
 pub mod memory_test;
 pub mod mm_base;
 pub mod mm_communication;
@@ -179,6 +180,15 @@ pub use memory_attribute::{
     SMM_MEMORY_ATTRIBUTE_PROTOCOL_GUID, SmmClearMemoryAttributes, SmmGetMemoryAttributes,
     SmmMemoryAttribute, SmmMemoryAttributeProtocol, SmmSetMemoryAttributes,
     memory_attribute as memory_attr_flags,
+};
+pub use memory_profile::{
+    EfiMemoryProfileGetData, EfiMemoryProfileGetRecordingState, EfiMemoryProfileProtocol,
+    EfiMemoryProfileRecord, EfiMemoryProfileRegisterImage, EfiMemoryProfileSetRecordingState,
+    EfiMemoryProfileUnregisterImage, EfiSmmMemoryProfileProtocol, MEMORY_PROFILE_CONTEXT_REVISION,
+    MEMORY_PROFILE_CONTEXT_SIGNATURE, MEMORY_PROFILE_DRIVER_INFO_REVISION,
+    MEMORY_PROFILE_DRIVER_INFO_SIGNATURE, MEMORY_PROFILE_PROTOCOL_GUID, MemoryProfile,
+    MemoryProfileAction, MemoryProfileCommonHeader, MemoryProfileContext,
+    SMM_MEMORY_PROFILE_PROTOCOL_GUID,
 };
 pub use memory_test::{
     EfiGenericMemoryTestProtocol, EfiInitializeMemoryTest, EfiMemoryTestFinished,
