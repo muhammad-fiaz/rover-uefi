@@ -31,6 +31,7 @@ pub mod tcg2;
 pub mod tcg_pp;
 pub mod tpm_instance;
 pub mod types;
+pub mod user_credential;
 pub mod user_manager;
 pub mod validation;
 pub mod var_check;
@@ -145,6 +146,14 @@ pub use tpm_instance::{
     TpmNvsMmFunction,
 };
 pub use types::{GLOBAL_VARIABLE_GUID, IMAGE_SECURITY_DATABASE_GUID};
+pub use user_credential::{
+    EFI_CREDENTIAL_CAPABILITIES_ENROLL, EFI_CREDENTIAL_LOGON_FLAG_AUTO,
+    EFI_CREDENTIAL_LOGON_FLAG_DEFAULT, EFI_HII_USER_CREDENTIAL_FORMSET_GUID,
+    EFI_USER_CREDENTIAL_PROTOCOL_GUID, EfiCredential2Default, EfiCredential2Delete,
+    EfiCredential2Deselect, EfiCredential2Enroll, EfiCredential2Form, EfiCredential2GetInfo,
+    EfiCredential2GetNextInfo, EfiCredential2Select, EfiCredential2Tile, EfiCredential2Title,
+    EfiCredential2User, EfiUserCredential2Protocol, UserCredential2,
+};
 pub use user_manager::{
     EFI_EVENT_GROUP_USER_PROFILE_CHANGED, EFI_USER_CREDENTIAL_CLASS_FINGERPRINT,
     EFI_USER_CREDENTIAL_CLASS_HANDPRINT, EFI_USER_CREDENTIAL_CLASS_PASSWORD,
