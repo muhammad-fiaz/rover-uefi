@@ -44,7 +44,7 @@ pub const EFI_UNSPECIFIED_TIMEZONE: i16 = 0x07FF;
 /// All padding bytes are explicit fields so the
 /// layout does not depend on compiler-inserted
 /// padding.
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Hash)]
 #[repr(C)]
 pub struct EfiTime {
     /// The year, with valid range `1900` to `9999`.

@@ -9,7 +9,9 @@ use core::ffi::c_void;
 
 use crate::base::{EfiEvent, EfiGuid, EfiStatus, EfiTime};
 
-pub use super::guid::{REST_EX_PROTOCOL_GUID, REST_EX_SERVICE_BINDING_PROTOCOL_GUID};
+pub use super::guid::{
+    REST_EX_PROTOCOL_GUID, REST_EX_SERVICE_BINDING_PROTOCOL_GUID, REST_PROTOCOL_GUID,
+};
 
 /// Version information for the REST EX service.
 #[repr(C)]
@@ -179,4 +181,161 @@ pub struct EfiRestExProtocol {
     pub async_send_receive: EfiRestExAsyncSendReceive,
     /// Subscribes to event service.
     pub event_service: EfiRestExEventService,
+}
+
+/// The EFI REST Protocol (UEFI 2.5+).
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct EfiRestProtocol {
+    /// Sends an HTTP request and waits for response.
+    pub send_receive: unsafe extern "efiapi" fn(
+        this: *mut EfiRestProtocol,
+        request_message: *mut EfiHttpMessage,
+        response_message: *mut EfiHttpMessage,
+    ) -> EfiStatus,
+    /// Gets service time.
+    pub get_service_time:
+        unsafe extern "efiapi" fn(this: *mut EfiRestProtocol, time: *mut EfiTime) -> EfiStatus,
+}
+
+/// Safe wrapper for `EfiRestProtocol`.
+pub struct Rest<'a> {
+    protocol: &'a mut EfiRestProtocol,
+}
+
+impl<'a> Rest<'a> {
+    /// Wraps a mutable reference to `EfiRestProtocol`.
+    pub fn new(protocol: &'a mut EfiRestProtocol) -> Self {
+        Self { protocol }
+    }
+
+    /// Sends an HTTP request and returns the response synchronously.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    pub fn send_receive(
+        &mut self,
+        request: &mut EfiHttpMessage,
+        response: &mut EfiHttpMessage,
+    ) -> Result<(), EfiStatus> {
+        let status = unsafe {
+            (self.protocol.send_receive)(
+                core::ptr::from_mut(self.protocol),
+                core::ptr::from_mut(request),
+                core::ptr::from_mut(response),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(())
+        }
+    }
+
+    /// Obtains current time from the REST service.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    pub fn service_time(&mut self) -> Result<EfiTime, EfiStatus> {
+        let mut time = EfiTime::default();
+        let status = unsafe {
+            (self.protocol.get_service_time)(
+                core::ptr::from_mut(self.protocol),
+                core::ptr::from_mut(&mut time),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(time)
+        }
+    }
+}
+
+/// Safe wrapper for `EfiRestExProtocol`.
+pub struct RestEx<'a> {
+    protocol: &'a mut EfiRestExProtocol,
+}
+
+impl<'a> RestEx<'a> {
+    /// Wraps a mutable reference to `EfiRestExProtocol`.
+    pub fn new(protocol: &'a mut EfiRestExProtocol) -> Self {
+        Self { protocol }
+    }
+
+    /// Sends an HTTP request and receives the response synchronously.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    pub fn send_receive(
+        &mut self,
+        request: &mut EfiHttpMessage,
+        response: &mut EfiHttpMessage,
+    ) -> Result<(), EfiStatus> {
+        let status = unsafe {
+            (self.protocol.send_receive)(
+                core::ptr::from_mut(self.protocol),
+                core::ptr::from_mut(request),
+                core::ptr::from_mut(response),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(())
+        }
+    }
+
+    /// Obtains the current time from the REST service.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    pub fn service_time(&mut self) -> Result<EfiTime, EfiStatus> {
+        let mut time = EfiTime::default();
+        let status = unsafe {
+            (self.protocol.get_service_time)(
+                core::ptr::from_mut(self.protocol),
+                core::ptr::from_mut(&mut time),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(time)
+        }
+    }
+
+    /// Retrieves service information for the REST EX service.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    pub fn service_info(&mut self) -> Result<*mut EfiRestExServiceInfoV10, EfiStatus> {
+        let mut info = core::ptr::null_mut();
+        let status = unsafe {
+            (self.protocol.get_service)(
+                core::ptr::from_mut(self.protocol),
+                core::ptr::from_mut(&mut info),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(info)
+        }
+    }
+
+    /// Configures the REST EX instance.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    pub fn configure(&mut self, config: *mut c_void) -> Result<(), EfiStatus> {
+        let status =
+            unsafe { (self.protocol.configure)(core::ptr::from_mut(self.protocol), config) };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(())
+        }
+    }
 }

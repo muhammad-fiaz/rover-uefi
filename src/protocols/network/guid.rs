@@ -124,6 +124,14 @@ pub const ARP_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     [0xBC, 0x4E, 0x43, 0xE4, 0x16, 0xAB, 0x61, 0x9C],
 );
 
+/// The REST protocol `GUID`.
+pub const REST_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0x0DB4_8A36,
+    0x4E54,
+    0xEA9C,
+    [0x9B, 0x09, 0x1E, 0xA5, 0xBE, 0x3A, 0x66, 0x0B],
+);
+
 /// The REST EX service binding protocol `GUID`.
 pub const REST_EX_SERVICE_BINDING_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     0x456B_BE01,

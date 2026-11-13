@@ -93,6 +93,7 @@ pub use redfish_discover::{
     EfiRedfishDiscoverNetworkList, EfiRedfishDiscoverProtocol, EfiRedfishDiscoverReleaseService,
     EfiRedfishDiscoveredInformation, EfiRedfishDiscoveredInstance, EfiRedfishDiscoveredList,
     EfiRedfishDiscoveredToken, REDFISH_DISCOVER_PROTOCOL_GUID, REDFISH_DISCOVER_TOKEN_SIGNATURE,
+    RedfishDiscover,
 };
 pub use redfish_host_interface::{
     PciInterfaceDeviceDescriptorV2, REDFISH_HOST_INTERFACE_DEVICE_TYPE_OEM_MAX,
@@ -107,8 +108,9 @@ pub use rest_ex::{
     EfiHttpMessage, EfiRestExAsyncSendReceive, EfiRestExConfigType, EfiRestExConfigure,
     EfiRestExEventService, EfiRestExGetModeData, EfiRestExGetService, EfiRestExProtocol,
     EfiRestExServiceAccessMode, EfiRestExServiceInfoHeader, EfiRestExServiceInfoV10,
-    EfiRestExServiceInfoVer, EfiRestExServiceType, EfiRestExToken, EfiRestGetTime,
+    EfiRestExServiceInfoVer, EfiRestExServiceType, EfiRestExToken, EfiRestGetTime, EfiRestProtocol,
     EfiRestSendReceive, REST_EX_PROTOCOL_GUID, REST_EX_SERVICE_BINDING_PROTOCOL_GUID,
+    REST_PROTOCOL_GUID, Rest, RestEx,
 };
 pub use tls_protocol::{
     EFI_TLS_CONFIGURATION_PROTOCOL_GUID, EFI_TLS_PROTOCOL_GUID,

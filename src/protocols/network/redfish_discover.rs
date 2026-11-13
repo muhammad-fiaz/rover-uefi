@@ -170,3 +170,109 @@ pub struct EfiRedfishDiscoverProtocol {
     /// Releases Redfish services list.
     pub release_redfish_service: EfiRedfishDiscoverReleaseService,
 }
+
+/// Safe wrapper for `EfiRedfishDiscoverProtocol`.
+pub struct RedfishDiscover<'a> {
+    protocol: &'a mut EfiRedfishDiscoverProtocol,
+}
+
+impl<'a> RedfishDiscover<'a> {
+    /// Wraps a mutable reference to `EfiRedfishDiscoverProtocol`.
+    pub fn new(protocol: &'a mut EfiRedfishDiscoverProtocol) -> Self {
+        Self { protocol }
+    }
+
+    /// Retrieves the list of network interfaces capable of Redfish discovery.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    pub fn get_network_interfaces(
+        &mut self,
+        image_handle: EfiHandle,
+    ) -> Result<(*mut EfiRedfishDiscoverNetworkInterface, usize), EfiStatus> {
+        let mut count: usize = 0;
+        let mut ifaces: *mut EfiRedfishDiscoverNetworkInterface = core::ptr::null_mut();
+        let status = unsafe {
+            (self.protocol.get_network_interface_list)(
+                core::ptr::from_mut(self.protocol),
+                image_handle,
+                core::ptr::from_mut(&mut count),
+                core::ptr::from_mut(&mut ifaces),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok((ifaces, count))
+        }
+    }
+
+    /// Acquires Redfish services using the specified target interface and token.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    pub fn acquire_service(
+        &mut self,
+        image_handle: EfiHandle,
+        target: &mut EfiRedfishDiscoverNetworkInterface,
+        flags: u32,
+        token: &mut EfiRedfishDiscoveredToken,
+    ) -> Result<(), EfiStatus> {
+        let status = unsafe {
+            (self.protocol.acquire_redfish_service)(
+                core::ptr::from_mut(self.protocol),
+                image_handle,
+                core::ptr::from_mut(target),
+                flags,
+                core::ptr::from_mut(token),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(())
+        }
+    }
+
+    /// Aborts Redfish service acquisition on the specified interface.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    pub fn abort_acquire(
+        &mut self,
+        target: &mut EfiRedfishDiscoverNetworkInterface,
+    ) -> Result<(), EfiStatus> {
+        let status = unsafe {
+            (self.protocol.abort_acquire_redfish_service)(
+                core::ptr::from_mut(self.protocol),
+                core::ptr::from_mut(target),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(())
+        }
+    }
+
+    /// Releases a previously discovered Redfish services list.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus` on error.
+    pub fn release_service(
+        &mut self,
+        list: &mut EfiRedfishDiscoveredList,
+    ) -> Result<(), EfiStatus> {
+        let status = unsafe {
+            (self.protocol.release_redfish_service)(
+                core::ptr::from_mut(self.protocol),
+                core::ptr::from_mut(list),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(())
+        }
+    }
+}

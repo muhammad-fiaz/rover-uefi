@@ -1,6 +1,10 @@
 //! Integration tests for Source-Level Debug Agent transfer protocol.
 
-#![allow(clippy::unwrap_used, clippy::expect_used, clippy::cast_possible_truncation)]
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::cast_possible_truncation
+)]
 
 use rover_uefi::protocols::debug::agent::*;
 

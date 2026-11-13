@@ -69,6 +69,54 @@ pub mod std_object_id {
     pub const SMBIOS_TABLE_LIST: u32 = 2;
 }
 
+/// ARM Architecture Namespace Object IDs.
+pub mod arm_object_id {
+    /// Boot Architecture Info.
+    pub const BOOT_ARCH_INFO: u32 = 1;
+    /// GIC CPU Interface (GICC) Info.
+    pub const GICC_INFO: u32 = 2;
+    /// GIC Distributor (GICD) Info.
+    pub const GICD_INFO: u32 = 3;
+    /// GIC MSI Frame Info.
+    pub const GIC_MSI_FRAME_INFO: u32 = 4;
+    /// GIC Redistributor Info.
+    pub const GIC_REDISTRIBUTOR_INFO: u32 = 5;
+    /// GIC ITS Info.
+    pub const GIC_ITS_INFO: u32 = 6;
+    /// Generic Timer Info.
+    pub const GENERIC_TIMER_INFO: u32 = 7;
+    /// Platform GT Block Info.
+    pub const PLATFORM_GT_BLOCK_INFO: u32 = 8;
+    /// Generic Timer Block Timer Frame Info.
+    pub const GT_BLOCK_TIMER_FRAME_INFO: u32 = 9;
+    /// Platform Generic Watchdog.
+    pub const PLATFORM_GENERIC_WATCHDOG_INFO: u32 = 10;
+}
+
+/// x86 / x64 Architecture Namespace Object IDs.
+pub mod x64_object_id {
+    /// FADT SCI Interrupt information.
+    pub const FADT_SCI_INTERRUPT: u32 = 1;
+    /// FADT SCI CMD information.
+    pub const FADT_SCI_CMD_INFO: u32 = 2;
+    /// FADT Power Management block info.
+    pub const FADT_PM_BLOCK_INFO: u32 = 3;
+    /// FADT GPE block info.
+    pub const FADT_GPE_BLOCK_INFO: u32 = 4;
+    /// HPET device info.
+    pub const HPET_INFO: u32 = 11;
+    /// MADT info.
+    pub const MADT_INFO: u32 = 12;
+    /// Local APIC and X2APIC info.
+    pub const LOCAL_APIC_X2APIC_INFO: u32 = 13;
+    /// IO APIC info.
+    pub const IO_APIC_INFO: u32 = 14;
+    /// Interrupt Source Override info.
+    pub const INTR_SOURCE_OVERRIDE_INFO: u32 = 15;
+    /// Local APIC and X2APIC NMI info.
+    pub const LOCAL_APIC_X2APIC_NMI_INFO: u32 = 16;
+}
+
 /// Constructs a 32-bit Configuration Manager Object ID from namespace and object numbers.
 #[must_use]
 pub const fn make_cm_object_id(namespace_id: u32, object_id: u32) -> u32 {
@@ -121,6 +169,62 @@ pub struct CmStdObjConfigurationManagerInfo {
     pub revision: u32,
     /// 6-byte OEM ID used to populate ACPI/SMBIOS table headers.
     pub oem_id: [u8; 6],
+}
+
+/// Standard ACPI Table Information object.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct CmStdObjAcpiTableInfo {
+    /// Signature of the ACPI Table (e.g. `'FACP'`, `'APIC'`).
+    pub acpi_table_signature: u32,
+    /// ACPI table revision.
+    pub acpi_table_revision: u8,
+    /// ACPI table generator ID.
+    pub table_generator_id: u32,
+    /// Pointer to raw ACPI table data (if provided directly).
+    pub acpi_table_data: *mut c_void,
+    /// OEM table ID string as 64-bit value.
+    pub oem_table_id: u64,
+    /// OEM revision.
+    pub oem_revision: u32,
+    /// Minor table revision.
+    pub minor_revision: u8,
+}
+
+/// Standard SMBIOS Table Information object.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct CmStdObjSmbiosTableInfo {
+    /// SMBIOS structure/table type (0-127 standard, 128-255 OEM).
+    pub table_type: u8,
+    /// SMBIOS table generator ID.
+    pub table_generator_id: u32,
+    /// Pointer to raw SMBIOS structure data.
+    pub smbios_table_data: *mut c_void,
+}
+
+/// x64 Local APIC / x2APIC object descriptor.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct CmX64ObjLocalApicInfo {
+    /// ACPI processor ID.
+    pub acpi_processor_id: u32,
+    /// APIC ID.
+    pub apic_id: u32,
+    /// Flags (bit 0: Enabled).
+    pub flags: u32,
+}
+
+/// x64 IO APIC object descriptor.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct CmX64ObjIoApicInfo {
+    /// IO APIC ID.
+    pub io_apic_id: u8,
+    /// Physical address of IO APIC.
+    pub io_apic_address: u32,
+    /// Global system interrupt base.
+    pub global_system_interrupt_base: u32,
 }
 
 /// Raw function pointer for querying a Configuration Manager object.
@@ -227,5 +331,98 @@ impl<'a> ConfigurationManager<'a> {
         let info_ptr = desc.data.cast::<CmStdObjConfigurationManagerInfo>();
         let info = unsafe { core::ptr::read_unaligned(info_ptr) };
         Ok(info)
+    }
+}
+
+/// Dynamic Table Factory Protocol GUID.
+pub const DYNAMIC_TABLE_FACTORY_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0x91D1_E327,
+    0xFE5A,
+    0x49B8,
+    [0xAB, 0x65, 0x0E, 0xCE, 0x2D, 0xDB, 0x45, 0xEC],
+);
+
+/// Dynamic Table Factory Protocol interface.
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct DynamicTableFactoryProtocol {
+    /// Protocol revision.
+    pub revision: u32,
+    /// Requests an ACPI table generator by ID.
+    pub get_acpi_table_generator: unsafe extern "efiapi" fn(
+        this: *const DynamicTableFactoryProtocol,
+        generator_id: u32,
+        generator: *mut *const c_void,
+    ) -> EfiStatus,
+    /// Registers an ACPI table generator.
+    pub register_acpi_table_generator:
+        unsafe extern "efiapi" fn(generator: *const c_void) -> EfiStatus,
+    /// Deregisters an ACPI table generator.
+    pub deregister_acpi_table_generator:
+        unsafe extern "efiapi" fn(generator: *const c_void) -> EfiStatus,
+    /// Requests an SMBIOS table generator by ID.
+    pub get_smbios_table_generator: unsafe extern "efiapi" fn(
+        this: *const DynamicTableFactoryProtocol,
+        generator_id: u32,
+        generator: *mut *const c_void,
+    ) -> EfiStatus,
+    /// Registers an SMBIOS table generator.
+    pub register_smbios_table_generator:
+        unsafe extern "efiapi" fn(generator: *const c_void) -> EfiStatus,
+    /// Deregisters an SMBIOS table generator.
+    pub deregister_smbios_table_generator:
+        unsafe extern "efiapi" fn(generator: *const c_void) -> EfiStatus,
+}
+
+/// High-level safe wrapper around [`DynamicTableFactoryProtocol`].
+pub struct DynamicTableFactory<'a> {
+    proto: &'a DynamicTableFactoryProtocol,
+}
+
+impl<'a> DynamicTableFactory<'a> {
+    /// Wraps a raw [`DynamicTableFactoryProtocol`] reference.
+    #[must_use]
+    pub const fn new(proto: &'a DynamicTableFactoryProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Queries an ACPI table generator by ID.
+    ///
+    /// # Errors
+    /// Returns [`EfiStatus`] if not found or invalid parameter.
+    pub fn get_acpi_generator(&self, generator_id: u32) -> Result<*const c_void, EfiStatus> {
+        let mut generator = core::ptr::null();
+        let status = unsafe {
+            (self.proto.get_acpi_table_generator)(
+                self.proto as *const _,
+                generator_id,
+                core::ptr::from_mut(&mut generator),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(generator)
+        }
+    }
+
+    /// Queries an SMBIOS table generator by ID.
+    ///
+    /// # Errors
+    /// Returns [`EfiStatus`] if not found or invalid parameter.
+    pub fn get_smbios_generator(&self, generator_id: u32) -> Result<*const c_void, EfiStatus> {
+        let mut generator = core::ptr::null();
+        let status = unsafe {
+            (self.proto.get_smbios_table_generator)(
+                self.proto as *const _,
+                generator_id,
+                core::ptr::from_mut(&mut generator),
+            )
+        };
+        if status.is_error() {
+            Err(status)
+        } else {
+            Ok(generator)
+        }
     }
 }

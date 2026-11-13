@@ -10,8 +10,11 @@ use rover_uefi::base::{EfiGuid, EfiStatus};
 use rover_uefi::protocols::driver::config_manager::{
     CM_NAMESPACE_ID_MASK, CM_NAMESPACE_ID_SHIFT, CM_NULL_TOKEN, CM_OBJECT_ID_MASK,
     CONFIGURATION_MANAGER_PROTOCOL_GUID, CONFIGURATION_MANAGER_PROTOCOL_REVISION, CmObjDescriptor,
-    CmStdObjConfigurationManagerInfo, ConfigurationManager, ConfigurationManagerProtocol,
-    get_cm_namespace_id, get_cm_object_id, make_cm_object_id, namespace, std_object_id,
+    CmStdObjAcpiTableInfo, CmStdObjConfigurationManagerInfo, CmStdObjSmbiosTableInfo,
+    CmX64ObjIoApicInfo, CmX64ObjLocalApicInfo, ConfigurationManager, ConfigurationManagerProtocol,
+    DYNAMIC_TABLE_FACTORY_PROTOCOL_GUID, DynamicTableFactory, DynamicTableFactoryProtocol,
+    arm_object_id, get_cm_namespace_id, get_cm_object_id, make_cm_object_id, namespace,
+    std_object_id, x64_object_id,
 };
 
 #[test]
@@ -112,4 +115,103 @@ fn test_configuration_manager_wrapper() {
         count: 0,
     };
     client.set_object(1, CM_NULL_TOKEN, &desc).unwrap();
+}
+
+#[test]
+fn test_arch_object_ids_and_table_structures() {
+    let arm_gicc = make_cm_object_id(namespace::ARM, arm_object_id::GICC_INFO);
+    assert_eq!(get_cm_namespace_id(arm_gicc), namespace::ARM);
+    assert_eq!(get_cm_object_id(arm_gicc), arm_object_id::GICC_INFO);
+
+    let x64_lapic = make_cm_object_id(namespace::X64, x64_object_id::LOCAL_APIC_X2APIC_INFO);
+    assert_eq!(get_cm_namespace_id(x64_lapic), namespace::X64);
+    assert_eq!(
+        get_cm_object_id(x64_lapic),
+        x64_object_id::LOCAL_APIC_X2APIC_INFO
+    );
+
+    let acpi_info = CmStdObjAcpiTableInfo {
+        acpi_table_signature: 0x4350_4146, // 'FACP'
+        acpi_table_revision: 6,
+        table_generator_id: 1,
+        acpi_table_data: core::ptr::null_mut(),
+        oem_table_id: 0,
+        oem_revision: 1,
+        minor_revision: 0,
+    };
+    assert_eq!(acpi_info.acpi_table_revision, 6);
+
+    let smbios_info = CmStdObjSmbiosTableInfo {
+        table_type: 1,
+        table_generator_id: 1,
+        smbios_table_data: core::ptr::null_mut(),
+    };
+    assert_eq!(smbios_info.table_type, 1);
+
+    let lapic = CmX64ObjLocalApicInfo {
+        acpi_processor_id: 0,
+        apic_id: 0,
+        flags: 1,
+    };
+    let lapic_flags = lapic.flags;
+    assert_eq!(lapic_flags, 1);
+
+    let ioapic = CmX64ObjIoApicInfo {
+        io_apic_id: 2,
+        io_apic_address: 0xFEC0_0000,
+        global_system_interrupt_base: 0,
+    };
+    assert_eq!(ioapic.io_apic_id, 2);
+}
+
+unsafe extern "efiapi" fn mock_get_acpi_gen(
+    _this: *const DynamicTableFactoryProtocol,
+    generator_id: u32,
+    generator: *mut *const core::ffi::c_void,
+) -> EfiStatus {
+    if !generator.is_null() && generator_id == 1 {
+        unsafe {
+            *generator = 0x1234 as *const core::ffi::c_void;
+        }
+        EfiStatus::SUCCESS
+    } else {
+        EfiStatus::NOT_FOUND
+    }
+}
+
+unsafe extern "efiapi" fn mock_register_gen(_gen: *const core::ffi::c_void) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn mock_get_smbios_gen(
+    _this: *const DynamicTableFactoryProtocol,
+    _generator_id: u32,
+    _generator: *mut *const core::ffi::c_void,
+) -> EfiStatus {
+    EfiStatus::NOT_FOUND
+}
+
+#[test]
+fn test_dynamic_table_factory_protocol_and_wrapper() {
+    assert_eq!(
+        DYNAMIC_TABLE_FACTORY_PROTOCOL_GUID.to_string(),
+        "91d1e327-fe5a-49b8-ab65-0ece2ddb45ec"
+    );
+
+    let factory_proto = DynamicTableFactoryProtocol {
+        revision: 0x0001_0000,
+        get_acpi_table_generator: mock_get_acpi_gen,
+        register_acpi_table_generator: mock_register_gen,
+        deregister_acpi_table_generator: mock_register_gen,
+        get_smbios_table_generator: mock_get_smbios_gen,
+        register_smbios_table_generator: mock_register_gen,
+        deregister_smbios_table_generator: mock_register_gen,
+    };
+
+    let factory = DynamicTableFactory::new(&factory_proto);
+    let table_gen = factory.get_acpi_generator(1).expect("generator 1 found");
+    assert_eq!(table_gen as usize, 0x1234);
+
+    assert_eq!(factory.get_acpi_generator(999), Err(EfiStatus::NOT_FOUND));
+    assert_eq!(factory.get_smbios_generator(1), Err(EfiStatus::NOT_FOUND));
 }

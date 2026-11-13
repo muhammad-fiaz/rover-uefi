@@ -92,6 +92,14 @@ pub const EFI_PEI_MP_SERVICES_PPI_GUID: EfiGuid = EfiGuid::new(
     [0x82, 0x0A, 0xC6, 0x90, 0x0D, 0xB0, 0x25, 0x0A],
 );
 
+/// PEI MP Services 2 PPI GUID (PI 1.8+).
+pub const EFI_PEI_MP_SERVICES2_PPI_GUID: EfiGuid = EfiGuid::new(
+    0x5CB9_CB3D,
+    0x31A4,
+    0x480C,
+    [0x94, 0x98, 0x29, 0xD2, 0x69, 0xBA, 0xCF, 0xBA],
+);
+
 // --- DXE IPL PPI ---
 
 /// Entry point to transfer control from PEI to the DXE Foundation.
@@ -340,4 +348,82 @@ pub struct EfiPeiMpServicesPpi {
     ) -> EfiStatus,
     /// Returns the calling logical processor number.
     pub who_am_i: EfiPeiMpServicesWhoAmI,
+}
+
+// --- PEI MP Services 2 PPI (PI 1.8+) ---
+
+/// Multi-processor AP procedure callback for MP Services 2 (PI 1.8+).
+pub type EfiPeiMpServices2Procedure = unsafe extern "efiapi" fn(buffer: *mut c_void);
+
+/// Get CPU count in PEI (PI 1.8+).
+pub type EfiPeiMpServices2GetNumberOfProcessors = unsafe extern "efiapi" fn(
+    this: *const EfiPeiMpServices2Ppi,
+    number_of_processors: *mut usize,
+    number_of_enabled_processors: *mut usize,
+) -> EfiStatus;
+
+/// Get processor information in PEI (PI 1.8+).
+pub type EfiPeiMpServices2GetProcessorInfo = unsafe extern "efiapi" fn(
+    this: *const EfiPeiMpServices2Ppi,
+    processor_number: usize,
+    processor_info_buffer: *mut crate::protocols::core::mp_services::EfiProcessorInformation,
+) -> EfiStatus;
+
+/// Startup all APs in PEI (PI 1.8+).
+pub type EfiPeiMpServices2StartupAllAps = unsafe extern "efiapi" fn(
+    this: *const EfiPeiMpServices2Ppi,
+    procedure: EfiPeiMpServices2Procedure,
+    single_thread: bool,
+    timeout_in_microseconds: usize,
+    procedure_argument: *mut c_void,
+) -> EfiStatus;
+
+/// Startup a specific AP in PEI (PI 1.8+).
+pub type EfiPeiMpServices2StartupThisAp = unsafe extern "efiapi" fn(
+    this: *const EfiPeiMpServices2Ppi,
+    procedure: EfiPeiMpServices2Procedure,
+    processor_number: usize,
+    timeout_in_microseconds: usize,
+    procedure_argument: *mut c_void,
+) -> EfiStatus;
+
+/// Switches the Bootstrap Processor (BSP) in PEI (PI 1.8+).
+pub type EfiPeiMpServices2SwitchBsp = unsafe extern "efiapi" fn(
+    this: *const EfiPeiMpServices2Ppi,
+    processor_number: usize,
+    enable_old_bsp: bool,
+) -> EfiStatus;
+
+/// Enables or disables an application processor in PEI (PI 1.8+).
+pub type EfiPeiMpServices2EnableDisableAp = unsafe extern "efiapi" fn(
+    this: *const EfiPeiMpServices2Ppi,
+    processor_number: usize,
+    enable_ap: bool,
+    health_flag: *mut u32,
+) -> EfiStatus;
+
+/// Query executing processor index in PEI (PI 1.8+).
+pub type EfiPeiMpServices2WhoAmI = unsafe extern "efiapi" fn(
+    this: *const EfiPeiMpServices2Ppi,
+    processor_number: *mut usize,
+) -> EfiStatus;
+
+/// PEI Multi-Processor Services 2 PPI interface (PI 1.8+).
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct EfiPeiMpServices2Ppi {
+    /// Retrieves processor count and enabled processor count.
+    pub get_number_of_processors: EfiPeiMpServices2GetNumberOfProcessors,
+    /// Retrieves detailed processor information.
+    pub get_processor_info: EfiPeiMpServices2GetProcessorInfo,
+    /// Executes a routine across all application processors in PEI.
+    pub startup_all_aps: EfiPeiMpServices2StartupAllAps,
+    /// Executes a routine on a designated application processor.
+    pub startup_this_ap: EfiPeiMpServices2StartupThisAp,
+    /// Switches the Bootstrap Processor (BSP) in PEI.
+    pub switch_bsp: EfiPeiMpServices2SwitchBsp,
+    /// Enables or disables an application processor in PEI.
+    pub enable_disable_ap: EfiPeiMpServices2EnableDisableAp,
+    /// Returns the calling logical processor number.
+    pub who_am_i: EfiPeiMpServices2WhoAmI,
 }

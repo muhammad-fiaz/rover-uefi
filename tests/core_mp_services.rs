@@ -96,7 +96,10 @@ unsafe extern "efiapi" fn dummy_enable_disable_ap(
 
 #[test]
 fn mp_services_protocol_and_wrapper() {
-    assert!(!EFI_MP_SERVICES_PROTOCOL_GUID.is_zero());
+    assert_eq!(
+        EFI_MP_SERVICES_PROTOCOL_GUID.to_string(),
+        "3fdda605-a76e-4f46-ad29-12f4531b3d08"
+    );
 
     let proto = EfiMpServicesProtocol {
         get_number_of_processors: mock_get_number_of_processors,
@@ -128,4 +131,30 @@ fn mp_services_protocol_and_wrapper() {
     assert_eq!(ap_info.status_flag & PROCESSOR_AS_BSP_BIT, 0);
 
     assert_eq!(wrapper.current_processor_index(), Ok(0));
+}
+
+#[test]
+fn pei_mp_services_and_services2_guids_and_layout() {
+    use rover_uefi::protocols::firmware::ppi::{
+        EFI_PEI_MP_SERVICES_PPI_GUID, EFI_PEI_MP_SERVICES2_PPI_GUID, EfiPeiMpServices2Ppi,
+        EfiPeiMpServicesPpi,
+    };
+
+    assert_eq!(
+        EFI_PEI_MP_SERVICES_PPI_GUID.to_string(),
+        "ee16160a-e8be-47a6-820a-c6900db0250a"
+    );
+    assert_eq!(
+        EFI_PEI_MP_SERVICES2_PPI_GUID.to_string(),
+        "5cb9cb3d-31a4-480c-9498-29d269bacfba"
+    );
+
+    assert_eq!(
+        core::mem::size_of::<EfiPeiMpServicesPpi>(),
+        core::mem::size_of::<usize>() * 7
+    );
+    assert_eq!(
+        core::mem::size_of::<EfiPeiMpServices2Ppi>(),
+        core::mem::size_of::<usize>() * 7
+    );
 }

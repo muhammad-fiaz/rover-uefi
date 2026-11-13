@@ -7,6 +7,7 @@ pub mod binding;
 pub mod component_name;
 pub mod config_manager;
 pub mod diagnostics;
+pub mod emulator;
 pub mod fdt_client;
 pub mod gpio;
 pub mod guid;
@@ -33,15 +34,24 @@ pub use component_name::{
 pub use config_manager::{
     CM_NAMESPACE_ID_MASK, CM_NAMESPACE_ID_SHIFT, CM_NULL_TOKEN, CM_OBJECT_ID_MASK,
     CONFIGURATION_MANAGER_PROTOCOL_GUID, CONFIGURATION_MANAGER_PROTOCOL_REVISION, CmObjDescriptor,
-    CmStdObjConfigurationManagerInfo, ConfigurationManager, ConfigurationManagerGetObject,
-    ConfigurationManagerProtocol, ConfigurationManagerSetObject, get_cm_namespace_id,
-    get_cm_object_id, make_cm_object_id, namespace as cm_namespace,
-    std_object_id as cm_std_object_id,
+    CmStdObjAcpiTableInfo, CmStdObjConfigurationManagerInfo, CmStdObjSmbiosTableInfo,
+    CmX64ObjIoApicInfo, CmX64ObjLocalApicInfo, ConfigurationManager, ConfigurationManagerGetObject,
+    ConfigurationManagerProtocol, ConfigurationManagerSetObject,
+    DYNAMIC_TABLE_FACTORY_PROTOCOL_GUID, DynamicTableFactory, DynamicTableFactoryProtocol,
+    arm_object_id as cm_arm_object_id, get_cm_namespace_id, get_cm_object_id, make_cm_object_id,
+    namespace as cm_namespace, std_object_id as cm_std_object_id,
+    x64_object_id as cm_x64_object_id,
 };
 pub use diagnostics::{
     EFI_DRIVER_DIAGNOSTICS_PROTOCOL_GUID, EFI_DRIVER_DIAGNOSTICS2_PROTOCOL_GUID,
     EfiDriverDiagnosticType, EfiDriverDiagnostics2Protocol, EfiDriverDiagnostics2RunDiagnostics,
     EfiDriverDiagnosticsProtocol, EfiDriverDiagnosticsRunDiagnostics,
+};
+pub use emulator::{
+    EMU_BLOCK_IO_PROTOCOL_GUID, EMU_GRAPHICS_WINDOW_PROTOCOL_GUID, EMU_THREAD_THUNK_PROTOCOL_GUID,
+    EMU_THUNK_PROTOCOL_GUID, EmuBlockIo, EmuBlockIoProtocol, EmuGraphicsWindow,
+    EmuGraphicsWindowProtocol, EmuHostMutex, EmuThreadEntry, EmuThreadThunk,
+    EmuThreadThunkProtocol, EmuThunk, EmuThunkProtocol,
 };
 pub use fdt_client::{
     FDT_CLIENT_PROTOCOL_GUID, FdtClient, FdtClientFindCompatibleNode,

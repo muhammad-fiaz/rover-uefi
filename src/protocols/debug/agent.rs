@@ -216,9 +216,7 @@ pub fn encode_debug_packet(
 /// # Errors
 /// Returns [`DebugPacketError`] on short buffers, unknown start symbols, length mismatches,
 /// or CRC corruption.
-pub fn decode_debug_packet(
-    src: &[u8],
-) -> Result<(DebugPacketHeader, &[u8]), DebugPacketError> {
+pub fn decode_debug_packet(src: &[u8]) -> Result<(DebugPacketHeader, &[u8]), DebugPacketError> {
     let header_size = core::mem::size_of::<DebugPacketHeader>();
     if src.len() < header_size {
         return Err(DebugPacketError::BufferTooSmall);
