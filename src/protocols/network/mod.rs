@@ -25,7 +25,10 @@ pub mod managed;
 pub mod mtftp;
 pub mod packets;
 pub mod pxe;
+pub mod redfish_config;
+pub mod redfish_credential;
 pub mod redfish_discover;
+pub mod redfish_host_interface;
 pub mod rest_ex;
 pub mod simple_network;
 pub mod stack;
@@ -70,6 +73,18 @@ pub use mtftp::{
     EFI_MTFTP4_PROTOCOL_GUID, EFI_MTFTP6_PROTOCOL_GUID, EfiMtftp4ModeData, EfiMtftp4Protocol,
     EfiMtftp4Token, EfiMtftp6ModeData, EfiMtftp6Protocol,
 };
+pub use redfish_config::{
+    EfiRedfishConfigHandlerProtocol, REDFISH_CONFIG_HANDLER_PROTOCOL_GUID, RedfishConfigHandler,
+    RedfishConfigHandlerInit, RedfishConfigHandlerStop, RedfishConfigServiceInformation,
+};
+pub use redfish_credential::{
+    EfiRedfishCredential2Protocol, EfiRedfishCredentialProtocol, REDFISH_CREDENTIAL_PROTOCOL_GUID,
+    REDFISH_CREDENTIAL_PROTOCOL_REVISION, REDFISH_CREDENTIAL2_PROTOCOL_GUID, RedfishAuthMethod,
+    RedfishCredential, RedfishCredential2, RedfishCredential2GetAuthInfo,
+    RedfishCredential2RegisterService, RedfishCredential2StopService,
+    RedfishCredential2UnregisterService, RedfishCredentialGetAuthInfo,
+    RedfishCredentialStopService, RedfishCredentialStopServiceType,
+};
 pub use redfish_discover::{
     EFI_REDFISH_DISCOVER_HOST_INTERFACE, EFI_REDFISH_DISCOVER_KEEP_ALIVE,
     EFI_REDFISH_DISCOVER_RENEW, EFI_REDFISH_DISCOVER_SSDP, EFI_REDFISH_DISCOVER_SSDP_UDP6,
@@ -78,6 +93,15 @@ pub use redfish_discover::{
     EfiRedfishDiscoverNetworkList, EfiRedfishDiscoverProtocol, EfiRedfishDiscoverReleaseService,
     EfiRedfishDiscoveredInformation, EfiRedfishDiscoveredInstance, EfiRedfishDiscoveredList,
     EfiRedfishDiscoveredToken, REDFISH_DISCOVER_PROTOCOL_GUID, REDFISH_DISCOVER_TOKEN_SIGNATURE,
+};
+pub use redfish_host_interface::{
+    PciInterfaceDeviceDescriptorV2, REDFISH_HOST_INTERFACE_DEVICE_TYPE_OEM_MAX,
+    REDFISH_HOST_INTERFACE_DEVICE_TYPE_OEM_MIN, REDFISH_HOST_INTERFACE_DEVICE_TYPE_PCI_PCIE_V2,
+    REDFISH_HOST_INTERFACE_DEVICE_TYPE_USB_V2, REDFISH_HOST_IP_ASSIGNMENT_AUTO_CONFIGURE,
+    REDFISH_HOST_IP_ASSIGNMENT_DHCP, REDFISH_HOST_IP_ASSIGNMENT_HOST_SELECTED,
+    REDFISH_HOST_IP_ASSIGNMENT_STATIC, REDFISH_HOST_IP_ASSIGNMENT_UNKNOWN,
+    REDFISH_HOST_IP_FORMAT_IPV4, REDFISH_HOST_IP_FORMAT_IPV6, REDFISH_HOST_IP_FORMAT_UNKNOWN,
+    UsbInterfaceDeviceDescriptorV2,
 };
 pub use rest_ex::{
     EfiHttpMessage, EfiRestExAsyncSendReceive, EfiRestExConfigType, EfiRestExConfigure,

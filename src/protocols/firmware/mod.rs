@@ -168,8 +168,8 @@ pub use prm::{
     AcpiParameterBufferDescriptor, PRM_ACPI_PARAMETER_DATA_BUFFER_HEADER_SIGNATURE,
     PRM_CONFIG_PROTOCOL_GUID, PRM_CONFIG_PROTOCOL_SIGNATURE, PRM_CONFIG_PROTOCOL_VERSION,
     PRM_CONTEXT_BUFFER_INTERFACE_VERSION, PRM_CONTEXT_BUFFER_SIGNATURE,
-    PRM_DATA_BUFFER_HEADER_SIGNATURE, PRM_HANDLER_NAME_MAXIMUM_LENGTH, PrmConfigProtocol,
-    PrmContextBuffer, PrmDataBufferHeader, PrmHandler, PrmModuleContextBuffers,
+    PRM_DATA_BUFFER_HEADER_SIGNATURE, PRM_HANDLER_NAME_MAXIMUM_LENGTH, PrmConfig,
+    PrmConfigProtocol, PrmContextBuffer, PrmDataBufferHeader, PrmHandler, PrmModuleContextBuffers,
     PrmRuntimeMmioRange, PrmRuntimeMmioRanges,
 };
 pub use progress::{

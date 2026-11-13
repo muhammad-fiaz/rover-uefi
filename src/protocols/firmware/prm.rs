@@ -127,3 +127,75 @@ pub struct PrmConfigProtocol {
     /// Module context buffers.
     pub module_context_buffers: PrmModuleContextBuffers,
 }
+
+/// Safe client wrapper around `PrmConfigProtocol`.
+#[derive(Debug, Clone, Copy)]
+pub struct PrmConfig<'a> {
+    proto: &'a PrmConfigProtocol,
+}
+
+impl<'a> PrmConfig<'a> {
+    /// Wraps a reference to `PrmConfigProtocol`.
+    #[must_use]
+    pub const fn new(proto: &'a PrmConfigProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Returns the PRM module GUID.
+    #[must_use]
+    pub fn module_guid(&self) -> EfiGuid {
+        self.proto.module_context_buffers.module_guid
+    }
+
+    /// Returns the number of PRM context buffers.
+    #[must_use]
+    pub fn buffer_count(&self) -> usize {
+        self.proto.module_context_buffers.buffer_count
+    }
+
+    /// Returns the number of ACPI parameter buffer descriptors.
+    #[must_use]
+    pub fn acpi_descriptor_count(&self) -> usize {
+        self.proto
+            .module_context_buffers
+            .acpi_parameter_buffer_descriptor_count
+    }
+
+    /// Searches for an ACPI parameter buffer address registered for `handler_guid`.
+    #[must_use]
+    pub fn find_acpi_buffer(&self, handler_guid: &EfiGuid) -> Option<u64> {
+        let count = self.acpi_descriptor_count();
+        let ptr = self
+            .proto
+            .module_context_buffers
+            .acpi_parameter_buffer_descriptors;
+        if ptr.is_null() || count == 0 {
+            return None;
+        }
+
+        for i in 0..count {
+            let desc = unsafe { &*ptr.add(i) };
+            let guid = desc.handler_guid;
+            let addr = desc.acpi_parameter_buffer_address;
+            if guid == *handler_guid {
+                return Some(addr);
+            }
+        }
+        None
+    }
+
+    /// Validates whether a context buffer has the expected signature and interface version.
+    #[must_use]
+    pub fn validate_context_buffer(buf: &PrmContextBuffer) -> bool {
+        buf.signature == PRM_CONTEXT_BUFFER_SIGNATURE
+            && buf.version == PRM_CONTEXT_BUFFER_INTERFACE_VERSION
+    }
+
+    /// Validates whether a data buffer header has a valid static or ACPI parameter signature.
+    #[must_use]
+    pub fn validate_data_buffer_header(buf: &PrmDataBufferHeader) -> bool {
+        (buf.signature == PRM_DATA_BUFFER_HEADER_SIGNATURE
+            || buf.signature == PRM_ACPI_PARAMETER_DATA_BUFFER_HEADER_SIGNATURE)
+            && (buf.length as usize) >= core::mem::size_of::<PrmDataBufferHeader>()
+    }
+}

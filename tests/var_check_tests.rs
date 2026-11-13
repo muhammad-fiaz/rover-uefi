@@ -4,8 +4,8 @@ use rover_uefi::base::{EfiGuid, EfiStatus};
 use rover_uefi::protocols::security::var_check::{
     EfiSmmVarCheckProtocol, EfiVarCheckProtocol, SMM_VAR_CHECK_PROTOCOL_GUID,
     SetVariableCheckHandler, SmmVarCheck, VAR_CHECK_PROTOCOL_GUID,
-    VAR_CHECK_VARIABLE_PROPERTY_READ_ONLY, VAR_CHECK_VARIABLE_PROPERTY_REVISION,
-    VarCheck, VariableProperty,
+    VAR_CHECK_VARIABLE_PROPERTY_READ_ONLY, VAR_CHECK_VARIABLE_PROPERTY_REVISION, VarCheck,
+    VariableProperty,
 };
 
 static mut MOCK_PROP: VariableProperty = VariableProperty {
@@ -116,9 +116,7 @@ fn test_var_check_wrapper() {
 
     assert!(var_check.set_property(&var_name, &guid, &new_prop).is_ok());
 
-    let fetched = var_check
-        .get_property(&var_name, &guid)
-        .unwrap_or_default();
+    let fetched = var_check.get_property(&var_name, &guid).unwrap_or_default();
     assert_eq!(fetched, new_prop);
 }
 

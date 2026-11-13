@@ -12,6 +12,7 @@ pub mod block_io;
 pub mod disk_info;
 pub mod disk_io;
 pub mod erase_block;
+pub mod file_explorer;
 pub mod filesystem;
 pub mod guid;
 pub mod load_file;
@@ -45,6 +46,10 @@ pub use disk_info::{
 pub use disk_io::{DiskIo, DiskIo2, EfiDiskIo2Protocol, EfiDiskIoProtocol};
 pub use erase_block::{
     EFI_ERASE_BLOCK_PROTOCOL_GUID, EfiEraseBlockProtocol, EfiEraseBlockToken, EfiEraseBlocks,
+};
+pub use file_explorer::{
+    EfiFileExplorerChooseFile, EfiFileExplorerChooseHandler, EfiFileExplorerProtocol,
+    FILE_EXPLORER_PROTOCOL_GUID, FileExplorer,
 };
 pub use filesystem::{
     EfiFileProtocol, EfiSimpleFileSystemProtocol, FileProtocol, OwnedFile, SimpleFileSystem,

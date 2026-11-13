@@ -22,7 +22,8 @@ pub mod validation;
 
 pub use blt::{BltOperation, BltRectangle, BltRequest};
 pub use boot_logo::{
-    BOOT_LOGO2_PROTOCOL_GUID, BootLogo2, BootLogo2Protocol, GetBootLogo2, SetBootLogo2,
+    BOOT_LOGO_PROTOCOL_GUID, BOOT_LOGO2_PROTOCOL_GUID, BootLogo, BootLogo2, BootLogo2Protocol,
+    BootLogoProtocol, GetBootLogo2, SetBootLogo, SetBootLogo2,
 };
 pub use edid::{
     EFI_EDID_ACTIVE_PROTOCOL_GUID, EFI_EDID_DISCOVERED_PROTOCOL_GUID,
