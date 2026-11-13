@@ -8,11 +8,16 @@
 //! * `context` describes the trap context and the encoding of
 //!   the cause of a trap.
 
+pub mod boot_protocol;
 pub mod context;
 pub mod csr;
 pub mod paging;
 pub mod sbi;
 
+pub use boot_protocol::{
+    RISCV_BOOT_PROTOCOL_GUID, RISCV_BOOT_PROTOCOL_REVISION, RiscvBoot, RiscvBootProtocol,
+    RiscvGetBootHartId,
+};
 pub use csr::{
     CSR_CYCLE, CSR_MCAUSE, CSR_MEPC, CSR_MIE, CSR_MIP, CSR_MISA, CSR_MSCRATCH, CSR_MSTATUS,
     CSR_MTVAL, CSR_MTVEC, CSR_SATP, CSR_SCAUSE, CSR_SEPC, CSR_SIE, CSR_SIP, CSR_SSCRATCH,

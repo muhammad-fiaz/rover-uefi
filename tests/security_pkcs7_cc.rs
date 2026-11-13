@@ -3,7 +3,7 @@
 
 use core::mem::size_of;
 use rover_uefi::protocols::security::{
-    EFI_CC_MEASUREMENT_PROTOCOL_GUID, EFI_PKCS7_VERIFY_PROTOCOL_GUID,
+    CC_MEASUREMENT_PROTOCOL_GUID, EFI_PKCS7_VERIFY_PROTOCOL_GUID,
     EfiCcMeasurementBootServiceCapability, EfiCcMeasurementEvent, EfiCcMeasurementProtocol,
     EfiCcType, EfiPkcs7VerifyProtocol,
 };
@@ -11,7 +11,7 @@ use rover_uefi::protocols::security::{
 #[test]
 fn pkcs7_and_cc_measurement_guids_and_types() {
     assert!(!EFI_PKCS7_VERIFY_PROTOCOL_GUID.is_zero());
-    assert!(!EFI_CC_MEASUREMENT_PROTOCOL_GUID.is_zero());
+    assert!(!CC_MEASUREMENT_PROTOCOL_GUID.is_zero());
 
     assert_eq!(EfiCcType::None as u8, 0);
     assert_eq!(EfiCcType::Sev as u8, 1);

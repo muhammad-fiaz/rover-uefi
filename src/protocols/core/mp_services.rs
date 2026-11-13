@@ -233,3 +233,63 @@ impl<'a> MpServices<'a> {
         }
     }
 }
+
+/// GUID for Multiprocessor Information 2 HOB (`{417a7f64-f4e9-4b32-846a-5cc4d8621879}`).
+pub const MP_INFORMATION2_GUID: EfiGuid = EfiGuid::new(
+    0x417A_7F64,
+    0xF4E9,
+    0x4B32,
+    [0x84, 0x6A, 0x5C, 0xC4, 0xD8, 0x62, 0x18, 0x79],
+);
+
+/// Revision for `MpInformation2HobData`.
+pub const MP_INFORMATION2_HOB_REVISION: u8 = 1;
+
+/// Standard symmetrical core type.
+pub const CORE_TYPE_STANDARD: u8 = 0;
+/// Performance core (P-core) in hybrid heterogeneous CPU architectures.
+pub const CORE_TYPE_PERFORMANCE: u8 = 1;
+/// Efficient core (E-core) in hybrid heterogeneous CPU architectures.
+pub const CORE_TYPE_EFFICIENT: u8 = 2;
+
+/// Heterogeneous processor entry in MP Information 2 HOB.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct MpInformation2Entry {
+    /// Processor architectural location and flags.
+    pub processor_info: EfiProcessorInformation,
+    /// Core type classification (`CORE_TYPE_*`).
+    pub core_type: u8,
+    /// Reserved alignment padding.
+    pub reserved: [u8; 7],
+}
+
+impl MpInformation2Entry {
+    /// Check if this processor is a performance core (P-core).
+    #[must_use]
+    pub const fn is_performance_core(&self) -> bool {
+        self.core_type == CORE_TYPE_PERFORMANCE
+    }
+
+    /// Check if this processor is an efficiency core (E-core).
+    #[must_use]
+    pub const fn is_efficient_core(&self) -> bool {
+        self.core_type == CORE_TYPE_EFFICIENT
+    }
+}
+
+/// Header for the Multiprocessor Information 2 HOB describing heterogeneous cores.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct MpInformation2HobData {
+    /// Number of processors described.
+    pub number_of_processors: u16,
+    /// Size of each `MpInformation2Entry` in bytes.
+    pub entry_size: u16,
+    /// Structure revision (`MP_INFORMATION2_HOB_REVISION`).
+    pub version: u8,
+    /// Reserved padding.
+    pub reserved: [u8; 3],
+    /// Processor index offset.
+    pub processor_index: u64,
+}

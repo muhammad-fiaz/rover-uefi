@@ -42,14 +42,26 @@ pub use boot_control::{
     GblEfiOneShotBootMode, GblEfiSlotInfo, GblEfiUnbootableReason,
 };
 pub use boot_img::{
-    ANDROID_BOOTIMG_PROTOCOL_GUID, AndroidBootImg, AndroidBootImgAppendKernelArgs,
-    AndroidBootImgProtocol, AndroidBootImgUpdateDtb,
+    ANDROID_BOOT_MAGIC, ANDROID_BOOTIMG_EXTRA_ARGS_SIZE, ANDROID_BOOTIMG_KERNEL_ARGS_SIZE,
+    ANDROID_BOOTIMG_PROTOCOL_GUID, ANDROID_VENDOR_BOOT_ARGS_SIZE, AndroidBootImg,
+    AndroidBootImgAppendKernelArgs, AndroidBootImgHeader, AndroidBootImgProtocol,
+    AndroidBootImgUpdateDtb, AndroidVendorBootHeader, VENDOR_BOOT_MAGIC, parse_boot_image,
+    parse_vendor_boot_image,
 };
 pub use fastboot::{
     ANDROID_FASTBOOT_PLATFORM_PROTOCOL_GUID, ANDROID_FASTBOOT_TRANSPORT_PROTOCOL_GUID,
     FastbootPlatform, FastbootPlatformDoOemCommand, FastbootPlatformErase, FastbootPlatformFlash,
     FastbootPlatformGetVar, FastbootPlatformInit, FastbootPlatformProtocol, FastbootPlatformUnInit,
     FastbootTransportProtocol, FastbootTransportReceive, FastbootTransportSend,
+    GBL_EFI_FASTBOOT_PARTITION_TYPE_BUF_LEN, GBL_EFI_FASTBOOT_PROTOCOL_GUID,
+    GBL_EFI_FASTBOOT_PROTOCOL_REVISION, GBL_EFI_FASTBOOT_SERIAL_NUMBER_MAX_LEN_UTF8,
+    GBL_EFI_FASTBOOT_TRANSPORT_PROTOCOL_GUID, GBL_EFI_FASTBOOT_TRANSPORT_PROTOCOL_REVISION,
+    GblEfiFastbootCommandExec, GblEfiFastbootCommandExecResult, GblEfiFastbootGetPartitionType,
+    GblEfiFastbootGetStaged, GblEfiFastbootGetVar, GblEfiFastbootGetVarAll,
+    GblEfiFastbootGetVarAllCallback, GblEfiFastbootMessageSender, GblEfiFastbootMessageType,
+    GblEfiFastbootProtocol, GblEfiFastbootRxMode, GblEfiFastbootTransportFlush,
+    GblEfiFastbootTransportProtocol, GblEfiFastbootTransportReceive, GblEfiFastbootTransportSend,
+    GblEfiFastbootTransportStart, GblEfiFastbootTransportStop, GblFastboot, GblFastbootTransport,
 };
 pub use os_config::{
     GBL_EFI_OS_CONFIGURATION_PROTOCOL_GUID, GBL_EFI_OS_CONFIGURATION_PROTOCOL_REVISION,

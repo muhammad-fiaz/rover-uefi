@@ -81,3 +81,8 @@ pub struct MpInformationHobHeader {
     /// Number of enabled processors available for execution.
     pub number_of_enabled_processors: u64,
 }
+
+pub use crate::protocols::core::mp_services::{
+    CORE_TYPE_EFFICIENT, CORE_TYPE_PERFORMANCE, CORE_TYPE_STANDARD, MP_INFORMATION2_GUID,
+    MP_INFORMATION2_HOB_REVISION, MpInformation2Entry, MpInformation2HobData,
+};

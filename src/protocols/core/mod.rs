@@ -18,6 +18,11 @@ pub mod mp_services;
 pub mod open;
 pub mod reset_notification;
 
+pub use crate::arch::riscv::{
+    RISCV_BOOT_PROTOCOL_GUID, RISCV_BOOT_PROTOCOL_REVISION, RiscvBoot, RiscvBootProtocol,
+    RiscvGetBootHartId,
+};
+
 pub use arch::{
     MONOTONIC_COUNTER_ARCH_PROTOCOL_GUID, RESET_ARCH_PROTOCOL_GUID, VARIABLE_ARCH_PROTOCOL_GUID,
     VARIABLE_WRITE_ARCH_PROTOCOL_GUID,
@@ -40,12 +45,13 @@ pub use memory_attribute::{
     EfiSetMemoryAttributes, MEMORY_ATTRIBUTE_PROTOCOL_GUID, MemoryAttributeProtocol,
 };
 pub use mp_services::{
-    EFI_MP_SERVICES_PROTOCOL_GUID, EfiApProcedure, EfiCpuPhysicalLocation, EfiCpuPhysicalLocation2,
-    EfiMpServicesEnableDisableAP, EfiMpServicesGetNumberOfProcessors,
-    EfiMpServicesGetProcessorInfo, EfiMpServicesProtocol, EfiMpServicesStartupAllAPs,
-    EfiMpServicesStartupThisAP, EfiMpServicesSwitchBsp, EfiMpServicesWhoAmI,
-    EfiProcessorInformation, MpServices, PROCESSOR_AS_BSP_BIT, PROCESSOR_ENABLED_BIT,
-    PROCESSOR_HEALTH_STATUS_BIT,
+    CORE_TYPE_EFFICIENT, CORE_TYPE_PERFORMANCE, CORE_TYPE_STANDARD, EFI_MP_SERVICES_PROTOCOL_GUID,
+    EfiApProcedure, EfiCpuPhysicalLocation, EfiCpuPhysicalLocation2, EfiMpServicesEnableDisableAP,
+    EfiMpServicesGetNumberOfProcessors, EfiMpServicesGetProcessorInfo, EfiMpServicesProtocol,
+    EfiMpServicesStartupAllAPs, EfiMpServicesStartupThisAP, EfiMpServicesSwitchBsp,
+    EfiMpServicesWhoAmI, EfiProcessorInformation, MP_INFORMATION2_GUID,
+    MP_INFORMATION2_HOB_REVISION, MpInformation2Entry, MpInformation2HobData, MpServices,
+    PROCESSOR_AS_BSP_BIT, PROCESSOR_ENABLED_BIT, PROCESSOR_HEALTH_STATUS_BIT,
 };
 pub use open::{close, open};
 pub use reset_notification::{

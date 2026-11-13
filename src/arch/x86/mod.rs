@@ -20,6 +20,7 @@ pub mod gdt;
 pub mod hpet;
 pub mod idt;
 pub mod io;
+pub mod linux_boot;
 pub mod microcode;
 pub mod msr;
 pub mod paging;
@@ -107,4 +108,11 @@ pub use context::{
 pub use cpuid::{
     AsciiString, CpuInfo, Cpuid, CpuidResult, ExtendedFeatures, HostCpuid, Leaf1Features,
     Leaf7Features, Leaf7Subleaf1Features, StubCpuid, XsaveFeatures,
+};
+pub use linux_boot::{
+    BOOT_SIGNATURE, BootParams, E820_ACPI, E820_MAX_ENTRIES, E820_NVS, E820_PMEM, E820_RAM,
+    E820_RESERVED, E820_UNUSABLE, E820Entry, EfiInfo, FLAG_CAN_USE_HEAP, FLAG_KEEP_SEGMENTS,
+    FLAG_LOADED_HIGH, FLAG_QUIET, MIN_SETUP_HEADER_SIZE, SETUP_HEADER_MAGIC, SETUP_HEADER_OFFSET,
+    ScreenInfo, SetupHeader, XLF_5LEVEL, XLF_5LEVEL_ENABLED, XLF_CAN_BE_LOADED_ABOVE_4G,
+    XLF_EFI_HANDOVER_32, XLF_EFI_HANDOVER_64, XLF_EFI_KEXEC, XLF_KERNEL_64, parse_setup_header,
 };

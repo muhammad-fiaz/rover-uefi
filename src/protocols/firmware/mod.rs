@@ -236,9 +236,12 @@ pub use smm_events::{
     SMM_READY_TO_BOOT_PROTOCOL_GUID,
 };
 pub use standalone_mm::{
+    CORE_TYPE_EFFICIENT, CORE_TYPE_PERFORMANCE, CORE_TYPE_STANDARD,
     EFI_MM_PEI_MMRAM_MEMORY_RESERVE_GUID, EfiMmCommunicateFvDispatch,
     EfiMmCommunicateFvDispatchData, EfiMmramHobDescriptorBlockHeader, MM_FV_DISPATCH_GUID,
-    MP_INFORMATION_HOB_GUID, MmFoundationEntryPoint, MmImageEntryPoint, MpInformationHobHeader,
+    MP_INFORMATION_HOB_GUID, MP_INFORMATION2_GUID, MP_INFORMATION2_HOB_REVISION,
+    MmFoundationEntryPoint, MmImageEntryPoint, MpInformation2Entry, MpInformation2HobData,
+    MpInformationHobHeader,
 };
 pub use swap_address_range::{
     EfiGetRangeLocation, EfiGetRtcPowerStatus, EfiGetSwapLockCapability, EfiGetSwapState,
