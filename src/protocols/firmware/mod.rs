@@ -19,6 +19,7 @@ pub mod mm_communication;
 pub mod mm_system_table;
 pub mod pecoff;
 pub mod pei;
+pub mod ppi;
 pub mod prm;
 pub mod sections;
 pub mod universal_payload;
@@ -84,6 +85,15 @@ pub use pei::{
     EfiPeiReinstallPpi, EfiPeiReportStatusCode, EfiPeiReset2System, EfiPeiResetSystem,
     EfiPeiServices, EfiPeiSetBootMode, EfiPeiStallPpi, EfiPeimNotifyEntry, PEI_SERVICES_REVISION,
     PEI_SERVICES_SIGNATURE,
+};
+pub use ppi::{
+    EFI_DXE_IPL_PPI_GUID, EFI_PEI_BOOT_IN_RECOVERY_MODE_PPI_GUID,
+    EFI_PEI_CPU_IO_PPI_INSTALLED_GUID, EFI_PEI_FIRMWARE_VOLUME_INFO_PPI_GUID,
+    EFI_PEI_FIRMWARE_VOLUME_INFO2_PPI_GUID, EFI_PEI_GRAPHICS_PPI_GUID,
+    EFI_PEI_MASTER_BOOT_MODE_PEIM_PPI_GUID, EFI_PEI_MP_SERVICES_PPI_GUID,
+    EFI_PEI_PERMANENT_MEMORY_INSTALLED_PPI_GUID, EFI_PEI_RECOVERY_BLOCK_IO_PPI_GUID, EfiDxeIplPpi,
+    EfiPeiCpuIoPpi, EfiPeiCpuIoPpiAccess, EfiPeiCpuIoPpiWidth, EfiPeiFirmwareVolumeInfo2Ppi,
+    EfiPeiFirmwareVolumeInfoPpi, EfiPeiGraphicsPpi, EfiPeiMpServicesPpi,
 };
 pub use prm::{
     AcpiParameterBufferDescriptor, PRM_ACPI_PARAMETER_DATA_BUFFER_HEADER_SIGNATURE,
