@@ -16,6 +16,7 @@ pub mod dmar;
 pub mod dsdt;
 pub mod facs;
 pub mod fadt;
+pub mod fpdt;
 pub mod gtdt;
 pub mod guid;
 pub mod header;
@@ -52,6 +53,16 @@ pub use dmar::{DmarEntry, DmarHeader, DmarIter, dmar_iter, parse_dmar_header};
 pub use dsdt::{AmlView, parse_dsdt};
 pub use facs::{FacsInfo, parse_facs};
 pub use fadt::{FadtInfo, parse_fadt};
+pub use fpdt::{
+    FPDT_RECORD_TYPE_DUAL_GUID_STRING_EVENT, FPDT_RECORD_TYPE_DYNAMIC_STRING_EVENT,
+    FPDT_RECORD_TYPE_FIRMWARE_BASIC_BOOT_POINTER, FPDT_RECORD_TYPE_GUID_EVENT,
+    FPDT_RECORD_TYPE_GUID_QWORD_EVENT, FPDT_RECORD_TYPE_GUID_QWORD_STRING_EVENT,
+    FPDT_RECORD_TYPE_S3_PERFORMANCE_TABLE_POINTER, FPDT_RUNTIME_RECORD_TYPE_FIRMWARE_BASIC_BOOT,
+    FPDT_RUNTIME_RECORD_TYPE_S3_RESUME, FPDT_RUNTIME_RECORD_TYPE_S3_SUSPEND, FpdtBasicBootRecord,
+    FpdtGuidEventRecord, FpdtParsedRecord, FpdtRecordHeader, FpdtRecordIter, FpdtS3ResumeRecord,
+    FpdtS3SuspendRecord, FpdtStringEventRecord, FpdtTableHeader, FpdtTableInfo, SIG_FBPT, SIG_S3PT,
+    parse_fpdt_root,
+};
 pub use gtdt::{GtdtInfo, parse_gtdt};
 pub use guid::{ACPI_10_GUID, ACPI_20_GUID, EFI_ACPI_TABLE_PROTOCOL_GUID};
 pub use header::{AcpiHeader, parse_header, signature_matches};
@@ -82,7 +93,7 @@ pub use srat::{SratEntry, SratHeader, SratIter, parse_srat_header, srat_iter};
 pub use ssdt::parse_ssdt;
 pub use tpm2::{Tpm2Info, parse_tpm2};
 pub use types::{
-    SIG_BERT, SIG_BGRT, SIG_CEDT, SIG_DBG2, SIG_DMAR, SIG_DSDT, SIG_FACS, SIG_FADT, SIG_GTDT,
-    SIG_HEST, SIG_HPET, SIG_IORT, SIG_MADT, SIG_MCFG, SIG_NFIT, SIG_PPTT, SIG_PRMT, SIG_RSDT,
-    SIG_SLIT, SIG_SPCR, SIG_SRAT, SIG_SSDT, SIG_TPM2, SIG_XSDT,
+    SIG_BERT, SIG_BGRT, SIG_CEDT, SIG_DBG2, SIG_DMAR, SIG_DSDT, SIG_FACS, SIG_FADT, SIG_FPDT,
+    SIG_GTDT, SIG_HEST, SIG_HPET, SIG_IORT, SIG_MADT, SIG_MCFG, SIG_NFIT, SIG_PPTT, SIG_PRMT,
+    SIG_RSDT, SIG_SLIT, SIG_SPCR, SIG_SRAT, SIG_SSDT, SIG_TPM2, SIG_XSDT,
 };

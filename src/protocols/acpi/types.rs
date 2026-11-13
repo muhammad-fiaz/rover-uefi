@@ -73,3 +73,6 @@ pub const SIG_CEDT: [u8; 4] = *b"CEDT";
 
 /// IORT signature.
 pub const SIG_IORT: [u8; 4] = *b"IORT";
+
+/// FPDT signature.
+pub const SIG_FPDT: [u8; 4] = *b"FPDT";
