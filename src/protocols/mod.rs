@@ -10,6 +10,7 @@
 //! extend firmware lifetimes.
 
 pub mod acpi;
+pub mod bluetooth;
 pub mod console;
 pub mod core;
 pub mod debug;
@@ -25,6 +26,7 @@ pub mod pci;
 pub mod security;
 pub mod serial;
 pub mod smbios;
+pub mod smbus;
 pub mod spi;
 pub mod storage;
 pub mod usb;

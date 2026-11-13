@@ -36,6 +36,7 @@ pub mod types;
 pub mod udp;
 pub mod validation;
 pub mod vlan_config;
+pub mod wifi2;
 
 pub use arp_protocol::{
     ARP_PROTOCOL_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID, EfiArpAdd, EfiArpCancel,
@@ -93,4 +94,12 @@ pub use tls_protocol::{
 pub use vlan_config::{
     EfiVlanConfigFind, EfiVlanConfigProtocol, EfiVlanConfigRemove, EfiVlanConfigSet,
     EfiVlanFindData, VLAN_CONFIG_PROTOCOL_GUID,
+};
+pub use wifi2::{
+    EFI_MAX_SSID_LEN, EFI_WIFI2_PROTOCOL_GUID, EFI_WIRELESS_MAC_CONNECTION_II_PROTOCOL_GUID,
+    Efi80211BssType, Efi80211ConnectNetworkResultCode, Efi80211ConnectNetworkToken,
+    Efi80211DisconnectNetworkToken, Efi80211GetNetworksToken, Efi80211MacAddress, Efi80211Ssid,
+    Efi80211SuiteSelector, EfiWirelessMacConnectionIiConnectNetwork,
+    EfiWirelessMacConnectionIiDisconnectNetwork, EfiWirelessMacConnectionIiGetNetworks,
+    EfiWirelessMacConnectionIiProtocol,
 };

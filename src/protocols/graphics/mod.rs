@@ -10,6 +10,7 @@
 //! operating system.
 
 pub mod blt;
+pub mod edid;
 pub mod framebuffer;
 pub mod guid;
 pub mod mode;
@@ -18,8 +19,14 @@ pub mod protocol;
 pub mod validation;
 
 pub use blt::{BltOperation, BltRectangle, BltRequest};
+pub use edid::{
+    EFI_EDID_ACTIVE_PROTOCOL_GUID, EFI_EDID_DISCOVERED_PROTOCOL_GUID,
+    EFI_EDID_OVERRIDE_DONT_OVERRIDE, EFI_EDID_OVERRIDE_ENABLE_HOT_PLUG,
+    EFI_EDID_OVERRIDE_PROTOCOL_GUID, EdidInfo, EfiEdidOverrideGetEdid, EfiEdidOverrideProtocol,
+    parse_edid_block,
+};
 pub use framebuffer::FramebufferInfo;
-pub use guid::{EDID_ACTIVE_GUID, EDID_DISCOVERED_GUID, GRAPHICS_OUTPUT_GUID};
+pub use guid::{EDID_ACTIVE_GUID, EDID_DISCOVERED_GUID, EDID_OVERRIDE_GUID, GRAPHICS_OUTPUT_GUID};
 pub use mode::{EfiGraphicsOutputModeInformation, EfiGraphicsOutputProtocolMode};
 pub use pixel::{EfiGraphicsOutputBltPixel, EfiPixelBitmask, PixelFormat};
 pub use protocol::{

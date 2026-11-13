@@ -16,6 +16,7 @@ pub mod types;
 pub mod validation;
 
 pub use access::{EfiPciIoProtocol, EfiPciRootBridgeIoProtocol, PciIo, PciRootBridgeIo};
+pub use class::*;
 pub use cxl::{
     CxlIoProtocol, EDKII_CXL_IO_PROTOCOL_GUID, EdkiiCxlIoProtocol, EdkiiCxlIoProtocolDvsecAccess,
     EdkiiCxlIoProtocolRegblockAccess,
