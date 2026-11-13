@@ -10,9 +10,14 @@
 
 pub mod context;
 pub mod gic;
+pub mod pl011;
 pub mod psci;
 pub mod smccc;
 
+pub use pl011::{
+    Pl011BaudDivisors, Pl011Uart, compute_pl011_divisors, cr as pl011_cr, fr as pl011_fr,
+    lcr_h as pl011_lcr_h, reg as pl011_reg,
+};
 pub use psci::{
     PSCI_AFFINITY_INFO_SMC32, PSCI_AFFINITY_INFO_SMC64, PSCI_AFFINITY_OFF, PSCI_AFFINITY_ON,
     PSCI_AFFINITY_ON_PENDING, PSCI_CPU_OFF, PSCI_CPU_ON_SMC32, PSCI_CPU_ON_SMC64,

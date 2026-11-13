@@ -14,9 +14,22 @@ pub mod apic;
 pub mod cmos;
 pub mod context;
 pub mod cpuid;
+pub mod hpet;
 pub mod pic;
 pub mod pit;
+pub mod pm_timer;
+pub mod uart16550;
 
+pub use hpet::{HPET_DEFAULT_BASE_ADDRESS, HpetController};
+pub use pm_timer::{
+    ACPI_PM_TIMER_FREQUENCY_HZ, PM_TIMER_24BIT_MASK, microseconds_to_pm_timer_ticks,
+    pm_timer_elapsed_microseconds,
+};
+pub use uart16550::{
+    UART_BASE_CLOCK_HZ, UART_MAX_BAUD, Uart16550, com_port as uart_com_port,
+    compute_baud_divisor as compute_uart_baud_divisor, fcr as uart_fcr, lcr as uart_lcr,
+    lsr as uart_lsr, mcr as uart_mcr, reg as uart_reg,
+};
 pub use cmos::{
     CMOS_ADDRESS_PORT, CMOS_DATA_PORT, CMOS_NMI_DISABLE_BIT, CMOS_REG_CENTURY,
     CMOS_REG_DAY_OF_MONTH, CMOS_REG_DAY_OF_WEEK, CMOS_REG_HOURS, CMOS_REG_MINUTES, CMOS_REG_MONTH,

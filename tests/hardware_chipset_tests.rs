@@ -6,18 +6,21 @@
 use core::mem::size_of;
 use rover_uefi::arch::arm64::{
     PSCI_AFFINITY_OFF, PSCI_AFFINITY_ON, PSCI_CPU_OFF, PSCI_CPU_ON_SMC64, PSCI_SYSTEM_OFF,
-    PSCI_SYSTEM_RESET, PSCI_VERSION, PsciStatus, SMCCC_ARCH_FEATURES, SMCCC_ARCH_SOC_ID,
-    SMCCC_RET_INVALID_PARAMETER, SMCCC_RET_NOT_REQUIRED, SMCCC_RET_NOT_SUPPORTED,
-    SMCCC_RET_SUCCESS, SMCCC_VERSION, SmcccFunctionId, SmcccOwner, SmcccResult, parse_psci_version,
-    psci_target_cpu64,
+    PSCI_SYSTEM_RESET, PSCI_VERSION, Pl011Uart, PsciStatus, SMCCC_ARCH_FEATURES,
+    SMCCC_ARCH_SOC_ID, SMCCC_RET_INVALID_PARAMETER, SMCCC_RET_NOT_REQUIRED,
+    SMCCC_RET_NOT_SUPPORTED, SMCCC_RET_SUCCESS, SMCCC_VERSION, SmcccFunctionId, SmcccOwner,
+    SmcccResult, compute_pl011_divisors, parse_psci_version, pl011_fr, psci_target_cpu64,
 };
 use rover_uefi::arch::x86::{
-    CMOS_ADDRESS_PORT, CMOS_DATA_PORT, CMOS_NMI_DISABLE_BIT, CMOS_REG_CENTURY, CMOS_REG_HOURS,
-    CMOS_REG_MINUTES, CMOS_REG_MONTH, CMOS_REG_SECONDS, CMOS_REG_YEAR, ChainedPic, CmosDateTime,
-    ICW1_INIT, ICW4_8086, PIC_EOI, PIC_MASK_ALL, PIC1_COMMAND, PIC1_DATA, PIC2_COMMAND, PIC2_DATA,
-    PIT_BASE_FREQUENCY_HZ, PIT_CHANNEL0_DATA, PIT_COMMAND_PORT, PitAccessMode, PitChannel,
-    PitOperatingMode, STATUS_A_UPDATE_IN_PROGRESS, STATUS_B_24_HOUR_MODE, STATUS_B_BINARY_MODE,
-    bcd_to_binary, binary_to_bcd, build_pit_command, compute_pit_divisor,
+    ACPI_PM_TIMER_FREQUENCY_HZ, CMOS_ADDRESS_PORT, CMOS_DATA_PORT, CMOS_NMI_DISABLE_BIT,
+    CMOS_REG_CENTURY, CMOS_REG_HOURS, CMOS_REG_MINUTES, CMOS_REG_MONTH, CMOS_REG_SECONDS,
+    CMOS_REG_YEAR, ChainedPic, CmosDateTime, HPET_DEFAULT_BASE_ADDRESS, HpetController,
+    ICW1_INIT, ICW4_8086, PIC_EOI, PIC_MASK_ALL, PIC1_COMMAND, PIC1_DATA, PIC2_COMMAND,
+    PIC2_DATA, PIT_BASE_FREQUENCY_HZ, PIT_CHANNEL0_DATA, PIT_COMMAND_PORT, PitAccessMode,
+    PitChannel, PitOperatingMode, STATUS_A_UPDATE_IN_PROGRESS, STATUS_B_24_HOUR_MODE,
+    STATUS_B_BINARY_MODE, UART_BASE_CLOCK_HZ, UART_MAX_BAUD, Uart16550, bcd_to_binary,
+    binary_to_bcd, build_pit_command, compute_pit_divisor, compute_uart_baud_divisor,
+    microseconds_to_pm_timer_ticks, pm_timer_elapsed_microseconds, uart_com_port, uart_lsr,
 };
 use rover_uefi::base::EfiGuid;
 use rover_uefi::protocols::console::shell::*;
@@ -283,4 +286,76 @@ fn test_tcg_mor_and_physical_presence() {
     assert_eq!(TCG_PP_RETURN_TPM_FAILURE, 1);
     assert_eq!(TCG_PP_RETURN_TPM_BLOCKED, 2);
     assert_eq!(TCG_PP_RETURN_USER_ABORT, 3);
+}
+
+#[test]
+fn test_uart16550_controller() {
+    assert_eq!(UART_BASE_CLOCK_HZ, 1_843_200);
+    assert_eq!(UART_MAX_BAUD, 115_200);
+
+    assert_eq!(compute_uart_baud_divisor(115_200), 1);
+    assert_eq!(compute_uart_baud_divisor(9_600), 12);
+    assert_eq!(compute_uart_baud_divisor(38_400), 3);
+    assert_eq!(compute_uart_baud_divisor(0), 1);
+
+    let com1 = Uart16550::new(uart_com_port::COM1);
+    assert_eq!(com1.base_port(), 0x03F8);
+    assert_eq!(com1.port_for(0), 0x03F8);
+    assert_eq!(com1.port_for(5), 0x03FD); // LSR
+
+    assert!(Uart16550::is_tx_ready(uart_lsr::TX_HOLDING_EMPTY));
+    assert!(!Uart16550::is_tx_ready(0));
+    assert!(Uart16550::is_rx_ready(uart_lsr::DATA_READY));
+    assert!(!Uart16550::is_rx_ready(0));
+}
+
+#[test]
+fn test_pl011_uart_controller() {
+    // Standard 24 MHz clock at 115200 baud
+    // Divisor = 24_000_000 / (16 * 115200) = 13.020833...
+    // Int = 13, Frac = round(0.020833 * 64) = round(1.33) = 1
+    let divisors = compute_pl011_divisors(24_000_000, 115_200);
+    assert_eq!(divisors.integer_divisor, 13);
+    assert_eq!(divisors.fractional_divisor, 1);
+
+    let uart = Pl011Uart::new(0x0900_0000);
+    assert_eq!(uart.base_address(), 0x0900_0000);
+    assert_eq!(uart.reg_address(0x18), 0x0900_0018); // UARTFR
+
+    assert!(Pl011Uart::is_tx_full(pl011_fr::TXFF));
+    assert!(!Pl011Uart::is_tx_full(0));
+    assert!(Pl011Uart::is_rx_empty(pl011_fr::RXFE));
+    assert!(!Pl011Uart::is_rx_empty(0));
+}
+
+#[test]
+fn test_acpi_pm_timer() {
+    assert_eq!(ACPI_PM_TIMER_FREQUENCY_HZ, 3_579_545);
+
+    // 3,579,545 ticks = exactly 1,000,000 microseconds (1 second)
+    let elapsed = pm_timer_elapsed_microseconds(0, 3_579_545);
+    assert_eq!(elapsed, 1_000_000);
+
+    // Rollover test: start at 0x00FF_FFF0, end at 10
+    let start = 0x00FF_FFF0;
+    let end = 10;
+    let elapsed_roll = pm_timer_elapsed_microseconds(start, end);
+    assert!(elapsed_roll > 0);
+
+    let ticks_1ms = microseconds_to_pm_timer_ticks(1_000);
+    assert_eq!(ticks_1ms, 3_579);
+}
+
+#[test]
+fn test_hpet_controller() {
+    assert_eq!(HPET_DEFAULT_BASE_ADDRESS, 0xFED0_0000);
+
+    let hpet = HpetController::new(HPET_DEFAULT_BASE_ADDRESS);
+    assert_eq!(hpet.base_address(), 0xFED0_0000);
+
+    // Cap register mock: 64-bit counter (bit 13), 3 timers (count_minus_one = 2 at bits 12:8), period 10000 fs (at bits 63:32)
+    let cap_reg: u64 = (10_000_u64 << 32) | (1_u64 << 13) | (2_u64 << 8) | 1;
+    assert_eq!(HpetController::tick_period_fs(cap_reg), 10_000);
+    assert_eq!(HpetController::timer_count(cap_reg), 3);
+    assert!(HpetController::is_64bit_counter(cap_reg));
 }
