@@ -260,7 +260,10 @@ impl RedfishCredential2 {
     /// # Errors
     ///
     /// Returns an error status if registration fails.
-    pub unsafe fn register_service(&self, service: *const core::ffi::c_void) -> Result<(), EfiStatus> {
+    pub unsafe fn register_service(
+        &self,
+        service: *const core::ffi::c_void,
+    ) -> Result<(), EfiStatus> {
         let status = unsafe { ((*self.proto).register_redfish_service)(self.proto, service) };
         if status == EfiStatus::SUCCESS {
             Ok(())
@@ -278,7 +281,10 @@ impl RedfishCredential2 {
     /// # Errors
     ///
     /// Returns an error status if unregistering fails.
-    pub unsafe fn unregister_service(&self, service: *const core::ffi::c_void) -> Result<(), EfiStatus> {
+    pub unsafe fn unregister_service(
+        &self,
+        service: *const core::ffi::c_void,
+    ) -> Result<(), EfiStatus> {
         let status = unsafe { ((*self.proto).unregister_redfish_service)(self.proto, service) };
         if status == EfiStatus::SUCCESS {
             Ok(())

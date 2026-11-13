@@ -35,6 +35,7 @@ pub mod smm_access2;
 pub mod smm_control2;
 pub mod smm_cpu;
 pub mod smm_events;
+pub mod standalone_mm;
 pub mod swap_address_range;
 pub mod universal_payload;
 
@@ -203,6 +204,11 @@ pub use smm_cpu::{
 pub use smm_events::{
     SMM_EXIT_BOOT_SERVICES_PROTOCOL_GUID, SMM_LEGACY_BOOT_PROTOCOL_GUID,
     SMM_READY_TO_BOOT_PROTOCOL_GUID,
+};
+pub use standalone_mm::{
+    EFI_MM_PEI_MMRAM_MEMORY_RESERVE_GUID, EfiMmCommunicateFvDispatch,
+    EfiMmCommunicateFvDispatchData, EfiMmramHobDescriptorBlockHeader, MM_FV_DISPATCH_GUID,
+    MP_INFORMATION_HOB_GUID, MmFoundationEntryPoint, MmImageEntryPoint, MpInformationHobHeader,
 };
 pub use swap_address_range::{
     EfiGetRangeLocation, EfiGetRtcPowerStatus, EfiGetSwapLockCapability, EfiGetSwapState,

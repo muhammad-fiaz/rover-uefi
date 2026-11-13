@@ -17,6 +17,7 @@ pub mod ps2_policy;
 pub mod shell;
 pub mod text;
 pub mod unicode_collation;
+pub mod virtual_keyboard;
 
 pub use absolute_pointer::{
     ABSOLUTE_POINTER_ATTR_SUPPORTS_ALT_ACTIVE, ABSOLUTE_POINTER_ATTR_SUPPORTS_PRESSURE_AS_Z,
@@ -70,4 +71,10 @@ pub use unicode_collation::{
     EfiUnicodeCollation2Protocol, EfiUnicodeCollationFatToStr, EfiUnicodeCollationMetaiMatch,
     EfiUnicodeCollationProtocol, EfiUnicodeCollationStrLwr, EfiUnicodeCollationStrToFat,
     EfiUnicodeCollationStrUpr, EfiUnicodeCollationStriColl,
+};
+pub use virtual_keyboard::{
+    EfiPlatformVirtualKeyboardProtocol, PLATFORM_VIRTUAL_KEYBOARD_PROTOCOL_GUID,
+    PlatformVirtualKbdClear, PlatformVirtualKbdQuery, PlatformVirtualKbdRegister,
+    PlatformVirtualKbdReset, PlatformVirtualKeyboard, VIRTUAL_KEYBOARD_KEY_SIGNATURE,
+    VirtualKbdKey,
 };
