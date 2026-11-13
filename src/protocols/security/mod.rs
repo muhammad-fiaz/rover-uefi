@@ -4,7 +4,9 @@
 //! interfaces.
 
 pub mod aes;
+pub mod authentication_info;
 pub mod cc_measurement;
+pub mod deferred_image;
 pub mod device_security;
 pub mod ecc;
 pub mod gcm;
@@ -63,6 +65,12 @@ pub use tcg_pp::{
     TcgPhysicalPresenceFlags,
 };
 
+pub use authentication_info::{
+    AuthNodeHeader, AuthenticationInfo, EFI_AUTHENTICATION_CHAP_LOCAL_GUID,
+    EFI_AUTHENTICATION_CHAP_RADIUS_GUID, EFI_AUTHENTICATION_INFO_PROTOCOL_GUID,
+    EfiAuthenticationInfoProtocol, EfiAuthenticationInfoProtocolGet,
+    EfiAuthenticationInfoProtocolSet,
+};
 pub use cc_measurement::{
     ARMCCA_MR_INDEX_0_RIM, ARMCCA_MR_INDEX_1_REM0, ARMCCA_MR_INDEX_2_REM1, ARMCCA_MR_INDEX_3_REM2,
     CC_BOOT_HASH_ALG_SHA256, CC_BOOT_HASH_ALG_SHA384, CC_BOOT_HASH_ALG_SHA512,
@@ -72,6 +80,10 @@ pub use cc_measurement::{
     EfiCcMeasurementBootServiceCapability, EfiCcMeasurementEvent, EfiCcMeasurementEventHeader,
     EfiCcMeasurementProtocol, EfiCcType, TDX_MR_INDEX_MRTD, TDX_MR_INDEX_RTMR0, TDX_MR_INDEX_RTMR1,
     TDX_MR_INDEX_RTMR2, TDX_MR_INDEX_RTMR3,
+};
+pub use deferred_image::{
+    DeferredImageDetails, DeferredImageLoad, EFI_DEFERRED_IMAGE_LOAD_PROTOCOL_GUID,
+    EfiDeferredImageInfo, EfiDeferredImageLoadProtocol,
 };
 pub use device_security::{
     DEVICE_IDENTIFIER_REVISION, DEVICE_IDENTIFIER_TYPE_PCI_GUID, DEVICE_IDENTIFIER_TYPE_USB_GUID,
