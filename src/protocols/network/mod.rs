@@ -137,8 +137,8 @@ pub use usb_ethernet::{
     desc_subtype as usb_eth_desc_subtype, packet_filter as usb_eth_packet_filter,
 };
 pub use vlan_config::{
-    EfiVlanConfigFind, EfiVlanConfigProtocol, EfiVlanConfigRemove, EfiVlanConfigSet,
-    EfiVlanFindData, VLAN_CONFIG_PROTOCOL_GUID,
+    EFI_VLAN_CONFIG_PROTOCOL_GUID, EfiVlanConfigFind, EfiVlanConfigProtocol, EfiVlanConfigRemove,
+    EfiVlanConfigSet, EfiVlanFindData, VLAN_CONFIG_PROTOCOL_GUID, VlanConfig,
 };
 pub use wifi_profile_sync::{
     WIFI_MAX_KEY_LEN, WIFI_MAX_SSID_LEN, WIFI_PROFILE_SYNC_PROTOCOL_GUID,

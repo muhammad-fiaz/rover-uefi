@@ -8,11 +8,14 @@ use crate::base::{EfiGuid, EfiStatus};
 
 /// The VLAN config protocol GUID: `{9e23d768-d2f3-4366-9fc3-3a7aba864374}`.
 pub const VLAN_CONFIG_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
-    0x9e23_d768,
-    0xd2f3,
+    0x9E23_D768,
+    0xD2F3,
     0x4366,
-    [0x9f, 0xc3, 0x3a, 0x7a, 0xba, 0x86, 0x43, 0x74],
+    [0x9F, 0xC3, 0x3A, 0x7A, 0xBA, 0x86, 0x43, 0x74],
 );
+
+/// The `EFI_VLAN_CONFIG_PROTOCOL_GUID`.
+pub const EFI_VLAN_CONFIG_PROTOCOL_GUID: EfiGuid = VLAN_CONFIG_PROTOCOL_GUID;
 
 /// VLAN find configuration entry data.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
@@ -53,4 +56,97 @@ pub struct EfiVlanConfigProtocol {
     pub find: EfiVlanConfigFind,
     /// Removes a configured VLAN device.
     pub remove: EfiVlanConfigRemove,
+}
+
+/// Safe wrapper around [`EfiVlanConfigProtocol`].
+pub struct VlanConfig<'a> {
+    proto: &'a mut EfiVlanConfigProtocol,
+}
+
+impl<'a> VlanConfig<'a> {
+    /// Wraps a mutable reference to [`EfiVlanConfigProtocol`].
+    pub fn new(proto: &'a mut EfiVlanConfigProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Wraps a raw mutable pointer to [`EfiVlanConfigProtocol`].
+    ///
+    /// # Safety
+    ///
+    /// If non-null, `proto` must point to an initialized and valid protocol instance.
+    #[must_use]
+    pub unsafe fn from_raw(proto: *mut EfiVlanConfigProtocol) -> Option<Self> {
+        if proto.is_null() {
+            None
+        } else {
+            Some(Self {
+                proto: unsafe { &mut *proto },
+            })
+        }
+    }
+
+    /// Creates a new VLAN or modifies an existing VLAN's priority on the interface.
+    ///
+    /// `vlan_id` must be between 0 and 4094, and `priority` must be between 0 and 7.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if parameters are invalid or memory allocation fails.
+    pub fn set(&mut self, vlan_id: u16, priority: u8) -> Result<(), EfiStatus> {
+        let status = unsafe { (self.proto.set)(self.proto, vlan_id, priority) };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Finds configured VLANs matching `vlan_id`, or all configured VLANs if `vlan_id` is `None`.
+    ///
+    /// Returns a tuple containing a pointer to the buffer of entries allocated by firmware
+    /// and the number of returned entries. The caller is responsible for freeing the buffer.
+    ///
+    /// # Errors
+    ///
+    /// Returns `EfiStatus::NOT_FOUND` if no matching VLANs are configured.
+    pub fn find(&mut self, vlan_id: Option<u16>) -> Result<(*mut EfiVlanFindData, u16), EfiStatus> {
+        let id_val = vlan_id.unwrap_or(0);
+        let id_ptr = if vlan_id.is_some() {
+            core::ptr::from_ref(&id_val)
+        } else {
+            core::ptr::null()
+        };
+
+        let mut count: u16 = 0;
+        let mut entries_ptr: *mut EfiVlanFindData = core::ptr::null_mut();
+
+        let status = unsafe {
+            (self.proto.find)(
+                self.proto,
+                id_ptr,
+                core::ptr::from_mut(&mut count),
+                core::ptr::from_mut(&mut entries_ptr),
+            )
+        };
+
+        if status == EfiStatus::SUCCESS {
+            Ok((entries_ptr, count))
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Removes a configured VLAN by identifier (0-4094).
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if the VLAN does not exist or parameters are invalid.
+    pub fn remove(&mut self, vlan_id: u16) -> Result<(), EfiStatus> {
+        let status = unsafe { (self.proto.remove)(self.proto, vlan_id) };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
 }

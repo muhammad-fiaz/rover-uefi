@@ -2,9 +2,11 @@
 //! Unit tests for VLAN config and ARP protocols.
 
 use core::mem::size_of;
+use rover_uefi::base::EfiStatus;
 use rover_uefi::protocols::network::{
-    ARP_PROTOCOL_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID, EfiArpConfigData, EfiArpProtocol,
-    EfiVlanConfigProtocol, EfiVlanFindData, VLAN_CONFIG_PROTOCOL_GUID,
+    ARP_PROTOCOL_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID, EFI_VLAN_CONFIG_PROTOCOL_GUID,
+    EfiArpConfigData, EfiArpProtocol, EfiVlanConfigProtocol, EfiVlanFindData,
+    VLAN_CONFIG_PROTOCOL_GUID, VlanConfig,
 };
 
 #[test]
@@ -48,4 +50,78 @@ fn vlan_and_arp_structures_layout() {
         assert_eq!(size_of::<EfiArpConfigData>(), 24);
         assert_eq!(size_of::<EfiArpProtocol>(), 28);
     }
+}
+
+static mut DUMMY_FIND_DATA: EfiVlanFindData = EfiVlanFindData {
+    vlan_id: 100,
+    priority: 3,
+};
+
+unsafe extern "efiapi" fn mock_vlan_set(
+    _this: *mut EfiVlanConfigProtocol,
+    vlan_id: u16,
+    priority: u8,
+) -> EfiStatus {
+    if vlan_id > 4094 || priority > 7 {
+        EfiStatus::INVALID_PARAMETER
+    } else {
+        EfiStatus::SUCCESS
+    }
+}
+
+unsafe extern "efiapi" fn mock_vlan_find(
+    _this: *mut EfiVlanConfigProtocol,
+    vlan_id: *const u16,
+    number_of_vlan: *mut u16,
+    entries: *mut *mut EfiVlanFindData,
+) -> EfiStatus {
+    if number_of_vlan.is_null() || entries.is_null() {
+        return EfiStatus::INVALID_PARAMETER;
+    }
+    if !vlan_id.is_null() && unsafe { *vlan_id } != 100 {
+        return EfiStatus::NOT_FOUND;
+    }
+    unsafe {
+        *number_of_vlan = 1;
+        *entries = core::ptr::addr_of_mut!(DUMMY_FIND_DATA);
+    }
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn mock_vlan_remove(
+    _this: *mut EfiVlanConfigProtocol,
+    vlan_id: u16,
+) -> EfiStatus {
+    if vlan_id == 100 {
+        EfiStatus::SUCCESS
+    } else {
+        EfiStatus::NOT_FOUND
+    }
+}
+
+#[test]
+fn test_vlan_config_client() {
+    assert_eq!(EFI_VLAN_CONFIG_PROTOCOL_GUID, VLAN_CONFIG_PROTOCOL_GUID);
+
+    let mut mock_proto = EfiVlanConfigProtocol {
+        set: mock_vlan_set,
+        find: mock_vlan_find,
+        remove: mock_vlan_remove,
+    };
+
+    let mut vlan = VlanConfig::new(&mut mock_proto);
+
+    assert!(vlan.set(100, 3).is_ok());
+    assert!(vlan.set(5000, 0).is_err());
+
+    let (entries, count) = vlan.find(Some(100)).unwrap_or((core::ptr::null_mut(), 0));
+    assert_eq!(count, 1);
+    assert!(!entries.is_null());
+    assert_eq!(unsafe { (*entries).vlan_id }, 100);
+    assert_eq!(unsafe { (*entries).priority }, 3);
+
+    assert_eq!(vlan.find(Some(200)).err(), Some(EfiStatus::NOT_FOUND));
+
+    assert!(vlan.remove(100).is_ok());
+    assert_eq!(vlan.remove(200).err(), Some(EfiStatus::NOT_FOUND));
 }
