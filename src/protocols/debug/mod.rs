@@ -3,6 +3,7 @@
 //! Debug support and debug port access.
 
 pub mod agent;
+pub mod ebc;
 pub mod guid;
 pub mod protocol;
 pub mod types;
@@ -24,6 +25,16 @@ pub use agent::{
     DEBUG_DATA_UPPER_LIMIT, DEBUG_STARTING_SYMBOL_ATTACH, DEBUG_STARTING_SYMBOL_COMPRESS,
     DEBUG_STARTING_SYMBOL_NORMAL, DebugDataResponseBreakCause, DebugPacketError, DebugPacketHeader,
     calculate_debug_crc16, decode_debug_packet, encode_debug_packet,
+};
+pub use ebc::{
+    EFI_EBC_INTERPRETER_PROTOCOL_GUID, EFI_EBC_PROTOCOL_GUID,
+    EFI_EBC_SIMPLE_DEBUGGER_PROTOCOL_GUID, EFI_EBC_VM_TEST_PROTOCOL_GUID, Ebc,
+    EbcDebuggerConfigure, EbcDebuggerDasm, EbcDebuggerDebug, EbcDebuggerSignalException,
+    EbcIcacheFlush, EbcSimpleDebugger, EbcVmContext, EbcVmTest, EbcVmTestAsm, EbcVmTestDasm,
+    EbcVmTestExecute, EfiEbcCreateThunk, EfiEbcGetVersion, EfiEbcProtocol,
+    EfiEbcRegisterIcacheFlush, EfiEbcSimpleDebuggerProtocol, EfiEbcUnloadImage,
+    EfiEbcVmTestProtocol, exception_flags as ebc_exception_flags, opcodes as ebc_opcodes,
+    stop_flags as ebc_stop_flags, vm_flags as ebc_vm_flags,
 };
 pub use guid::{DEBUG_PORT_GUID, DEBUG_SUPPORT_GUID};
 pub use protocol::{DebugPort, DebugSupport, EfiDebugPortProtocol, EfiDebugSupportProtocol};
