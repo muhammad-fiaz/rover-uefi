@@ -58,8 +58,5 @@ fn test_semihost_data_structures() {
 fn test_semihost_call_fallback() {
     // On non-baremetal / test host target, semihost_call returns fallback
     let res = unsafe { semihost_call(SYS_TIME, 0) };
-    #[cfg(not(target_arch = "aarch64"))]
     assert_eq!(res, usize::MAX);
-    #[cfg(target_arch = "aarch64")]
-    let _ = res;
 }

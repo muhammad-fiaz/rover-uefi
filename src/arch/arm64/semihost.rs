@@ -150,7 +150,7 @@ pub struct SemihostCommandLineArgs {
 #[inline]
 #[must_use]
 pub unsafe fn semihost_call(operation: usize, parameter: usize) -> usize {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     {
         let mut result = operation;
         unsafe {
@@ -163,7 +163,7 @@ pub unsafe fn semihost_call(operation: usize, parameter: usize) -> usize {
         }
         result
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     {
         let _ = (operation, parameter);
         usize::MAX

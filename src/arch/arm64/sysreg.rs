@@ -211,39 +211,39 @@ impl CpacrEl1 {
 /// Reads the current exception level from `CurrentEL`.
 #[must_use]
 pub fn read_current_el() -> CurrentEl {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, CurrentEL", out(reg) raw, options(nomem, nostack, preserves_flags));
         CurrentEl::from_raw(raw)
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     CurrentEl::El1
 }
 
 /// Reads the current processor interrupt mask flags (`DAIF`).
 #[must_use]
 pub fn read_daif() -> Daif {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, daif", out(reg) raw, options(nomem, nostack, preserves_flags));
         Daif(raw)
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     Daif(0)
 }
 
 /// Reads `SCTLR_EL1`.
 #[must_use]
 pub fn read_sctlr_el1() -> SctlrEl1 {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, sctlr_el1", out(reg) raw, options(nomem, nostack, preserves_flags));
         SctlrEl1(raw)
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     SctlrEl1(0)
 }
 
@@ -253,25 +253,25 @@ pub fn read_sctlr_el1() -> SctlrEl1 {
 ///
 /// Modifying `SCTLR_EL1` changes MMU and caching state.
 pub unsafe fn write_sctlr_el1(val: SctlrEl1) {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("msr sctlr_el1, {}", in(reg) val.0, options(nomem, nostack, preserves_flags));
         core::arch::asm!("isb", options(nomem, nostack, preserves_flags));
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     let _ = val;
 }
 
 /// Reads `MPIDR_EL1`.
 #[must_use]
 pub fn read_mpidr_el1() -> MpidrEl1 {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, mpidr_el1", out(reg) raw, options(nomem, nostack, preserves_flags));
         MpidrEl1::from_raw(raw)
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     MpidrEl1 {
         aff0: 0,
         aff1: 0,
@@ -285,13 +285,13 @@ pub fn read_mpidr_el1() -> MpidrEl1 {
 /// Reads `MIDR_EL1`.
 #[must_use]
 pub fn read_midr_el1() -> MidrEl1 {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, midr_el1", out(reg) raw, options(nomem, nostack, preserves_flags));
         MidrEl1::from_raw(raw)
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     MidrEl1 {
         revision: 0,
         part_num: 0,
@@ -304,13 +304,13 @@ pub fn read_midr_el1() -> MidrEl1 {
 /// Reads `CPACR_EL1`.
 #[must_use]
 pub fn read_cpacr_el1() -> CpacrEl1 {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, cpacr_el1", out(reg) raw, options(nomem, nostack, preserves_flags));
         CpacrEl1(raw)
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     CpacrEl1(0)
 }
 
@@ -320,18 +320,18 @@ pub fn read_cpacr_el1() -> CpacrEl1 {
 ///
 /// Modifying `CPACR_EL1` alters architectural feature access traps.
 pub unsafe fn write_cpacr_el1(val: CpacrEl1) {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("msr cpacr_el1, {}", in(reg) val.0, options(nomem, nostack, preserves_flags));
         core::arch::asm!("isb", options(nomem, nostack, preserves_flags));
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     let _ = val;
 }
 
 /// Enables Floating Point and Advanced SIMD instructions by configuring `CPACR_EL1.FPEN = 0b11`.
 pub fn enable_fp_simd() {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let mut raw: u64;
         core::arch::asm!("mrs {}, cpacr_el1", out(reg) raw, options(nomem, nostack, preserves_flags));
@@ -344,13 +344,13 @@ pub fn enable_fp_simd() {
 /// Reads the Exception Vector Base Address Register (`VBAR_EL1`).
 #[must_use]
 pub fn read_vbar_el1() -> u64 {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, vbar_el1", out(reg) raw, options(nomem, nostack, preserves_flags));
         raw
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     0
 }
 
@@ -360,11 +360,11 @@ pub fn read_vbar_el1() -> u64 {
 ///
 /// Modifying the vector base address alters the processor exception dispatch table.
 pub unsafe fn write_vbar_el1(base: u64) {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("msr vbar_el1, {}", in(reg) base, options(nomem, nostack, preserves_flags));
         core::arch::asm!("isb", options(nomem, nostack, preserves_flags));
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     let _ = base;
 }

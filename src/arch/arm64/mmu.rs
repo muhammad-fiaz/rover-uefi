@@ -215,13 +215,13 @@ impl TcrEl1 {
 /// Reads the Memory Attribute Indirection Register (`MAIR_EL1`).
 #[must_use]
 pub fn read_mair_el1() -> MairEl1 {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, mair_el1", out(reg) raw, options(nomem, nostack, preserves_flags));
         MairEl1(raw)
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     MairEl1::DEFAULT
 }
 
@@ -231,25 +231,25 @@ pub fn read_mair_el1() -> MairEl1 {
 ///
 /// Modifying memory attribute slots alters cacheability and hardware ordering rules.
 pub unsafe fn write_mair_el1(mair: MairEl1) {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("msr mair_el1, {}", in(reg) mair.0, options(nomem, nostack, preserves_flags));
         core::arch::asm!("isb", options(nomem, nostack, preserves_flags));
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     let _ = mair;
 }
 
 /// Reads the Translation Control Register (`TCR_EL1`).
 #[must_use]
 pub fn read_tcr_el1() -> TcrEl1 {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, tcr_el1", out(reg) raw, options(nomem, nostack, preserves_flags));
         TcrEl1(raw)
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     TcrEl1::DEFAULT_48BIT
 }
 
@@ -259,25 +259,25 @@ pub fn read_tcr_el1() -> TcrEl1 {
 ///
 /// Modifying `TCR_EL1` changes translation granules and addressing bounds.
 pub unsafe fn write_tcr_el1(tcr: TcrEl1) {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("msr tcr_el1, {}", in(reg) tcr.0, options(nomem, nostack, preserves_flags));
         core::arch::asm!("isb", options(nomem, nostack, preserves_flags));
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     let _ = tcr;
 }
 
 /// Reads Translation Table Base Register 0 (`TTBR0_EL1`).
 #[must_use]
 pub fn read_ttbr0_el1() -> u64 {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let raw: u64;
         core::arch::asm!("mrs {}, ttbr0_el1", out(reg) raw, options(nomem, nostack, preserves_flags));
         raw
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     0
 }
 
@@ -287,18 +287,18 @@ pub fn read_ttbr0_el1() -> u64 {
 ///
 /// Modifying `TTBR0_EL1` sets the active stage 1 root translation table base.
 pub unsafe fn write_ttbr0_el1(table_base: u64) {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("msr ttbr0_el1, {}", in(reg) table_base, options(nomem, nostack, preserves_flags));
         core::arch::asm!("isb", options(nomem, nostack, preserves_flags));
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     let _ = table_base;
 }
 
 /// Invalidates all Stage 1 translation table entries at EL1 across all inner-shareable cores (`TLBI VMALLE1IS`).
 pub fn tlbi_vmalle1() {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!(
             "dsb ishst",
@@ -312,7 +312,7 @@ pub fn tlbi_vmalle1() {
 
 /// Invalidates TLB entries matching a virtual address for all ASIDs at EL1 (`TLBI VAAE1IS`).
 pub fn tlbi_vaae1(vaddr: u64) {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         let page = vaddr >> 12;
         core::arch::asm!(
@@ -324,6 +324,6 @@ pub fn tlbi_vaae1(vaddr: u64) {
             options(nostack, preserves_flags)
         );
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     let _ = vaddr;
 }

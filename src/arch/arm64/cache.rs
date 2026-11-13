@@ -10,7 +10,7 @@ pub const ARM64_CACHE_LINE_SIZE: usize = 64;
 
 /// Invalidates all instruction caches to the Point of Unification (`PoU`).
 pub fn invalidate_instruction_cache() {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!(
             "ic iallu",
@@ -27,15 +27,15 @@ pub fn invalidate_instruction_cache_range(address: usize, length: usize) {
     let mut offset = 0;
     while offset < span_len {
         let va = start + offset;
-        #[cfg(target_arch = "aarch64")]
+        #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
         unsafe {
             core::arch::asm!("ic ivau, {0}", in(reg) va, options(nostack, preserves_flags));
         }
-        #[cfg(not(target_arch = "aarch64"))]
+        #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
         let _ = va;
         offset += ARM64_CACHE_LINE_SIZE;
     }
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("dsb ish", "isb", options(nostack, preserves_flags));
     }
@@ -52,15 +52,15 @@ pub fn writeback_data_cache_range(address: usize, length: usize) {
     let mut offset = 0;
     while offset < span_len {
         let va = start + offset;
-        #[cfg(target_arch = "aarch64")]
+        #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
         unsafe {
             core::arch::asm!("dc cvac, {0}", in(reg) va, options(nostack, preserves_flags));
         }
-        #[cfg(not(target_arch = "aarch64"))]
+        #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
         let _ = va;
         offset += ARM64_CACHE_LINE_SIZE;
     }
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("dsb ish", options(nostack, preserves_flags));
     }
@@ -83,15 +83,15 @@ pub unsafe fn invalidate_data_cache_range(address: usize, length: usize) {
     let mut offset = 0;
     while offset < span_len {
         let va = start + offset;
-        #[cfg(target_arch = "aarch64")]
+        #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
         unsafe {
             core::arch::asm!("dc ivac, {0}", in(reg) va, options(nostack, preserves_flags));
         }
-        #[cfg(not(target_arch = "aarch64"))]
+        #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
         let _ = va;
         offset += ARM64_CACHE_LINE_SIZE;
     }
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("dsb ish", options(nostack, preserves_flags));
     }
@@ -106,15 +106,15 @@ pub fn writeback_invalidate_data_cache_range(address: usize, length: usize) {
     let mut offset = 0;
     while offset < span_len {
         let va = start + offset;
-        #[cfg(target_arch = "aarch64")]
+        #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
         unsafe {
             core::arch::asm!("dc civac, {0}", in(reg) va, options(nostack, preserves_flags));
         }
-        #[cfg(not(target_arch = "aarch64"))]
+        #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
         let _ = va;
         offset += ARM64_CACHE_LINE_SIZE;
     }
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     unsafe {
         core::arch::asm!("dsb ish", options(nostack, preserves_flags));
     }

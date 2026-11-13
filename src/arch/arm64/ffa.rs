@@ -235,7 +235,7 @@ pub unsafe fn ffa_smc_call(
     arg6: u64,
     arg7: u64,
 ) -> [u64; 8] {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     {
         let mut r0 = fid as u64;
         let mut r1 = arg1;
@@ -263,7 +263,7 @@ pub unsafe fn ffa_smc_call(
 
         [r0, r1, r2, r3, r4, r5, r6, r7]
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     {
         let _ = (fid, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         [0xFFFF_FFFF_FFFF_FFFF; 8]
@@ -285,7 +285,7 @@ pub unsafe fn ffa_hvc_call(
     arg6: u64,
     arg7: u64,
 ) -> [u64; 8] {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi")))]
     {
         let mut r0 = fid as u64;
         let mut r1 = arg1;
@@ -313,7 +313,7 @@ pub unsafe fn ffa_hvc_call(
 
         [r0, r1, r2, r3, r4, r5, r6, r7]
     }
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(all(target_arch = "aarch64", any(target_os = "none", target_os = "uefi"))))]
     {
         let _ = (fid, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         [0xFFFF_FFFF_FFFF_FFFF; 8]
