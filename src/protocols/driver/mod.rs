@@ -8,6 +8,7 @@ pub mod binding;
 pub mod component_name;
 pub mod config_manager;
 pub mod diagnostics;
+pub mod embedded;
 pub mod emulator;
 pub mod fdt_client;
 pub mod gpio;
@@ -56,6 +57,12 @@ pub use diagnostics::{
     EFI_DRIVER_DIAGNOSTICS_PROTOCOL_GUID, EFI_DRIVER_DIAGNOSTICS2_PROTOCOL_GUID,
     EfiDriverDiagnosticType, EfiDriverDiagnostics2Protocol, EfiDriverDiagnostics2RunDiagnostics,
     EfiDriverDiagnosticsProtocol, EfiDriverDiagnosticsRunDiagnostics,
+};
+pub use embedded::{
+    EMBEDDED_DEVICE_PROTOCOL_GUID, EMBEDDED_EXTERNAL_DEVICE_PROTOCOL_GUID, EmbeddedDeviceProtocol,
+    EmbeddedExternalDevice, EmbeddedExternalDeviceProtocol, EmbeddedExternalDeviceRead,
+    EmbeddedExternalDeviceWrite, USB_DEVICE_PROTOCOL_GUID, UsbDevice, UsbDeviceProtocol,
+    UsbDeviceRxCallback, UsbDeviceSend, UsbDeviceStart, UsbDeviceTxCallback,
 };
 pub use emulator::{
     EMU_BLOCK_IO_PROTOCOL_GUID, EMU_GRAPHICS_WINDOW_PROTOCOL_GUID, EMU_THREAD_THUNK_PROTOCOL_GUID,
