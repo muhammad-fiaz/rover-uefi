@@ -12,6 +12,7 @@ pub mod dxe_services;
 pub mod esrt;
 pub mod firmvol;
 pub mod fmp;
+pub mod form_browser_ex;
 pub mod fsp;
 pub mod ftw;
 pub mod hii;
@@ -33,6 +34,7 @@ pub mod sections;
 pub mod smm_access2;
 pub mod smm_control2;
 pub mod smm_cpu;
+pub mod smm_events;
 pub mod swap_address_range;
 pub mod universal_payload;
 
@@ -74,6 +76,15 @@ pub use esrt::{
     LAST_ATTEMPT_STATUS_ERROR_UNSATISFIED_DEPENDENCIES, LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL,
     LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MAX,
     LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MIN, LAST_ATTEMPT_STATUS_SUCCESS,
+};
+pub use form_browser_ex::{
+    BROWSER_ACTION_DEFAULT, BROWSER_ACTION_DISCARD, BROWSER_ACTION_EXIT, BROWSER_ACTION_GOTO,
+    BROWSER_ACTION_RESET, BROWSER_ACTION_SUBMIT, BROWSER_ACTION_UNREGISTER,
+    BROWSER_EXTENSION2_VERSION_1, BROWSER_EXTENSION2_VERSION_1_1, BrowserExecuteAction,
+    BrowserIsDataModified, BrowserIsResetRequired, BrowserRegisterExitHandler,
+    BrowserRegisterHotKey, BrowserSetScope, BrowserSettingScope, EfiFormBrowserExtension2Protocol,
+    EfiFormBrowserExtensionProtocol, FORM_BROWSER_EXTENSION_PROTOCOL_GUID,
+    FORM_BROWSER_EXTENSION2_PROTOCOL_GUID, FormBrowserExtension, FormBrowserExtension2,
 };
 pub use fsp::{
     FSP_IA32, FSP_INFO_HEADER_OFFSET, FSP_INFO_HEADER_SIGNATURE, FSP_X64, FspInfoHeader,
@@ -188,6 +199,10 @@ pub use smm_cpu::{
     EfiSmmCpuProtocol, EfiSmmReadSaveState, EfiSmmSaveStateIoInfo, EfiSmmSaveStateIoType,
     EfiSmmSaveStateIoWidth, EfiSmmSaveStateRegister, EfiSmmWriteSaveState, SMM_CPU_PROTOCOL_GUID,
     SmmCpu,
+};
+pub use smm_events::{
+    SMM_EXIT_BOOT_SERVICES_PROTOCOL_GUID, SMM_LEGACY_BOOT_PROTOCOL_GUID,
+    SMM_READY_TO_BOOT_PROTOCOL_GUID,
 };
 pub use swap_address_range::{
     EfiGetRangeLocation, EfiGetRtcPowerStatus, EfiGetSwapLockCapability, EfiGetSwapState,

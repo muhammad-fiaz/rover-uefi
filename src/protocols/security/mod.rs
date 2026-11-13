@@ -23,10 +23,14 @@ pub mod sha224;
 pub mod sha256;
 pub mod sha3;
 pub mod sha512;
+pub mod sm3;
+pub mod sm4;
 pub mod tcg2;
 pub mod tcg_pp;
+pub mod tpm_instance;
 pub mod types;
 pub mod validation;
+pub mod var_check;
 pub mod variable_lock;
 pub mod variable_policy;
 pub mod x509;
@@ -76,7 +80,22 @@ pub use sha3::{
     Sha3_224, Sha3_256, Sha3_384, Sha3_512, Sha3Hasher, Shake128, Shake256, ShakeSqueezer,
     sha3_224, sha3_256, sha3_384, sha3_512, shake128_into, shake256_into,
 };
+pub use sm3::{SM3_BLOCK_SIZE, SM3_DIGEST_SIZE, Sm3};
+pub use sm4::{SM4_BLOCK_SIZE, SM4_KEY_SIZE, SM4_NUM_ROUNDS, Sm4};
+pub use tpm_instance::{
+    CC_EVENT_ENTRY_HOB_GUID, MEASURED_FV_HOB_GUID, MeasuredHobHeader,
+    TCG2_ACPI_COMMUNICATE_BUFFER_HOB_GUID, TCG2_ACPI_COMMUNICATE_BUFFER_HOB_REVISION,
+    TPM_DEVICE_INTERFACE_NONE, TPM_DEVICE_INTERFACE_TPM12, TPM_DEVICE_INTERFACE_TPM20_DTPM,
+    TPM_DEVICE_SELECTED_GUID, Tcg2AcpiCommunicateBuffer,
+};
 pub use types::{GLOBAL_VARIABLE_GUID, IMAGE_SECURITY_DATABASE_GUID};
+pub use var_check::{
+    EfiSmmVarCheckProtocol, EfiVarCheckProtocol, SMM_VAR_CHECK_PROTOCOL_GUID,
+    SetVariableCheckHandler, SmmVarCheck, VAR_CHECK_PROTOCOL_GUID,
+    VAR_CHECK_VARIABLE_PROPERTY_READ_ONLY, VAR_CHECK_VARIABLE_PROPERTY_REVISION, VarCheck,
+    VarCheckRegisterSetVariableCheckHandler, VarCheckVariablePropertyGet,
+    VarCheckVariablePropertySet, VariableProperty,
+};
 pub use variable_lock::{
     EfiVariableLockProtocol, EfiVariableLockRequestToLock, VARIABLE_LOCK_PROTOCOL_GUID,
     VariableLock,
