@@ -35,6 +35,7 @@ pub mod ppi;
 pub mod prm;
 pub mod progress;
 pub mod psa_fwu;
+pub mod s3_save_state;
 pub mod sections;
 pub mod smm_access2;
 pub mod smm_control2;
@@ -268,6 +269,21 @@ pub use psa_fwu::{
     PSA_MM_FWU_NOT_AVAILABLE, PSA_MM_FWU_OUT_OF_BOUNDS, PSA_MM_FWU_RESUME, PSA_MM_FWU_SUCCESS,
     PSA_MM_FWU_UNKNOWN, PsaFwuDiscoveryResult, PsaFwuImageProperty, PsaFwuStreamHeader,
     SERVICE_STATUS_ERR_INIT, SERVICE_STATUS_OPERATIVE, parse_psa_version, psa_fwu_is_success,
+};
+pub use s3_save_state::{
+    EFI_BOOT_SCRIPT_DISPATCH_2_OPCODE, EFI_BOOT_SCRIPT_DISPATCH_OPCODE,
+    EFI_BOOT_SCRIPT_INFORMATION_OPCODE, EFI_BOOT_SCRIPT_IO_POLL_OPCODE,
+    EFI_BOOT_SCRIPT_IO_READ_WRITE_OPCODE, EFI_BOOT_SCRIPT_IO_WRITE_OPCODE,
+    EFI_BOOT_SCRIPT_MEM_POLL_OPCODE, EFI_BOOT_SCRIPT_MEM_READ_WRITE_OPCODE,
+    EFI_BOOT_SCRIPT_MEM_WRITE_OPCODE, EFI_BOOT_SCRIPT_PCI_CONFIG_POLL_OPCODE,
+    EFI_BOOT_SCRIPT_PCI_CONFIG_READ_WRITE_OPCODE, EFI_BOOT_SCRIPT_PCI_CONFIG_WRITE_OPCODE,
+    EFI_BOOT_SCRIPT_PCI_CONFIG2_POLL_OPCODE, EFI_BOOT_SCRIPT_PCI_CONFIG2_READ_WRITE_OPCODE,
+    EFI_BOOT_SCRIPT_PCI_CONFIG2_WRITE_OPCODE, EFI_BOOT_SCRIPT_SMBUS_EXECUTE_OPCODE,
+    EFI_BOOT_SCRIPT_STALL_OPCODE, EFI_S3_SAVE_STATE_PROTOCOL_GUID,
+    EFI_S3_SMM_SAVE_STATE_PROTOCOL_GUID, EfiBootScriptWidth, EfiS3BootScriptPosition,
+    EfiS3SaveStateCompare, EfiS3SaveStateInsert, EfiS3SaveStateLabel, EfiS3SaveStateProtocol,
+    EfiS3SaveStateWrite, EfiS3SmmSaveStateProtocol, S3BootScriptRecord, S3BootScriptTable,
+    S3BootScriptTarget, S3SaveState, pci_address as s3_boot_script_pci_address,
 };
 pub use sections::{
     CompressionSectionHeader, EFI_NOT_COMPRESSED, EFI_SECTION_ALL, EFI_SECTION_COMPATIBILITY16,
