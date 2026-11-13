@@ -80,6 +80,10 @@ pub use guid::{
     TCP6_GUID, UDP4_GUID, UDP6_GUID, VLAN_CONFIG_PROTOCOL_GUID as VLAN_CONFIG_GUID,
 };
 pub use http::protocol::{EfiHttpProtocol, Http};
+pub use http::utilities::{
+    EFI_HTTP_UTILITIES_PROTOCOL_GUID, EfiHttpHeader, EfiHttpUtilitiesProtocol, EfiHttpUtilsBuild,
+    EfiHttpUtilsParse, HttpUtilities, format_header_line, parse_header_line, parse_raw_headers,
+};
 pub use http_boot_callback::{
     EFI_HTTP_BOOT_CALLBACK_PROTOCOL_GUID, EfiHttpBootCallback, EfiHttpBootCallbackDataType,
     EfiHttpBootCallbackProtocol,
