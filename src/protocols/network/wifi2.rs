@@ -1,12 +1,19 @@
-//! # Wireless MAC Connection II (`WiFi` 2) Protocol
+//! Wireless MAC Connection II (`WiFi` 2) Protocol.
 //!
 //! Defined in UEFI Specification 2.6+ Section 29.
 //!
 //! Provides 802.11 wireless network survey, connection establishment,
 //! security configuration (`WPA2`/`WPA3`), and disconnection services.
 
-use crate::abi::types::UIntN;
 use crate::base::{EfiEvent, EfiGuid, EfiStatus};
+
+/// EFI Wireless MAC Connection Protocol GUID (UEFI 2.5).
+pub const EFI_WIRELESS_MAC_CONNECTION_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0x0DA5_5BC9,
+    0x45F8,
+    0x4BB4,
+    [0x87, 0x19, 0x52, 0x24, 0xF1, 0x8A, 0x4D, 0x45],
+);
 
 /// EFI Wireless MAC Connection II Protocol GUID: `{1b0fb9bf-699d-4fdd-a7c3-2546681bf63b}`.
 pub const EFI_WIRELESS_MAC_CONNECTION_II_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
@@ -89,6 +96,72 @@ pub struct Efi80211SuiteSelector {
     pub suite_type: u8,
 }
 
+/// Authentication and Key Management (`AKM`) suite selector list header.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Efi80211AkmSuiteSelector {
+    /// Number of `AKM` suite selectors in the list.
+    pub akm_suite_count: u16,
+}
+
+/// Cipher suite selector list header.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Efi80211CipherSuiteSelector {
+    /// Number of cipher suites in the list.
+    pub cipher_suite_count: u16,
+}
+
+/// Discovered IEEE 802.11 wireless network attributes.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Efi80211Network {
+    /// `BSS` operational mode.
+    pub bss_type: Efi80211BssType,
+    /// Network `SSID`.
+    pub ssid: Efi80211Ssid,
+    /// Pointer to supported `AKM` suite selector list.
+    pub akm_suite: *const Efi80211AkmSuiteSelector,
+    /// Pointer to supported cipher suite selector list.
+    pub cipher_suite: *const Efi80211CipherSuiteSelector,
+}
+
+/// IEEE 802.11 wireless network description with signal quality.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Efi80211NetworkDescription {
+    /// Discovered network attributes.
+    pub network: Efi80211Network,
+    /// Network link quality (0 to 100, where 100 indicates best signal).
+    pub network_quality: u8,
+}
+
+/// Input parameters for network survey request.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Efi80211GetNetworksData {
+    /// Number of hidden `SSID` entries in `SSIDList`.
+    pub num_of_ssid: u32,
+}
+
+/// Result structure of network survey request.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Efi80211GetNetworksResult {
+    /// Number of discovered network descriptions.
+    pub num_of_network_desc: u8,
+}
+
+/// Input parameters for connecting to a network.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Efi80211ConnectNetworkData {
+    /// Pointer to target wireless network attributes.
+    pub network: *const Efi80211Network,
+    /// Optional failure timeout in seconds (0 for driver default).
+    pub failure_timeout: u32,
+}
+
 /// Asynchronous token for discovering wireless networks.
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
@@ -97,12 +170,10 @@ pub struct Efi80211GetNetworksToken {
     pub event: EfiEvent,
     /// Result status of the scan.
     pub status: EfiStatus,
-    /// Optional caller data.
-    pub data: *mut (),
-    /// Number of discovered network descriptions.
-    pub network_count: UIntN,
-    /// Buffer of discovered network descriptions.
-    pub network_desc: *mut (),
+    /// Input parameters for network scan.
+    pub data: *mut Efi80211GetNetworksData,
+    /// Scan results allocated or populated by driver.
+    pub result: *mut Efi80211GetNetworksResult,
 }
 
 /// Asynchronous token for connecting to a wireless network.
@@ -113,8 +184,8 @@ pub struct Efi80211ConnectNetworkToken {
     pub event: EfiEvent,
     /// Result status.
     pub status: EfiStatus,
-    /// Optional caller data.
-    pub data: *mut (),
+    /// Target network connection parameters.
+    pub data: *mut Efi80211ConnectNetworkData,
     /// Result code of the connection attempt.
     pub result_code: Efi80211ConnectNetworkResultCode,
 }
@@ -131,19 +202,19 @@ pub struct Efi80211DisconnectNetworkToken {
 
 /// Requests a survey/scan of potential wireless networks.
 pub type EfiWirelessMacConnectionIiGetNetworks = unsafe extern "efiapi" fn(
-    this: *mut EfiWirelessMacConnectionIiProtocol,
+    this: *const EfiWirelessMacConnectionIiProtocol,
     token: *mut Efi80211GetNetworksToken,
 ) -> EfiStatus;
 
 /// Connects to a wireless network specified in the connection token.
 pub type EfiWirelessMacConnectionIiConnectNetwork = unsafe extern "efiapi" fn(
-    this: *mut EfiWirelessMacConnectionIiProtocol,
+    this: *const EfiWirelessMacConnectionIiProtocol,
     token: *mut Efi80211ConnectNetworkToken,
 ) -> EfiStatus;
 
 /// Disconnects from the current wireless network.
 pub type EfiWirelessMacConnectionIiDisconnectNetwork = unsafe extern "efiapi" fn(
-    this: *mut EfiWirelessMacConnectionIiProtocol,
+    this: *const EfiWirelessMacConnectionIiProtocol,
     token: *mut Efi80211DisconnectNetworkToken,
 ) -> EfiStatus;
 
@@ -157,4 +228,74 @@ pub struct EfiWirelessMacConnectionIiProtocol {
     pub connect_network: EfiWirelessMacConnectionIiConnectNetwork,
     /// Disconnects from the connected network.
     pub disconnect_network: EfiWirelessMacConnectionIiDisconnectNetwork,
+}
+
+/// Safe idiomatic wrapper around `EfiWirelessMacConnectionIiProtocol`.
+pub struct Wifi2 {
+    proto: *const EfiWirelessMacConnectionIiProtocol,
+}
+
+impl Wifi2 {
+    /// Creates a new `Wifi2` client wrapper.
+    #[must_use]
+    pub const fn new(proto: *const EfiWirelessMacConnectionIiProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Returns the raw protocol pointer.
+    #[must_use]
+    pub const fn raw(&self) -> *const EfiWirelessMacConnectionIiProtocol {
+        self.proto
+    }
+
+    /// Requests an asynchronous survey of available wireless networks.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if initiating the network scan fails.
+    pub fn get_networks(&self, token: &mut Efi80211GetNetworksToken) -> Result<(), EfiStatus> {
+        let status =
+            unsafe { ((*self.proto).get_networks)(self.proto, core::ptr::from_mut(token)) };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Initiates connection establishment to the target wireless network.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if initiating connection fails.
+    pub fn connect_network(
+        &self,
+        token: &mut Efi80211ConnectNetworkToken,
+    ) -> Result<(), EfiStatus> {
+        let status =
+            unsafe { ((*self.proto).connect_network)(self.proto, core::ptr::from_mut(token)) };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Disconnects from the currently connected wireless network.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if initiating disconnection fails.
+    pub fn disconnect_network(
+        &self,
+        token: &mut Efi80211DisconnectNetworkToken,
+    ) -> Result<(), EfiStatus> {
+        let status =
+            unsafe { ((*self.proto).disconnect_network)(self.proto, core::ptr::from_mut(token)) };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
 }

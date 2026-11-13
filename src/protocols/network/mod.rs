@@ -35,6 +35,7 @@ pub mod redfish_host_interface;
 pub mod rest_ex;
 pub mod simple_network;
 pub mod stack;
+pub mod supplicant;
 pub mod tcp;
 pub mod tls;
 pub mod tls_protocol;
@@ -134,6 +135,13 @@ pub use rest_ex::{
     EfiRestSendReceive, REST_EX_PROTOCOL_GUID, REST_EX_SERVICE_BINDING_PROTOCOL_GUID,
     REST_PROTOCOL_GUID, Rest, RestEx,
 };
+pub use supplicant::{
+    EFI_MAX_KEY_LEN, EFI_SUPPLICANT_PROTOCOL_GUID, EFI_SUPPLICANT_SERVICE_BINDING_PROTOCOL_GUID,
+    EfiSupplicantBuildResponsePacket, EfiSupplicantCryptMode, EfiSupplicantDataType,
+    EfiSupplicantFragmentData, EfiSupplicantGetData, EfiSupplicantKey, EfiSupplicantKeyDirection,
+    EfiSupplicantKeyRefresh, EfiSupplicantKeyType, EfiSupplicantProcessPacket,
+    EfiSupplicantProtocol, EfiSupplicantSetData, Supplicant,
+};
 pub use tls_protocol::{
     EFI_TLS_CONFIGURATION_PROTOCOL_GUID, EFI_TLS_PROTOCOL_GUID,
     EFI_TLS_SERVICE_BINDING_PROTOCOL_GUID, EfiTlsConfigDataType, EfiTlsConfigurationGetData,
@@ -160,9 +168,11 @@ pub use wifi_profile_sync::{
 };
 pub use wifi2::{
     EFI_MAX_SSID_LEN, EFI_WIFI2_PROTOCOL_GUID, EFI_WIRELESS_MAC_CONNECTION_II_PROTOCOL_GUID,
-    Efi80211BssType, Efi80211ConnectNetworkResultCode, Efi80211ConnectNetworkToken,
-    Efi80211DisconnectNetworkToken, Efi80211GetNetworksToken, Efi80211MacAddress, Efi80211Ssid,
-    Efi80211SuiteSelector, EfiWirelessMacConnectionIiConnectNetwork,
-    EfiWirelessMacConnectionIiDisconnectNetwork, EfiWirelessMacConnectionIiGetNetworks,
-    EfiWirelessMacConnectionIiProtocol,
+    EFI_WIRELESS_MAC_CONNECTION_PROTOCOL_GUID, Efi80211AkmSuiteSelector, Efi80211BssType,
+    Efi80211CipherSuiteSelector, Efi80211ConnectNetworkData, Efi80211ConnectNetworkResultCode,
+    Efi80211ConnectNetworkToken, Efi80211DisconnectNetworkToken, Efi80211GetNetworksData,
+    Efi80211GetNetworksResult, Efi80211GetNetworksToken, Efi80211MacAddress, Efi80211Network,
+    Efi80211NetworkDescription, Efi80211Ssid, Efi80211SuiteSelector,
+    EfiWirelessMacConnectionIiConnectNetwork, EfiWirelessMacConnectionIiDisconnectNetwork,
+    EfiWirelessMacConnectionIiGetNetworks, EfiWirelessMacConnectionIiProtocol, Wifi2,
 };
