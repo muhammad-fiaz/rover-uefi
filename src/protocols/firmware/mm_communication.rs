@@ -16,6 +16,12 @@ pub const MM_COMMUNICATION_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     [0x9d, 0x94, 0xdb, 0x65, 0xac, 0xc5, 0xc3, 0x32],
 );
 
+/// Exact specification naming for PI MM Communication Protocol GUID.
+pub const EFI_MM_COMMUNICATION_PROTOCOL_GUID: EfiGuid = MM_COMMUNICATION_PROTOCOL_GUID;
+
+/// Compatibility alias for SMM Communication Protocol GUID.
+pub const EFI_SMM_COMMUNICATION_PROTOCOL_GUID: EfiGuid = MM_COMMUNICATION_PROTOCOL_GUID;
+
 /// PI MM Communication2 Protocol GUID: `{378daedc-f06b-4446-8314-40ab933c87a3}`.
 pub const MM_COMMUNICATION2_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     0x378d_aedc,
@@ -23,6 +29,9 @@ pub const MM_COMMUNICATION2_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     0x4446,
     [0x83, 0x14, 0x40, 0xab, 0x93, 0x3c, 0x87, 0xa3],
 );
+
+/// Exact specification naming for PI MM Communication2 Protocol GUID.
+pub const EFI_MM_COMMUNICATION2_PROTOCOL_GUID: EfiGuid = MM_COMMUNICATION2_PROTOCOL_GUID;
 
 /// Header beginning every MM communication message buffer.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

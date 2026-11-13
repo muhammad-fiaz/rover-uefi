@@ -8,6 +8,7 @@ pub mod binding;
 pub mod boot_manager_policy;
 pub mod component_name;
 pub mod config_manager;
+pub mod configuration;
 pub mod diagnostics;
 pub mod embedded;
 pub mod emulator;
@@ -63,10 +64,21 @@ pub use config_manager::{
     namespace as cm_namespace, std_object_id as cm_std_object_id,
     x64_object_id as cm_x64_object_id,
 };
+pub use configuration::{
+    DriverConfiguration, DriverConfiguration2, EFI_DRIVER_CONFIGURATION_CUSTOM_DEFAULTS,
+    EFI_DRIVER_CONFIGURATION_MANUFACTURING_DEFAULTS, EFI_DRIVER_CONFIGURATION_PERFORMANCE_DEFAULTS,
+    EFI_DRIVER_CONFIGURATION_PROTOCOL_GUID, EFI_DRIVER_CONFIGURATION_SAFE_DEFAULTS,
+    EFI_DRIVER_CONFIGURATION2_PROTOCOL_GUID, EfiDriverConfiguration2ForceDefaults,
+    EfiDriverConfiguration2OptionsValid, EfiDriverConfiguration2Protocol,
+    EfiDriverConfiguration2SetOptions, EfiDriverConfigurationAction,
+    EfiDriverConfigurationForceDefaults, EfiDriverConfigurationOptionsValid,
+    EfiDriverConfigurationProtocol, EfiDriverConfigurationSetOptions,
+};
 pub use diagnostics::{
-    EFI_DRIVER_DIAGNOSTICS_PROTOCOL_GUID, EFI_DRIVER_DIAGNOSTICS2_PROTOCOL_GUID,
-    EfiDriverDiagnosticType, EfiDriverDiagnostics2Protocol, EfiDriverDiagnostics2RunDiagnostics,
-    EfiDriverDiagnosticsProtocol, EfiDriverDiagnosticsRunDiagnostics,
+    DriverDiagnostics, DriverDiagnostics2, EFI_DRIVER_DIAGNOSTICS_PROTOCOL_GUID,
+    EFI_DRIVER_DIAGNOSTICS2_PROTOCOL_GUID, EfiDriverDiagnosticType, EfiDriverDiagnostics2Protocol,
+    EfiDriverDiagnostics2RunDiagnostics, EfiDriverDiagnosticsProtocol,
+    EfiDriverDiagnosticsRunDiagnostics,
 };
 pub use embedded::{
     EMBEDDED_DEVICE_PROTOCOL_GUID, EMBEDDED_EXTERNAL_DEVICE_PROTOCOL_GUID, EmbeddedDeviceProtocol,
@@ -106,8 +118,9 @@ pub use hardware_interrupt::{
     HardwareInterruptRegister, HardwareInterruptSource, HardwareInterruptTriggerType,
 };
 pub use health::{
-    EFI_DRIVER_HEALTH_PROTOCOL_GUID, EfiDriverHealthGetHealthStatus, EfiDriverHealthHiiMessage,
-    EfiDriverHealthNotify, EfiDriverHealthProtocol, EfiDriverHealthRepair, EfiDriverHealthStatus,
+    DriverHealth, EFI_DRIVER_HEALTH_PROTOCOL_GUID, EfiDriverHealthGetHealthStatus,
+    EfiDriverHealthHiiMessage, EfiDriverHealthProtocol, EfiDriverHealthRepair,
+    EfiDriverHealthRepairNotify, EfiDriverHealthStatus,
 };
 pub use image_loader::{
     DEBUGGER_CONFIGURATION_PROTOCOL_GUID, DEBUGGER_CONFIGURATION_REVISION, DebuggerConfiguration,

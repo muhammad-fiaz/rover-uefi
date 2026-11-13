@@ -189,9 +189,11 @@ pub use mm_base::{
     MM_BASE_PROTOCOL_GUID, MmBaseProtocol, SMM_BASE2_PROTOCOL_GUID,
 };
 pub use mm_communication::{
-    EfiMmCommunicate, EfiMmCommunicate2, EfiMmCommunicateHeader, EfiMmCommunication2Protocol,
-    EfiMmCommunicationProtocol, MM_COMMUNICATION_PROTOCOL_GUID, MM_COMMUNICATION2_PROTOCOL_GUID,
-    MmCommunication, MmCommunication2,
+    EFI_MM_COMMUNICATION_PROTOCOL_GUID, EFI_MM_COMMUNICATION2_PROTOCOL_GUID,
+    EFI_SMM_COMMUNICATION_PROTOCOL_GUID, EfiMmCommunicate, EfiMmCommunicate2,
+    EfiMmCommunicateHeader, EfiMmCommunication2Protocol, EfiMmCommunicationProtocol,
+    MM_COMMUNICATION_PROTOCOL_GUID, MM_COMMUNICATION2_PROTOCOL_GUID, MmCommunication,
+    MmCommunication2,
 };
 pub use mm_dispatch::{
     EFI_MM_GPI_DISPATCH_PROTOCOL_GUID, EFI_MM_IO_TRAP_DISPATCH_PROTOCOL_GUID,
