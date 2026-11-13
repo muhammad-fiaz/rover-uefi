@@ -285,11 +285,22 @@ fn cpuid_stub_and_host_sources() {
 
     let host = HostCpuid;
     let identification = host.leaf(0, 0);
-    assert!(identification.eax >= 1);
 
-    let version = host.leaf(1, 0);
-    assert!(version.edx & (1 << 4) != 0);
-    assert!(version.edx & (1 << 5) != 0);
+    // On x86_64 hosts, HostCpuid executes real cpuid instructions.
+    // On non-x86_64 architectures (such as Apple Silicon aarch64 on macos-latest),
+    // HostCpuid falls back to StubCpuid and returns zeros.
+    #[cfg(target_arch = "x86_64")]
+    {
+        assert!(identification.eax >= 1);
+        let version = host.leaf(1, 0);
+        assert!(version.edx & (1 << 4) != 0);
+        assert!(version.edx & (1 << 5) != 0);
+    }
+
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        assert!(identification.is_zero());
+    }
 }
 
 #[test]
