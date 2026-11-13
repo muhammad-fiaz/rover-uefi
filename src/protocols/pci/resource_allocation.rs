@@ -48,6 +48,22 @@ pub const EFI_PCI_PLATFORM_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     [0x90, 0xD0, 0x56, 0x43, 0xE2, 0x38, 0xB3, 0x41],
 );
 
+/// The `EFI_PCI_OVERRIDE_GUID`.
+pub const EFI_PCI_OVERRIDE_GUID: EfiGuid = EfiGuid::new(
+    0xB5B3_5764,
+    0x460C,
+    0x4A06,
+    [0x99, 0xFC, 0x77, 0xA1, 0x7C, 0x1B, 0x5C, 0xEB],
+);
+
+/// The `EFI_INCOMPATIBLE_PCI_DEVICE_SUPPORT_PROTOCOL_GUID`.
+pub const EFI_INCOMPATIBLE_PCI_DEVICE_SUPPORT_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0xEB23_F55A,
+    0x7863,
+    0x4AC2,
+    [0x8D, 0x3D, 0x95, 0x65, 0x35, 0xDE, 0x03, 0x75],
+);
+
 /// PCI Host Bridge Fixed Resource Protocol GUID.
 pub const PCI_HOST_BRIDGE_FIXED_RESOURCE_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     0xBB46_5AEA,
@@ -383,6 +399,28 @@ pub struct EfiPciPlatformProtocol {
     pub get_platform_policy: EfiPciPlatformGetPlatformPolicy,
     /// Retrieves optional platform-specific Option ROM for a device.
     pub get_pci_rom: EfiPciPlatformGetPciRom,
+}
+
+/// The raw ABI structure for `EFI_PCI_OVERRIDE_PROTOCOL`.
+pub type EfiPciOverrideProtocol = EfiPciPlatformProtocol;
+
+/// Function pointer for `EFI_INCOMPATIBLE_PCI_DEVICE_SUPPORT_CHECK_DEVICE`.
+pub type EfiIncompatiblePciDeviceSupportCheckDevice = unsafe extern "efiapi" fn(
+    this: *const EfiIncompatiblePciDeviceSupportProtocol,
+    vendor_id: UIntN,
+    device_id: UIntN,
+    revision_id: UIntN,
+    subsystem_vendor_id: UIntN,
+    subsystem_device_id: UIntN,
+    configuration: *mut *mut c_void,
+) -> EfiStatus;
+
+/// Interface structure for Incompatible PCI Device Support Protocol (`EFI_INCOMPATIBLE_PCI_DEVICE_SUPPORT_PROTOCOL`).
+#[repr(C)]
+#[derive(Debug)]
+pub struct EfiIncompatiblePciDeviceSupportProtocol {
+    /// Returns ACPI resource descriptors detailing special requirements for incompatible devices.
+    pub check_device: EfiIncompatiblePciDeviceSupportCheckDevice,
 }
 
 // ---------------------------------------------------------------------------
@@ -885,6 +923,94 @@ impl PciPlatform {
         };
         if status == EfiStatus::SUCCESS {
             Ok((rom_image, rom_size))
+        } else {
+            Err(status)
+        }
+    }
+}
+
+/// Safe wrapper around `EfiPciOverrideProtocol` (same interface as `EfiPciPlatformProtocol`).
+#[derive(Clone, Copy, Debug)]
+pub struct PciOverride {
+    inner: PciPlatform,
+}
+
+impl PciOverride {
+    /// Wraps a raw pointer to `EfiPciOverrideProtocol`.
+    ///
+    /// # Safety
+    ///
+    /// `proto` must point to an initialized and valid protocol instance.
+    #[must_use]
+    pub const unsafe fn from_raw(proto: *const EfiPciOverrideProtocol) -> Self {
+        Self {
+            inner: unsafe { PciPlatform::from_raw(proto) },
+        }
+    }
+
+    /// Accesses the underlying `PciPlatform` interface.
+    #[must_use]
+    pub const fn as_platform(&self) -> &PciPlatform {
+        &self.inner
+    }
+}
+
+/// Safe wrapper around [`EfiIncompatiblePciDeviceSupportProtocol`].
+#[derive(Clone, Copy, Debug)]
+pub struct IncompatiblePciDeviceSupport {
+    proto: *const EfiIncompatiblePciDeviceSupportProtocol,
+}
+
+impl IncompatiblePciDeviceSupport {
+    /// Wraps a raw pointer to [`EfiIncompatiblePciDeviceSupportProtocol`].
+    ///
+    /// # Safety
+    ///
+    /// `proto` must point to an initialized and valid protocol instance.
+    #[must_use]
+    pub const unsafe fn from_raw(proto: *const EfiIncompatiblePciDeviceSupportProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Queries the platform for special ACPI resource descriptor configuration for an incompatible PCI device.
+    ///
+    /// Returns `Ok(Some(config_ptr))` if special configuration descriptors are provided,
+    /// `Ok(None)` if the device is not recognized as incompatible,
+    /// or `Err(status)` on failure.
+    ///
+    /// # Safety
+    ///
+    /// The caller is responsible for freeing `config_ptr` buffer returned by the callee.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if device query fails.
+    pub unsafe fn check_device(
+        &self,
+        vendor_id: UIntN,
+        device_id: UIntN,
+        revision_id: UIntN,
+        subsystem_vendor_id: UIntN,
+        subsystem_device_id: UIntN,
+    ) -> Result<Option<*mut c_void>, EfiStatus> {
+        let mut config: *mut c_void = core::ptr::null_mut();
+        let status = unsafe {
+            ((*self.proto).check_device)(
+                self.proto,
+                vendor_id,
+                device_id,
+                revision_id,
+                subsystem_vendor_id,
+                subsystem_device_id,
+                core::ptr::addr_of_mut!(config),
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            if config.is_null() {
+                Ok(None)
+            } else {
+                Ok(Some(config))
+            }
         } else {
             Err(status)
         }
