@@ -14,6 +14,7 @@ pub mod gpio;
 pub mod guid;
 pub mod hardware_interrupt;
 pub mod health;
+pub mod image_loader;
 pub mod iommu;
 pub mod isa;
 pub mod loaded_image;
@@ -90,6 +91,14 @@ pub use hardware_interrupt::{
 pub use health::{
     EFI_DRIVER_HEALTH_PROTOCOL_GUID, EfiDriverHealthGetHealthStatus, EfiDriverHealthHiiMessage,
     EfiDriverHealthNotify, EfiDriverHealthProtocol, EfiDriverHealthRepair, EfiDriverHealthStatus,
+};
+pub use image_loader::{
+    DEBUGGER_CONFIGURATION_PROTOCOL_GUID, DEBUGGER_CONFIGURATION_REVISION, DebuggerConfiguration,
+    EfiDebuggerConfigurationProtocol, EfiLoadPeImage, EfiPe32ImageProtocol,
+    EfiPeCoffImageEmulatorProtocol, EfiUnloadPeImage, PE32_IMAGE_PROTOCOL_GUID,
+    PECOFF_IMAGE_EMULATOR_PROTOCOL_GUID, PECOFF_IMAGE_EMULATOR_VERSION, Pe32Image,
+    PeCoffImageEmulator, PeCoffImageEmulatorIsImageSupported, PeCoffImageEmulatorRegisterImage,
+    PeCoffImageEmulatorUnregisterImage, load_pe_image_attributes,
 };
 pub use iommu::{
     IOMMU_ACCESS_READ, IOMMU_ACCESS_WRITE, IOMMU_ATTRIBUTE_DUAL_ADDRESS_CYCLE,

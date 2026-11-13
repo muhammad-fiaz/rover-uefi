@@ -39,6 +39,7 @@ pub mod smm_access2;
 pub mod smm_control2;
 pub mod smm_cpu;
 pub mod smm_events;
+pub mod smm_variable;
 pub mod standalone_mm;
 pub mod swap_address_range;
 pub mod universal_payload;
@@ -279,6 +280,10 @@ pub use smm_cpu::{
 pub use smm_events::{
     SMM_EXIT_BOOT_SERVICES_PROTOCOL_GUID, SMM_LEGACY_BOOT_PROTOCOL_GUID,
     SMM_READY_TO_BOOT_PROTOCOL_GUID,
+};
+pub use smm_variable::{
+    EFI_SMM_FIRMWARE_VOLUME_BLOCK_PROTOCOL_GUID, EFI_SMM_VARIABLE_PROTOCOL_GUID,
+    EfiSmmFirmwareVolumeBlockProtocol, EfiSmmVariableProtocol, SmmVariable,
 };
 pub use standalone_mm::{
     CORE_TYPE_EFFICIENT, CORE_TYPE_PERFORMANCE, CORE_TYPE_STANDARD,
