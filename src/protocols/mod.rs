@@ -10,6 +10,7 @@
 //! extend firmware lifetimes.
 
 pub mod acpi;
+pub mod audio;
 pub mod bluetooth;
 pub mod console;
 pub mod core;

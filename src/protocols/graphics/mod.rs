@@ -10,6 +10,7 @@
 //! operating system.
 
 pub mod blt;
+pub mod boot_logo;
 pub mod edid;
 pub mod framebuffer;
 pub mod guid;
@@ -19,6 +20,9 @@ pub mod protocol;
 pub mod validation;
 
 pub use blt::{BltOperation, BltRectangle, BltRequest};
+pub use boot_logo::{
+    EDKII_BOOT_LOGO2_PROTOCOL_GUID, EdkiiBootLogo2Protocol, EdkiiGetBootLogo2, EdkiiSetBootLogo2,
+};
 pub use edid::{
     EFI_EDID_ACTIVE_PROTOCOL_GUID, EFI_EDID_DISCOVERED_PROTOCOL_GUID,
     EFI_EDID_OVERRIDE_DONT_OVERRIDE, EFI_EDID_OVERRIDE_ENABLE_HOT_PLUG,

@@ -25,6 +25,7 @@ pub mod sha512;
 pub mod tcg2;
 pub mod types;
 pub mod validation;
+pub mod variable_policy;
 pub mod x509;
 
 pub use cc_measurement::{
@@ -51,3 +52,14 @@ pub use sha3::{
     sha3_224, sha3_256, sha3_384, sha3_512, shake128_into, shake256_into,
 };
 pub use types::{GLOBAL_VARIABLE_GUID, IMAGE_SECURITY_DATABASE_GUID};
+pub use variable_policy::{
+    EDKII_VARIABLE_POLICY_PROTOCOL_GUID, EDKII_VARIABLE_POLICY_PROTOCOL_REVISION,
+    EdkiiDisableVariablePolicy, EdkiiDumpVariablePolicy,
+    EdkiiGetLockOnVariableStateVariablePolicyInfo, EdkiiGetVariablePolicyInfo,
+    EdkiiIsVariablePolicyEnabled, EdkiiLockVariablePolicy, EdkiiRegisterVariablePolicy,
+    EdkiiVariablePolicyProtocol, VARIABLE_POLICY_ENTRY_REVISION, VARIABLE_POLICY_NO_CANT_ATTR,
+    VARIABLE_POLICY_NO_MAX_SIZE, VARIABLE_POLICY_NO_MIN_SIZE, VARIABLE_POLICY_NO_MUST_ATTR,
+    VARIABLE_POLICY_TYPE_LOCK_NOW, VARIABLE_POLICY_TYPE_LOCK_ON_CREATE,
+    VARIABLE_POLICY_TYPE_LOCK_ON_VAR_STATE, VARIABLE_POLICY_TYPE_NO_LOCK,
+    VariableLockOnVarStatePolicy, VariablePolicyEntry,
+};

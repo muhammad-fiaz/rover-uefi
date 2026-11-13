@@ -104,6 +104,109 @@ unsafe extern "efiapi" fn dummy_virtio_set_status(
     EfiStatus::SUCCESS
 }
 
+unsafe extern "efiapi" fn dummy_virtio_set_queue_address(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _ring: *const core::ffi::c_void,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_set_queue_sel(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _sel: u16,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_set_queue_notify(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _sel: u16,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_set_queue_align(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _align: u32,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_set_page_size(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _page_size: u32,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_get_queue_num_max(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _queue_num_max: *mut u16,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_set_queue_num(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _queue_num: u16,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_write_device(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _field_offset: usize,
+    _field_size: usize,
+    _buffer_size: usize,
+    _buffer: *const core::ffi::c_void,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_read_device(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _field_offset: usize,
+    _field_size: usize,
+    _buffer_size: usize,
+    _buffer: *mut core::ffi::c_void,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_allocate_shared_pages(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _num_pages: usize,
+    _host_address: *mut *mut core::ffi::c_void,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_free_shared_pages(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _num_pages: usize,
+    _host_address: *mut core::ffi::c_void,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_map_shared(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _operation: rover_uefi::protocols::driver::virtio::VirtioMapOperation,
+    _host_address: *mut core::ffi::c_void,
+    _number_of_bytes: *mut usize,
+    _device_address: *mut u64,
+    _mapping: *mut *mut core::ffi::c_void,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
+unsafe extern "efiapi" fn dummy_virtio_unmap_shared(
+    _this: *mut EfiVirtioDeviceProtocol,
+    _mapping: *mut core::ffi::c_void,
+) -> EfiStatus {
+    EfiStatus::SUCCESS
+}
+
 #[test]
 fn test_virtio_device_protocol() {
     let mut virtio = EfiVirtioDeviceProtocol {
@@ -111,8 +214,21 @@ fn test_virtio_device_protocol() {
         subsystem_device_id: i32::from(virtio_device_id::BLOCK),
         get_device_features: dummy_virtio_get_features,
         set_guest_features: dummy_virtio_set_features,
+        set_queue_address: dummy_virtio_set_queue_address,
+        set_queue_sel: dummy_virtio_set_queue_sel,
+        set_queue_notify: dummy_virtio_set_queue_notify,
+        set_queue_align: dummy_virtio_set_queue_align,
+        set_page_size: dummy_virtio_set_page_size,
+        get_queue_num_max: dummy_virtio_get_queue_num_max,
+        set_queue_num: dummy_virtio_set_queue_num,
         get_device_status: dummy_virtio_get_status,
         set_device_status: dummy_virtio_set_status,
+        write_device: dummy_virtio_write_device,
+        read_device: dummy_virtio_read_device,
+        allocate_shared_pages: dummy_virtio_allocate_shared_pages,
+        free_shared_pages: dummy_virtio_free_shared_pages,
+        map_shared_buffer: dummy_virtio_map_shared,
+        unmap_shared_buffer: dummy_virtio_unmap_shared,
     };
 
     let mut feat = 0u64;

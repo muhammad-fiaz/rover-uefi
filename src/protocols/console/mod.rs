@@ -13,6 +13,7 @@ pub mod input;
 pub mod input_ex;
 pub mod output;
 pub mod pointer;
+pub mod ps2_policy;
 pub mod shell;
 pub mod text;
 pub mod unicode_collation;
@@ -52,6 +53,10 @@ pub use output::{
 pub use pointer::{
     EfiSimplePointerGetState, EfiSimplePointerMode, EfiSimplePointerProtocol,
     EfiSimplePointerReset, EfiSimplePointerState, SIMPLE_POINTER_PROTOCOL_GUID, SimplePointer,
+};
+pub use ps2_policy::{
+    EFI_KEYBOARD_CAPSLOCK, EFI_KEYBOARD_NUMLOCK, EFI_KEYBOARD_SCROLLLOCK,
+    EFI_PS2_POLICY_PROTOCOL_GUID, EfiPs2InitHardware, EfiPs2PolicyProtocol,
 };
 pub use shell::{
     EFI_SHELL_PARAMETERS_PROTOCOL_GUID, EFI_SHELL_PROTOCOL_GUID, EfiShellExecute, EfiShellGetEnv,

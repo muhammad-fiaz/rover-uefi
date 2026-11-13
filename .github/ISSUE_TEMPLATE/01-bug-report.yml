@@ -21,40 +21,25 @@ body:
       min_length: 20
 
   - type: dropdown
-    id: priority
+    id: severity
     attributes:
-      label: Priority
-      description: Current importance level assigned to this issue.
+      label: Severity / Priority
+      description: How severely does this defect impact your system or build?
       options:
-        - 'P0 - Critical / Blocker (Crash, kernel panic, data corruption, build broken)'
-        - 'P1 - High (Major protocol defect, incorrect ABI layout, spec deviation)'
-        - 'P2 - Medium (Minor defect with workaround, non-critical status code)'
-        - 'P3 - Low (Cosmetic, minor diagnostic message, edge-case warning)'
-      default: 2
+        - 'Critical / Blocker (Crash, kernel panic, memory corruption, build broken)'
+        - 'High (Major protocol defect, incorrect ABI layout, specification deviation)'
+        - 'Medium (Minor defect with workaround, non-critical status code)'
+        - 'Low (Cosmetic, minor diagnostic message, edge-case warning)'
+      default: 0
     validations:
       required: true
-
-  - type: dropdown
-    id: effort
-    attributes:
-      label: Estimated Effort
-      description: Relative level of effort estimated for resolving this issue.
-      options:
-        - 'XS - Trivial (Typo, simple constant fix, single line change)'
-        - 'S - Small (Localized bug fix with test case, 1-2 hours)'
-        - 'M - Medium (Subsystem fix requiring protocol testing, 1-2 days)'
-        - 'L - Large (Substantial rework across multiple modules, 3-5 days)'
-        - 'XL - Complex (Architectural refactor, cross-architecture ABI change)'
-      default: 1
-    validations:
-      required: false
 
   - type: input
     id: rover_version
     attributes:
       label: rover-uefi Library Version
       description: Specify the exact crate version, git branch, or commit hash.
-      placeholder: e.g. v0.1.0, commit c65aa67, or Cargo.toml dependency
+      placeholder: e.g. v0.1.0, commit 0380174, or Cargo.toml dependency
     validations:
       required: true
 
@@ -115,8 +100,8 @@ body:
   - type: textarea
     id: reproduction
     attributes:
-      label: Minimal Reproducible Example
-      description: Provide a minimal `#![no_std]` Rust code example or reproduction steps.
+      label: Steps to Reproduce & Minimal Example
+      description: Provide reproduction steps and a minimal `#![no_std]` Rust code snippet.
       render: rust
       value: |
         #![no_std]
@@ -143,10 +128,10 @@ body:
     id: attachments
     attributes:
       label: Screenshots or Diagnostic Dumps
-      description: Drag and drop any relevant screenshots, serial logs, or crash artifacts (.png, .jpg, .log, .txt, .zip).
+      description: Drag and drop any relevant screenshots, serial logs, or crash artifacts (.png, .jpg, .log, .txt, .zip, .gz).
     validations:
       required: false
-      accept: ".png,.jpg,.jpeg,.log,.txt,.zip,.tar.gz"
+      accept: ".png,.jpg,.jpeg,.log,.txt,.zip,.gz"
 
   - type: checkboxes
     id: checks
