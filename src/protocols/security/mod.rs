@@ -25,6 +25,7 @@ pub mod sha3;
 pub mod sha512;
 pub mod sm3;
 pub mod sm4;
+pub mod smart_card;
 pub mod tcg2;
 pub mod tcg_pp;
 pub mod tpm_instance;
@@ -94,6 +95,21 @@ pub use sha3::{
 };
 pub use sm3::{SM3_BLOCK_SIZE, SM3_DIGEST_SIZE, Sm3};
 pub use sm4::{SM4_BLOCK_SIZE, SM4_KEY_SIZE, SM4_NUM_ROUNDS, Sm4};
+pub use smart_card::{
+    EFI_SMART_CARD_EDGE_PROTOCOL_GUID, EFI_SMART_CARD_READER_PROTOCOL_GUID,
+    EfiSmartCardEdgeBuildDhAgreement, EfiSmartCardEdgeConnect, EfiSmartCardEdgeDecryptData,
+    EfiSmartCardEdgeDisconnect, EfiSmartCardEdgeGetContext, EfiSmartCardEdgeGetCredential,
+    EfiSmartCardEdgeGetCsn, EfiSmartCardEdgeGetData, EfiSmartCardEdgeGetPinRemaining,
+    EfiSmartCardEdgeGetReaderName, EfiSmartCardEdgeProtocol, EfiSmartCardEdgeSignData,
+    EfiSmartCardEdgeVerifyPin, EfiSmartCardReaderConnect, EfiSmartCardReaderControl,
+    EfiSmartCardReaderDisconnect, EfiSmartCardReaderGetAttrib, EfiSmartCardReaderProtocol,
+    EfiSmartCardReaderStatus, EfiSmartCardReaderTransmit, SC_EDGE_TAG_CERT, SC_EDGE_TAG_HEADER,
+    SC_EDGE_TAG_KEY_ID, SC_EDGE_TAG_KEY_SIZE, SC_EDGE_TAG_KEY_TYPE, SCARD_ABSENT, SCARD_ACTIVE,
+    SCARD_AID_MAXSIZE, SCARD_AM_CARD, SCARD_AM_READER, SCARD_CA_COLDRESET, SCARD_CA_EJECT,
+    SCARD_CA_NORESET, SCARD_CA_UNPOWER, SCARD_CA_WARMRESET, SCARD_CSN_SIZE, SCARD_INACTIVE,
+    SCARD_PROTOCOL_RAW, SCARD_PROTOCOL_T0, SCARD_PROTOCOL_T1, SCARD_PROTOCOL_UNDEFINED,
+    SCARD_UNKNOWN, SMART_CARD_EDGE_PROTOCOL_VERSION_1, SmartCardEdge, SmartCardReader,
+};
 pub use tpm_instance::{
     CC_EVENT_ENTRY_HOB_GUID, FIRMWARE_VOLUME_MEASUREMENT_EXCLUDED_HOB_GUID, MEASURED_FV_HOB_GUID,
     MM_TPM_NVS_HOB_GUID, MeasuredHobHeader, MemoryClearNvs, PhysicalPresenceNvs,
