@@ -92,6 +92,14 @@ pub use esrt::{
     LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MAX,
     LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MIN, LAST_ATTEMPT_STATUS_SUCCESS,
 };
+pub use fmp::{
+    EFI_FIRMWARE_MANAGEMENT_PROTOCOL_GUID, EfiFirmwareImageDep, EfiFirmwareImageDescriptor,
+    EfiFirmwareManagementCheckImage, EfiFirmwareManagementGetImage,
+    EfiFirmwareManagementGetImageInfo, EfiFirmwareManagementGetPackageInfo,
+    EfiFirmwareManagementProtocol, EfiFirmwareManagementSetImage,
+    EfiFirmwareManagementSetPackageInfo, EfiFirmwareManagementUpdateImageProgress,
+    FirmwareManagement, FmpCapsuleHeader, is_reserved_flags, parse_fmp_capsule_header,
+};
 pub use fmp_depex::{
     EFI_FMP_DEP_AND, EFI_FMP_DEP_DECLARE_LENGTH, EFI_FMP_DEP_END, EFI_FMP_DEP_EQ,
     EFI_FMP_DEP_FALSE, EFI_FMP_DEP_GT, EFI_FMP_DEP_GTE, EFI_FMP_DEP_LT, EFI_FMP_DEP_LTE,

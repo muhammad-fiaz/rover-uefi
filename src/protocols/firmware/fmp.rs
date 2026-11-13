@@ -18,6 +18,9 @@ pub const FIRMWARE_MANAGEMENT_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     [0xA1, 0x87, 0x49, 0x10, 0x4D, 0x06, 0x85, 0xC7],
 );
 
+/// Exact UEFI specification naming for Firmware Management Protocol GUID.
+pub const EFI_FIRMWARE_MANAGEMENT_PROTOCOL_GUID: EfiGuid = FIRMWARE_MANAGEMENT_PROTOCOL_GUID;
+
 /// Canonical alias for the Firmware Management Protocol GUID.
 pub const FMP_PROTOCOL_GUID: EfiGuid = FIRMWARE_MANAGEMENT_PROTOCOL_GUID;
 
@@ -255,4 +258,213 @@ pub fn parse_fmp_capsule_header(input: &[u8]) -> Option<FmpCapsuleHeader> {
 #[must_use]
 pub const fn is_reserved_flags(flags: u32) -> bool {
     flags == 0
+}
+
+/// Safe idiomatic wrapper around `EfiFirmwareManagementProtocol`.
+pub struct FirmwareManagement<'a> {
+    proto: &'a mut EfiFirmwareManagementProtocol,
+}
+
+impl<'a> FirmwareManagement<'a> {
+    /// Creates a new `FirmwareManagement` client wrapper.
+    #[must_use]
+    pub fn new(proto: &'a mut EfiFirmwareManagementProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Returns a raw pointer to the underlying protocol.
+    #[must_use]
+    pub fn raw(&self) -> *mut EfiFirmwareManagementProtocol {
+        core::ptr::from_ref(self.proto).cast_mut()
+    }
+
+    /// Queries information about the device's current firmware images.
+    ///
+    /// # Errors
+    ///
+    /// Returns `BUFFER_TOO_SMALL` if `image_info_buffer` is insufficient, or an error status.
+    pub fn get_image_info(
+        &mut self,
+        image_info_buffer: &mut [EfiFirmwareImageDescriptor],
+    ) -> Result<(u32, u8, usize, u32), EfiStatus> {
+        let mut size = core::mem::size_of_val(image_info_buffer) as UIntN;
+        let mut descriptor_version = 0u32;
+        let mut descriptor_count = 0u8;
+        let mut descriptor_size = 0 as UIntN;
+        let mut package_version = 0u32;
+        let mut package_version_name = core::ptr::null_mut();
+
+        let status = unsafe {
+            (self.proto.get_image_info)(
+                self.proto,
+                core::ptr::from_mut(&mut size),
+                image_info_buffer.as_mut_ptr(),
+                core::ptr::from_mut(&mut descriptor_version),
+                core::ptr::from_mut(&mut descriptor_count),
+                core::ptr::from_mut(&mut descriptor_size),
+                core::ptr::from_mut(&mut package_version),
+                core::ptr::from_mut(&mut package_version_name),
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            Ok((
+                descriptor_version,
+                descriptor_count,
+                descriptor_size as usize,
+                package_version,
+            ))
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Retrieves a copy of the current firmware image.
+    ///
+    /// Returns the number of bytes written to `buffer`.
+    ///
+    /// # Errors
+    ///
+    /// Returns `BUFFER_TOO_SMALL` if `buffer` is too small, or an error status.
+    pub fn get_image(&mut self, image_index: u8, buffer: &mut [u8]) -> Result<usize, EfiStatus> {
+        let mut size = buffer.len() as UIntN;
+        let status = unsafe {
+            (self.proto.get_image)(
+                self.proto,
+                image_index,
+                buffer.as_mut_ptr().cast::<c_void>(),
+                core::ptr::from_mut(&mut size),
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            Ok(size as usize)
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Updates the device firmware with a new image.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if firmware update fails or is rejected.
+    pub fn set_image(
+        &mut self,
+        image_index: u8,
+        image: &[u8],
+        vendor_code: Option<&[u8]>,
+        progress: Option<EfiFirmwareManagementUpdateImageProgress>,
+    ) -> Result<(), EfiStatus> {
+        let vendor_ptr = match vendor_code {
+            Some(slice) => slice.as_ptr().cast::<c_void>(),
+            None => core::ptr::null(),
+        };
+        let mut abort_reason = core::ptr::null_mut();
+
+        let status = unsafe {
+            (self.proto.set_image)(
+                self.proto,
+                image_index,
+                image.as_ptr().cast::<c_void>(),
+                image.len() as UIntN,
+                vendor_ptr,
+                progress,
+                core::ptr::from_mut(&mut abort_reason),
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Validates a firmware image without updating hardware.
+    ///
+    /// Returns the `image_updatable` status bitmask.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status on validation failure.
+    pub fn check_image(&mut self, image_index: u8, image: &[u8]) -> Result<u32, EfiStatus> {
+        let mut updatable = 0u32;
+        let status = unsafe {
+            (self.proto.check_image)(
+                self.proto,
+                image_index,
+                image.as_ptr().cast::<c_void>(),
+                image.len() as UIntN,
+                core::ptr::from_mut(&mut updatable),
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            Ok(updatable)
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Retrieves firmware package version and attributes.
+    ///
+    /// Returns `(package_version, attributes_supported, attributes_setting)`.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if package info is unsupported or query fails.
+    pub fn get_package_info(&mut self) -> Result<(u32, u64, u64), EfiStatus> {
+        let mut pkg_version = 0u32;
+        let mut pkg_name = core::ptr::null_mut();
+        let mut pkg_name_max_len = 0u32;
+        let mut attr_supported = 0u64;
+        let mut attr_setting = 0u64;
+
+        let status = unsafe {
+            (self.proto.get_package_info)(
+                self.proto,
+                core::ptr::from_mut(&mut pkg_version),
+                core::ptr::from_mut(&mut pkg_name),
+                core::ptr::from_mut(&mut pkg_name_max_len),
+                core::ptr::from_mut(&mut attr_supported),
+                core::ptr::from_mut(&mut attr_setting),
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            Ok((pkg_version, attr_supported, attr_setting))
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Updates firmware package version and attributes.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error status if package update fails.
+    pub fn set_package_info(
+        &mut self,
+        image: &[u8],
+        vendor_code: Option<&[u8]>,
+        package_version: u32,
+        package_version_name: &[Char16],
+    ) -> Result<(), EfiStatus> {
+        let vendor_ptr = match vendor_code {
+            Some(slice) => slice.as_ptr().cast::<c_void>(),
+            None => core::ptr::null(),
+        };
+
+        let status = unsafe {
+            (self.proto.set_package_info)(
+                self.proto,
+                image.as_ptr().cast::<c_void>(),
+                image.len() as UIntN,
+                vendor_ptr,
+                package_version,
+                package_version_name.as_ptr(),
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
 }
