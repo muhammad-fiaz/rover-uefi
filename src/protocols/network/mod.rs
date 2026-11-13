@@ -7,6 +7,7 @@
 //! caller to keep memory alive until
 //! completion.
 
+pub mod adapter_info;
 pub mod application;
 pub mod arp_protocol;
 pub mod dhcp_protocol;
@@ -45,6 +46,16 @@ pub mod vlan_config;
 pub mod wifi2;
 pub mod wifi_profile_sync;
 
+pub use adapter_info::{
+    AdapterInformation, EFI_ADAPTER_INFO_CDAT_TYPE_GUID, EFI_ADAPTER_INFO_MEDIA_STATE_GUID,
+    EFI_ADAPTER_INFO_MEDIA_TYPE_ETHERNET, EFI_ADAPTER_INFO_MEDIA_TYPE_GUID,
+    EFI_ADAPTER_INFO_MEDIA_TYPE_WIRELESS, EFI_ADAPTER_INFO_NETWORK_BOOT_GUID,
+    EFI_ADAPTER_INFO_SAN_MAC_ADDRESS_GUID, EFI_ADAPTER_INFO_UNDI_IPV6_SUPPORT_GUID,
+    EFI_ADAPTER_INFORMATION_PROTOCOL_GUID, EfiAdapterInfoGetInfo, EfiAdapterInfoGetSupportedTypes,
+    EfiAdapterInfoMediaState, EfiAdapterInfoMediaType, EfiAdapterInfoNetworkBoot,
+    EfiAdapterInfoSanMacAddress, EfiAdapterInfoSetInfo, EfiAdapterInfoUndiIpv6Support,
+    EfiAdapterInformationProtocol,
+};
 pub use arp_protocol::{
     ARP_PROTOCOL_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID, EfiArpAdd, EfiArpCancel,
     EfiArpConfigData, EfiArpConfigure, EfiArpDelete, EfiArpFind, EfiArpFlush, EfiArpProtocol,
@@ -129,6 +140,7 @@ pub use tls_protocol::{
     EfiTlsConfigurationProtocol, EfiTlsConfigurationSetData, EfiTlsCryptMode, EfiTlsFragmentData,
     EfiTlsProtocol, EfiTlsSessionDataType,
 };
+pub use types::{EfiMacAddress, Ipv4Address, Ipv6Address, MacAddress};
 pub use usb_ethernet::{
     USB_CDC_ACM_SUBCLASS, USB_CDC_CLASS, USB_CDC_DATA_CLASS, USB_CDC_ECM_SUBCLASS,
     USB_CDC_NCM_SUBCLASS, USB_ETHERNET_PROTOCOL_GUID, USB_MISC_CLASS, USB_RNDIS_ETHERNET_PROTOCOL,
