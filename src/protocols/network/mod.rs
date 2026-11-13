@@ -46,6 +46,8 @@ pub use dhcp_protocol::{
     EFI_DHCP4_PROTOCOL_GUID, EFI_DHCP6_PROTOCOL_GUID, EfiDhcp4ModeData, EfiDhcp4Protocol,
     EfiDhcp4State, EfiDhcp6ModeData, EfiDhcp6Protocol, EfiDhcp6State,
 };
+pub use dns::protocol::{EfiDns4Protocol, EfiDns6Protocol};
+pub use http::protocol::{EfiHttpProtocol, Http};
 pub use guid::{
     ARP_PROTOCOL_GUID as ARP_GUID, ARP_SERVICE_BINDING_PROTOCOL_GUID as ARP_SB_GUID, DNS4_GUID,
     DNS6_GUID, HTTP_GUID, IP4_GUID, IP6_GUID, MANAGED_NETWORK_GUID, PXE_BASE_CODE_GUID,
