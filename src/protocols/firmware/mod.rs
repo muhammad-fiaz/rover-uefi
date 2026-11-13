@@ -228,8 +228,11 @@ pub use smm_control2::{
 };
 pub use smm_cpu::{
     EfiSmmCpuProtocol, EfiSmmReadSaveState, EfiSmmSaveStateIoInfo, EfiSmmSaveStateIoType,
-    EfiSmmSaveStateIoWidth, EfiSmmSaveStateRegister, EfiSmmWriteSaveState, SMM_CPU_PROTOCOL_GUID,
-    SmmCpu,
+    EfiSmmSaveStateIoWidth, EfiSmmSaveStateRegister, EfiSmmWriteSaveState,
+    SM_MONITOR_INIT_PROTOCOL_GUID, SM_MONITOR_STATE_ACTIVATED, SM_MONITOR_STATE_ENABLED,
+    SMM_CPU_PROTOCOL_GUID, SMM_CPU_RENDEZVOUS_PROTOCOL_GUID, SMM_CPU_SERVICE_PROTOCOL_GUID,
+    SmMonitorInit, SmMonitorInitProtocol, SmmCpu, SmmCpuRendezvous, SmmCpuRendezvousProtocol,
+    SmmCpuService, SmmCpuServiceProtocol,
 };
 pub use smm_events::{
     SMM_EXIT_BOOT_SERVICES_PROTOCOL_GUID, SMM_LEGACY_BOOT_PROTOCOL_GUID,

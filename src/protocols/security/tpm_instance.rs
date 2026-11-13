@@ -83,3 +83,95 @@ pub struct MeasuredHobHeader {
     /// Number of measured firmware volume blobs in the HOB payload.
     pub num: u32,
 }
+
+/// HOB GUID used to pass all excluded Firmware Volumes to DXE measurement drivers:
+/// `{dd55d497-5ed5-403c-92b5-703a7259ae2a}`.
+pub const FIRMWARE_VOLUME_MEASUREMENT_EXCLUDED_HOB_GUID: EfiGuid = EfiGuid::new(
+    0xDD55_D497,
+    0x5ED5,
+    0x403C,
+    [0x92, 0xB5, 0x70, 0x3A, 0x72, 0x59, 0xAE, 0x2A],
+);
+
+/// HOB GUID for TPM NVS memory communication in Management Mode:
+/// `{c96c76eb-bc78-429c-9f4b-da5178c28457}`.
+pub const MM_TPM_NVS_HOB_GUID: EfiGuid = EfiGuid::new(
+    0xC96C_76EB,
+    0xBC78,
+    0x429C,
+    [0x9F, 0x4B, 0xDA, 0x51, 0x78, 0xC2, 0x84, 0x57],
+);
+
+/// TPM physical presence operation NVS record for ACPI table patching.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct PhysicalPresenceNvs {
+    /// Software SMI number for triggering physical presence evaluation.
+    pub software_smi: u8,
+    /// Parameter passed to the software SMI handler.
+    pub parameter: u32,
+    /// Response status code from the physical presence handler.
+    pub response: u32,
+    /// Request opcode passed to the physical presence handler.
+    pub request: u32,
+    /// Optional parameter associated with the physical presence request.
+    pub request_parameter: u32,
+    /// Last executed physical presence request opcode.
+    pub last_request: u32,
+    /// Return code returned to the caller.
+    pub return_code: u32,
+}
+
+/// Memory clear (MOR) operation NVS record for ACPI table patching.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct MemoryClearNvs {
+    /// Software SMI number for triggering memory overwrite request.
+    pub software_smi: u8,
+    /// Parameter passed to the memory clear SMI handler.
+    pub parameter: u32,
+    /// Request opcode passed to the memory clear SMI handler.
+    pub request: u32,
+    /// Return status code returned to the caller.
+    pub return_code: u32,
+}
+
+/// Aggregated TCG NVS structure used by firmware to interface ACPI tables with TPM MM handlers.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct TcgNvs {
+    /// Physical presence NVS interface fields.
+    pub physical_presence: PhysicalPresenceNvs,
+    /// Memory clear NVS interface fields.
+    pub memory_clear: MemoryClearNvs,
+    /// Flag indicating whether user confirmation is required for physical presence requests.
+    pub pp_request_user_confirm: u32,
+    /// Hardware interrupt vector assigned to TPM device.
+    pub tpm_irq_num: u32,
+    /// Indicates whether AML package length encoding uses the short form.
+    pub is_short_form_pkg_length: bool,
+}
+
+/// Function opcode for TPM NVS MM communication buffer transactions.
+#[repr(u64)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TpmNvsMmFunction {
+    /// Exchange SWI value and NVS region address for patching TPM ACPI tables.
+    ExchangeInfo = 0,
+}
+
+/// Communication buffer layout for TPM NVS MM transactions.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct TpmNvsMmCommBuffer {
+    /// Transaction function opcode ([`TpmNvsMmFunction`]).
+    pub function: u64,
+    /// Return status code resulting from MM execution.
+    pub return_status: u64,
+    /// Target physical address of the TPM NVS data region.
+    pub target_address: EfiPhysicalAddress,
+    /// Registered physical presence software SMI vector.
+    pub registered_pp_swi_value: u64,
+    /// Registered memory clear software SMI vector.
+    pub registered_mc_swi_value: u64,
+}
