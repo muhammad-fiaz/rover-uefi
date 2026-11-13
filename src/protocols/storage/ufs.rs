@@ -6,7 +6,8 @@
 //!
 //! Defined in UEFI Specification 2.7+ (Section 14.11).
 
-use crate::base::{EfiGuid, EfiHandle, EfiStatus};
+use crate::abi::types::UIntN;
+use crate::base::{AllocationType, EfiGuid, EfiHandle, EfiPhysicalAddress, EfiStatus, MemoryType};
 use core::ffi::c_void;
 
 /// EFI `UFS` Device Config Protocol GUID.
@@ -75,6 +76,106 @@ pub struct EfiUfsDeviceConfigProtocol {
     pub rw_ufs_attribute: Option<EfiUfsDeviceConfigRwAttribute>,
 }
 
+/// Operation mode for `UFS` bus master memory mapping.
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum UfsHcOperation {
+    /// Read operation from system memory by a bus master.
+    BusMasterRead = 0,
+    /// Write operation to system memory by a bus master.
+    BusMasterWrite = 1,
+    /// Coherent read and write access for both CPU and bus master.
+    BusMasterCommonBuffer = 2,
+}
+
+/// Width of memory operation on `UFS` host controller MMIO space.
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum UfsHcWidth {
+    /// 8-bit unsigned integer.
+    Uint8 = 0,
+    /// 16-bit unsigned integer.
+    Uint16 = 1,
+    /// 32-bit unsigned integer.
+    Uint32 = 2,
+    /// 64-bit unsigned integer.
+    Uint64 = 3,
+}
+
+/// Function prototype to get the MMIO base address of the `UFS` host controller.
+pub type EfiUfsHcGetMmioBar = unsafe extern "efiapi" fn(
+    this: *mut EfiUfsHostControllerProtocol,
+    mmio_bar: *mut UIntN,
+) -> EfiStatus;
+
+/// Function prototype to allocate pages suitable for bus master common buffer.
+pub type EfiUfsHcAllocateBuffer = unsafe extern "efiapi" fn(
+    this: *mut EfiUfsHostControllerProtocol,
+    allocate_type: AllocationType,
+    memory_type: MemoryType,
+    pages: UIntN,
+    host_address: *mut *mut c_void,
+    attributes: u64,
+) -> EfiStatus;
+
+/// Function prototype to free pages allocated with `AllocateBuffer`.
+pub type EfiUfsHcFreeBuffer = unsafe extern "efiapi" fn(
+    this: *mut EfiUfsHostControllerProtocol,
+    pages: UIntN,
+    host_address: *mut c_void,
+) -> EfiStatus;
+
+/// Function prototype to map system memory for `UFS` bus master access.
+pub type EfiUfsHcMap = unsafe extern "efiapi" fn(
+    this: *mut EfiUfsHostControllerProtocol,
+    operation: UfsHcOperation,
+    host_address: *mut c_void,
+    number_of_bytes: *mut UIntN,
+    device_address: *mut EfiPhysicalAddress,
+    mapping: *mut *mut c_void,
+) -> EfiStatus;
+
+/// Function prototype to unmap memory mapped with `Map`.
+pub type EfiUfsHcUnmap = unsafe extern "efiapi" fn(
+    this: *mut EfiUfsHostControllerProtocol,
+    mapping: *mut c_void,
+) -> EfiStatus;
+
+/// Function prototype to flush posted write transactions to the `UFS` device.
+pub type EfiUfsHcFlush =
+    unsafe extern "efiapi" fn(this: *mut EfiUfsHostControllerProtocol) -> EfiStatus;
+
+/// Function prototype to read/write MMIO registers on `UFS` host controller.
+pub type EfiUfsHcMmioReadWrite = unsafe extern "efiapi" fn(
+    this: *mut EfiUfsHostControllerProtocol,
+    width: UfsHcWidth,
+    offset: u64,
+    count: UIntN,
+    buffer: *mut c_void,
+) -> EfiStatus;
+
+/// Universal Flash Storage Host Controller Protocol (`EFI_UFS_HOST_CONTROLLER_PROTOCOL`).
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct EfiUfsHostControllerProtocol {
+    /// Retrieves MMIO base register address.
+    pub get_ufs_hc_mmio_bar: Option<EfiUfsHcGetMmioBar>,
+    /// Allocates contiguous pages for DMA buffer.
+    pub allocate_buffer: Option<EfiUfsHcAllocateBuffer>,
+    /// Frees pages allocated for DMA buffer.
+    pub free_buffer: Option<EfiUfsHcFreeBuffer>,
+    /// Maps host system memory for device DMA.
+    pub map: Option<EfiUfsHcMap>,
+    /// Unmaps previously mapped DMA buffer.
+    pub unmap: Option<EfiUfsHcUnmap>,
+    /// Flushes posted writes on the controller bus.
+    pub flush: Option<EfiUfsHcFlush>,
+    /// Reads MMIO registers on the host controller.
+    pub read: Option<EfiUfsHcMmioReadWrite>,
+    /// Writes MMIO registers on the host controller.
+    pub write: Option<EfiUfsHcMmioReadWrite>,
+}
+
 /// Host controller capabilities and specification version.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -104,7 +205,7 @@ pub struct UicCommand {
 #[derive(Clone, Copy, Debug)]
 pub struct UfsHcDriverInterface {
     /// Pointer to host controller MMIO/PCI protocol.
-    pub ufs_hc_protocol: *mut c_void,
+    pub ufs_hc_protocol: *mut EfiUfsHostControllerProtocol,
     /// Function executing a raw `UIC` command.
     pub ufs_exec_uic_command: Option<
         unsafe extern "efiapi" fn(
@@ -167,6 +268,8 @@ pub struct UfsHcPlatformProtocol {
     pub ref_clk_freq: UfsCardRefClkFreq,
     /// Skip Host Controller Enable (`HCE`) re-enable.
     pub skip_hce: bool,
+    /// Skip link startup during initialization.
+    pub skip_link_startup: bool,
 }
 
 /// Safe client wrapper for `UFS` device configuration.
@@ -241,5 +344,71 @@ impl<'a> UfsHcPlatform<'a> {
     #[must_use]
     pub const fn ref_clk_freq(&self) -> UfsCardRefClkFreq {
         self.protocol.ref_clk_freq
+    }
+}
+
+/// Safe client wrapper for `UFS` Host Controller operations.
+#[derive(Debug)]
+pub struct UfsHostController<'a> {
+    protocol: &'a mut EfiUfsHostControllerProtocol,
+}
+
+impl<'a> UfsHostController<'a> {
+    /// Create a new safe view of a `UFS` Host Controller protocol.
+    #[must_use]
+    pub fn new(protocol: &'a mut EfiUfsHostControllerProtocol) -> Self {
+        Self { protocol }
+    }
+
+    /// Retrieve the base MMIO register address of the host controller.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus::UNSUPPORTED` if not implemented, or status code from firmware.
+    pub fn mmio_bar(&mut self) -> Result<UIntN, EfiStatus> {
+        let Some(get_bar) = self.protocol.get_ufs_hc_mmio_bar else {
+            return Err(EfiStatus::UNSUPPORTED);
+        };
+        let mut bar: UIntN = 0;
+        let status = unsafe { get_bar(self.protocol, &raw mut bar) };
+        if status == EfiStatus::SUCCESS {
+            Ok(bar)
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Flush all posted write transactions on the controller bus.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus::UNSUPPORTED` if not implemented, or status code from firmware.
+    pub fn flush(&mut self) -> Result<(), EfiStatus> {
+        let Some(flush_fn) = self.protocol.flush else {
+            return Err(EfiStatus::UNSUPPORTED);
+        };
+        let status = unsafe { flush_fn(self.protocol) };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
+
+    /// Unmap a previously mapped DMA memory region.
+    ///
+    /// # Safety
+    /// `mapping` must be a valid mapping token returned by `map`.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus::UNSUPPORTED` if not implemented, or status code from firmware.
+    pub unsafe fn unmap(&mut self, mapping: *mut c_void) -> Result<(), EfiStatus> {
+        let Some(unmap_fn) = self.protocol.unmap else {
+            return Err(EfiStatus::UNSUPPORTED);
+        };
+        let status = unsafe { unmap_fn(self.protocol, mapping) };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
     }
 }

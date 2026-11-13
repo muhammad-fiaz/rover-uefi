@@ -121,7 +121,10 @@ pub use tape_io::{
 };
 pub use ufs::{
     EFI_UFS_DEVICE_CONFIG_PROTOCOL_GUID, EfiUfsDeviceConfigProtocol, EfiUfsDeviceConfigRwAttribute,
-    EfiUfsDeviceConfigRwDescriptor, EfiUfsDeviceConfigRwFlag, UFS_HC_PLATFORM_PROTOCOL_GUID,
+    EfiUfsDeviceConfigRwDescriptor, EfiUfsDeviceConfigRwFlag, EfiUfsHcAllocateBuffer,
+    EfiUfsHcFlush, EfiUfsHcFreeBuffer, EfiUfsHcGetMmioBar, EfiUfsHcMap, EfiUfsHcMmioReadWrite,
+    EfiUfsHcUnmap, EfiUfsHostControllerProtocol, UFS_HC_PLATFORM_PROTOCOL_GUID,
     UFS_HOST_CONTROLLER_PROTOCOL_GUID, UfsCardRefClkFreq, UfsDeviceConfig, UfsHcDriverInterface,
-    UfsHcInfo, UfsHcPlatform, UfsHcPlatformCallbackPhase, UfsHcPlatformProtocol, UicCommand,
+    UfsHcInfo, UfsHcOperation, UfsHcPlatform, UfsHcPlatformCallbackPhase, UfsHcPlatformProtocol,
+    UfsHcWidth, UfsHostController, UicCommand,
 };
