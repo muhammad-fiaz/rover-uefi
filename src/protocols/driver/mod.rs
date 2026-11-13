@@ -20,6 +20,7 @@ pub mod loaded_image;
 pub mod non_discoverable;
 pub mod override_protocol;
 pub mod ovmf;
+pub mod platform_boot_manager;
 pub mod ps2_policy;
 pub mod qemu_fw_cfg;
 pub mod realm_aperture;
@@ -118,6 +119,11 @@ pub use override_protocol::{
 pub use ovmf::{
     OVMF_LOADED_X86_LINUX_KERNEL_PROTOCOL_GUID, OVMF_SEV_MEMORY_ACCEPTANCE_PROTOCOL_GUID,
     OvmfLoadedX86LinuxKernel, OvmfSevAllowUnacceptedMemory, OvmfSevMemoryAcceptanceProtocol,
+};
+pub use platform_boot_manager::{
+    BootManagerLoadOptionType, EfiBootManagerLoadOption, EfiPlatformBootManagerProtocol,
+    PLATFORM_BOOT_MANAGER_PROTOCOL_GUID, PLATFORM_BOOT_MANAGER_PROTOCOL_REVISION,
+    PlatformBootManager, PlatformBootManagerRefreshAllBootOptions, load_option_attributes,
 };
 pub use ps2_policy::{
     KEYBOARD_LIGHT_CAPSLOCK, KEYBOARD_LIGHT_NUMLOCK, KEYBOARD_LIGHT_SCROLLLOCK,
