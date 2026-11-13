@@ -18,7 +18,6 @@ body:
       placeholder: Describe what failed, unexpected ABI layout, or erroneous return status...
     validations:
       required: true
-      min_length: 20
 
   - type: dropdown
     id: severity
@@ -124,14 +123,14 @@ body:
     validations:
       required: false
 
-  - type: upload
+  - type: textarea
     id: attachments
     attributes:
       label: Screenshots or Diagnostic Dumps
-      description: Drag and drop any relevant screenshots, serial logs, or crash artifacts (.png, .jpg, .log, .txt, .zip, .gz).
+      description: Drag and drop any relevant screenshots, serial logs, or crash artifacts directly into this field.
+      placeholder: Drag and drop files or paste URLs/dumps here...
     validations:
       required: false
-      accept: ".png,.jpg,.jpeg,.log,.txt,.zip,.gz"
 
   - type: checkboxes
     id: checks

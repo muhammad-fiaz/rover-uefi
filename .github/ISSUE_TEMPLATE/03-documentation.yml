@@ -25,7 +25,6 @@ body:
       placeholder: Explain what needs improvement...
     validations:
       required: true
-      min_length: 15
 
   - type: dropdown
     id: priority

@@ -1,17 +1,14 @@
-//! # EDK II Non-Discoverable Device Protocol
+//! # Non-Discoverable Device Protocol and Client API
 //!
 //! Describes devices that are not on a discoverable bus (e.g., MMIO peripherals on ARM,
 //! `RISC-V`, or `LoongArch` `SoCs`) but can be controlled by a standard class driver
 //! (such as AHCI, `NVMe`, XHCI, SDHCI, or UFS).
-//!
-//! Defined in EDK II `MdeModulePkg/Include/Protocol/NonDiscoverableDevice.h` and
-//! `MdeModulePkg/Include/Guid/NonDiscoverableDevice.h`.
 
 use crate::base::{EfiGuid, EfiStatus};
 use core::ffi::c_void;
 
 /// Non-Discoverable Device Protocol GUID.
-pub const EDKII_NON_DISCOVERABLE_DEVICE_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_DEVICE_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     0x0D51_905B,
     0xB77E,
     0x452A,
@@ -19,7 +16,7 @@ pub const EDKII_NON_DISCOVERABLE_DEVICE_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// Non-Discoverable AHCI Device GUID.
-pub const EDKII_NON_DISCOVERABLE_AHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_AHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
     0xC7D3_5798,
     0xE4D2,
     0x4A93,
@@ -27,7 +24,7 @@ pub const EDKII_NON_DISCOVERABLE_AHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// Non-Discoverable AMBA Device GUID.
-pub const EDKII_NON_DISCOVERABLE_AMBA_DEVICE_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_AMBA_DEVICE_GUID: EfiGuid = EfiGuid::new(
     0x9444_0339,
     0xCC93,
     0x4506,
@@ -35,7 +32,7 @@ pub const EDKII_NON_DISCOVERABLE_AMBA_DEVICE_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// Non-Discoverable EHCI Device GUID.
-pub const EDKII_NON_DISCOVERABLE_EHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_EHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
     0xEAEE_5615,
     0x0CFD,
     0x45FC,
@@ -43,7 +40,7 @@ pub const EDKII_NON_DISCOVERABLE_EHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// Non-Discoverable `NVMe` Device GUID.
-pub const EDKII_NON_DISCOVERABLE_NVME_DEVICE_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_NVME_DEVICE_GUID: EfiGuid = EfiGuid::new(
     0xC5F2_5542,
     0x2A79,
     0x4A26,
@@ -51,7 +48,7 @@ pub const EDKII_NON_DISCOVERABLE_NVME_DEVICE_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// Non-Discoverable OHCI Device GUID.
-pub const EDKII_NON_DISCOVERABLE_OHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_OHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
     0xB200_05B0,
     0xBB2D,
     0x496F,
@@ -59,7 +56,7 @@ pub const EDKII_NON_DISCOVERABLE_OHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// Non-Discoverable SDHCI Device GUID.
-pub const EDKII_NON_DISCOVERABLE_SDHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_SDHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
     0x1DD1_D619,
     0xF9B8,
     0x463E,
@@ -67,7 +64,7 @@ pub const EDKII_NON_DISCOVERABLE_SDHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// Non-Discoverable UFS Device GUID.
-pub const EDKII_NON_DISCOVERABLE_UFS_DEVICE_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_UFS_DEVICE_GUID: EfiGuid = EfiGuid::new(
     0x2EA7_7912,
     0x80A8,
     0x4947,
@@ -75,7 +72,7 @@ pub const EDKII_NON_DISCOVERABLE_UFS_DEVICE_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// Non-Discoverable UHCI Device GUID.
-pub const EDKII_NON_DISCOVERABLE_UHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_UHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
     0xA8CD_A0A2,
     0x4F37,
     0x4A1B,
@@ -83,7 +80,7 @@ pub const EDKII_NON_DISCOVERABLE_UHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// Non-Discoverable XHCI Device GUID.
-pub const EDKII_NON_DISCOVERABLE_XHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
+pub const NON_DISCOVERABLE_XHCI_DEVICE_GUID: EfiGuid = EfiGuid::new(
     0xB1BE_0BC5,
     0x6C28,
     0x442D,
@@ -102,12 +99,12 @@ pub enum NonDiscoverableDeviceDmaType {
 
 /// Function prototype for initializing a non-discoverable device.
 pub type NonDiscoverableDeviceInit =
-    unsafe extern "efiapi" fn(this: *mut EdkiiNonDiscoverableDeviceProtocol) -> EfiStatus;
+    unsafe extern "efiapi" fn(this: *mut NonDiscoverableDeviceProtocol) -> EfiStatus;
 
-/// EDK II Non-Discoverable Device Protocol.
+/// Non-Discoverable Device Protocol.
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
-pub struct EdkiiNonDiscoverableDeviceProtocol {
+pub struct NonDiscoverableDeviceProtocol {
     /// Pointer to the GUID identifying the device type (e.g. AHCI, `NVMe`, XHCI).
     pub device_type: *const EfiGuid,
     /// DMA coherency type.
@@ -116,4 +113,58 @@ pub struct EdkiiNonDiscoverableDeviceProtocol {
     pub initialize: Option<NonDiscoverableDeviceInit>,
     /// Pointer to ACPI Address Space Descriptors describing MMIO/IO resources.
     pub resources: *const c_void,
+}
+
+/// Safe client-side wrapper for non-discoverable devices.
+#[derive(Debug)]
+pub struct NonDiscoverableDevice<'a> {
+    protocol: &'a mut NonDiscoverableDeviceProtocol,
+}
+
+impl<'a> NonDiscoverableDevice<'a> {
+    /// Create a new safe view of a non-discoverable device.
+    #[must_use]
+    pub fn new(protocol: &'a mut NonDiscoverableDeviceProtocol) -> Self {
+        Self { protocol }
+    }
+
+    /// Return the device type GUID if available.
+    #[must_use]
+    pub fn device_type(&self) -> Option<EfiGuid> {
+        if self.protocol.device_type.is_null() {
+            None
+        } else {
+            // SAFETY: Verified non-null firmware pointer.
+            Some(unsafe { *self.protocol.device_type })
+        }
+    }
+
+    /// Return the DMA coherency type.
+    #[must_use]
+    pub const fn dma_type(&self) -> NonDiscoverableDeviceDmaType {
+        self.protocol.dma_type
+    }
+
+    /// Return whether this device has cache-coherent DMA.
+    #[must_use]
+    pub fn is_coherent(&self) -> bool {
+        self.protocol.dma_type == NonDiscoverableDeviceDmaType::Coherent
+    }
+
+    /// Initialize the non-discoverable device hardware if callback is installed.
+    ///
+    /// # Errors
+    /// Returns an error if the device initialization callback fails.
+    pub fn initialize(&mut self) -> Result<(), EfiStatus> {
+        if let Some(init_fn) = self.protocol.initialize {
+            let status = unsafe { init_fn(self.protocol) };
+            if status == EfiStatus::SUCCESS {
+                Ok(())
+            } else {
+                Err(status)
+            }
+        } else {
+            Ok(())
+        }
+    }
 }

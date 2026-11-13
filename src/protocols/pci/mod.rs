@@ -18,8 +18,8 @@ pub mod validation;
 pub use access::{EfiPciIoProtocol, EfiPciRootBridgeIoProtocol, PciIo, PciRootBridgeIo};
 pub use class::*;
 pub use cxl::{
-    CxlIoProtocol, EDKII_CXL_IO_PROTOCOL_GUID, EdkiiCxlIoProtocol, EdkiiCxlIoProtocolDvsecAccess,
-    EdkiiCxlIoProtocolRegblockAccess,
+    CXL_IO_PROTOCOL_GUID, CxlIoProtocol, CxlIoProtocolDvsecAccess, CxlIoProtocolRegblockAccess,
+    EfiCxlIoProtocol,
 };
 pub use guid::{PCI_IO_GUID, PCI_ROOT_BRIDGE_IO_GUID};
 pub use resource_allocation::{

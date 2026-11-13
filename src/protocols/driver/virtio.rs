@@ -1,7 +1,7 @@
-//! # `VirtIO` Device Protocol and QEMU Virtual Hardware
+//! # `VirtIO` Device Protocol and Virtual Hardware
 //!
 //! Provides the `VirtIO` device protocol abstraction and standard subsystem IDs
-//! defined in the OASIS `VirtIO` Specification and EDK II `OvmfPkg`, plus `VirtIO` GPU
+//! defined in the OASIS `VirtIO` Specification, plus `VirtIO` GPU
 //! 2D and 3D acceleration command structures.
 
 use crate::base::{EfiGuid, EfiStatus};
@@ -179,7 +179,7 @@ pub type VirtioUnmapShared = unsafe extern "efiapi" fn(
     mapping: *mut c_void,
 ) -> EfiStatus;
 
-/// The complete EDK II / `OvmfPkg` `VirtIO` Device Protocol.
+/// The complete `VirtIO` Device Protocol.
 #[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub struct EfiVirtioDeviceProtocol {
@@ -224,7 +224,7 @@ pub struct EfiVirtioDeviceProtocol {
 }
 
 // -----------------------------------------------------------------------------
-// VirtIO GPU Subsystem Definitions (OvmfPkg / VirtioGpu.h)
+// VirtIO GPU Subsystem Definitions
 // -----------------------------------------------------------------------------
 
 /// `VirtIO` GPU Control Queue Index.

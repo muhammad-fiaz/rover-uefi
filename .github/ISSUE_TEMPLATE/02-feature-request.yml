@@ -18,7 +18,6 @@ body:
       placeholder: Describe the use case, missing protocol, or architecture backend needed...
     validations:
       required: true
-      min_length: 20
 
   - type: dropdown
     id: priority
@@ -88,14 +87,14 @@ body:
     validations:
       required: false
 
-  - type: upload
+  - type: textarea
     id: attachments
     attributes:
       label: Relevant Specifications or Mockups
-      description: Upload specification excerpts, diagrams, or architectural charts if applicable.
+      description: Upload or drag and drop specification excerpts, diagrams, or architectural charts directly here.
+      placeholder: Drag and drop images or diagrams here...
     validations:
       required: false
-      accept: ".png,.jpg,.jpeg,.pdf,.txt,.zip"
 
   - type: checkboxes
     id: checks

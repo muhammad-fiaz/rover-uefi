@@ -7,6 +7,7 @@ pub mod arch_protocols;
 pub mod capsule_arch;
 pub mod decompress;
 pub mod depex;
+pub mod dt_fixup;
 pub mod dxe_services;
 pub mod firmvol;
 pub mod fmp;
@@ -14,6 +15,8 @@ pub mod fsp;
 pub mod hii;
 pub mod hob;
 pub mod ifr;
+pub mod memory_accept;
+pub mod memory_attribute;
 pub mod mm_base;
 pub mod mm_communication;
 pub mod mm_system_table;
@@ -39,6 +42,9 @@ pub use decompress::{
     DecompressInfo, EFI_DECOMPRESS_PROTOCOL_GUID, EfiDecompress, EfiDecompressGetInfo,
     EfiDecompressProtocol, UEFI_DECOMPRESS_SCRATCH_SIZE, decompress_uefi, get_decompress_info,
 };
+pub use dt_fixup::{
+    DT_FIXUP_PROTOCOL_GUID, DT_FIXUP_PROTOCOL_REVISION, DeviceTreeFixup, DtFixup, DtFixupProtocol,
+};
 pub use dxe_services::{
     DXE_SERVICES_REVISION, DXE_SERVICES_SIGNATURE, DXE_SERVICES_TABLE_GUID, EfiAddIoSpace,
     EfiAddMemorySpace, EfiAllocateIoSpace, EfiAllocateMemorySpace, EfiDxeDispatch, EfiDxeSchedule,
@@ -53,6 +59,14 @@ pub use fsp::{
     FspMemoryInit, FspNotifyParams, FspNotifyPhase, FspPhase, FspSiliconInit, FspTempRamExit,
     FspTempRamInit, IMAGE_ATTRIBUTE_64BIT_MODE_SUPPORT, IMAGE_ATTRIBUTE_DISPATCH_MODE_SUPPORT,
     IMAGE_ATTRIBUTE_GRAPHICS_SUPPORT,
+};
+pub use memory_accept::{
+    AcceptMemory, MEMORY_ACCEPT_PROTOCOL_GUID, MemoryAccept, MemoryAcceptProtocol,
+};
+pub use memory_attribute::{
+    EFI_MEMORY_ATTRIBUTE_PROTOCOL_GUID, EfiClearMemoryAttributes, EfiGetMemoryAttributes,
+    EfiMemoryAttributeProtocol, EfiSetMemoryAttributes, MemoryAttribute,
+    memory_attribute as memory_attr_flags,
 };
 pub use mm_base::{
     EfiMmBaseProtocol, EfiMmGetMmstLocation, EfiMmInsideOut, EfiSmmBase2Protocol,

@@ -1,8 +1,8 @@
 //! # SPI NOR Flash protocol
 //!
-//! UEFI PI 1.6+ `EFI_SPI_NOR_FLASH_PROTOCOL` and `EDKII_SPI_NOR_FLASH_PROTOCOL_EX`.
+//! UEFI PI 1.6+ `EFI_SPI_NOR_FLASH_PROTOCOL` and extended SPI NOR Flash protocol.
 
-use super::guid::{EDKII_SPI_NOR_FLASH_PROTOCOL_EX_GUID, EFI_SPI_NOR_FLASH_PROTOCOL_GUID};
+use super::guid::{EFI_SPI_NOR_FLASH_PROTOCOL_GUID, SPI_NOR_FLASH_PROTOCOL_EX_GUID};
 use crate::base::{EfiGuid, EfiStatus};
 use core::ffi::c_void;
 
@@ -63,16 +63,15 @@ pub struct EfiSpiNorFlashProtocol {
     ) -> EfiStatus,
 }
 
-/// Raw EDK II extended SPI NOR Flash protocol `EDKII_SPI_NOR_FLASH_PROTOCOL_EX`.
+/// Extended SPI NOR Flash protocol.
 #[repr(C)]
-pub struct EdkiiSpiNorFlashProtocolEx {
+pub struct EfiSpiNorFlashProtocolEx {
     /// Version of this extended protocol (e.g. 0x0100).
     pub version: u16,
     /// Switch to 4-byte address mode.
-    pub enter_4byte:
-        unsafe extern "efiapi" fn(this: *const EdkiiSpiNorFlashProtocolEx) -> EfiStatus,
+    pub enter_4byte: unsafe extern "efiapi" fn(this: *const EfiSpiNorFlashProtocolEx) -> EfiStatus,
     /// Switch to 3-byte address mode.
-    pub exit_4byte: unsafe extern "efiapi" fn(this: *const EdkiiSpiNorFlashProtocolEx) -> EfiStatus,
+    pub exit_4byte: unsafe extern "efiapi" fn(this: *const EfiSpiNorFlashProtocolEx) -> EfiStatus,
 }
 
 /// High-level safe wrapper around `EfiSpiNorFlashProtocol`.
@@ -218,18 +217,18 @@ impl<'a> SpiNorFlashProtocol<'a> {
     }
 }
 
-/// High-level safe wrapper around `EdkiiSpiNorFlashProtocolEx`.
+/// High-level safe wrapper around `EfiSpiNorFlashProtocolEx`.
 pub struct SpiNorFlashProtocolEx<'a> {
-    raw: &'a EdkiiSpiNorFlashProtocolEx,
+    raw: &'a EfiSpiNorFlashProtocolEx,
 }
 
 impl<'a> SpiNorFlashProtocolEx<'a> {
     /// The extended protocol GUID.
-    pub const GUID: EfiGuid = EDKII_SPI_NOR_FLASH_PROTOCOL_EX_GUID;
+    pub const GUID: EfiGuid = SPI_NOR_FLASH_PROTOCOL_EX_GUID;
 
     /// Creates a safe wrapper from a raw protocol reference.
     #[must_use]
-    pub const fn new(raw: &'a EdkiiSpiNorFlashProtocolEx) -> Self {
+    pub const fn new(raw: &'a EfiSpiNorFlashProtocolEx) -> Self {
         Self { raw }
     }
 

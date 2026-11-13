@@ -1,6 +1,6 @@
 //! # ACPI Table protocol
 //!
-//! Defined in UEFI Specification 2.3+ (Section 21.1 / `MdePkg/Include/Protocol/AcpiTable.h`).
+//! Defined in UEFI Specification 2.3+ (Section 21.1).
 //!
 //! Provides the ability for firmware components, drivers, and loaders to
 //! install and uninstall ACPI tables dynamically in the platform RSDT/XSDT.

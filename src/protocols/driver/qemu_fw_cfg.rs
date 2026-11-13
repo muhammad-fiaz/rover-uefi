@@ -3,7 +3,7 @@
 //! Provides constants, register definitions, DMA structures, and `ramfb` display
 //! configurations used by QEMU virtual platforms across x86, ARM64, and `RISC-V`.
 //!
-//! Reference: QEMU `docs/specs/fw_cfg.rst` and EDK II `OvmfPkg/Include/IndustryStandard/QemuFwCfg.h`.
+//! Reference: QEMU `docs/specs/fw_cfg.rst`.
 
 use crate::base::EfiGuid;
 

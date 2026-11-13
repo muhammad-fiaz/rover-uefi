@@ -29,7 +29,7 @@ pub const EFI_SPI_NOR_FLASH_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
 );
 
 /// The extended SPI NOR Flash protocol `GUID`.
-pub const EDKII_SPI_NOR_FLASH_PROTOCOL_EX_GUID: EfiGuid = EfiGuid::new(
+pub const SPI_NOR_FLASH_PROTOCOL_EX_GUID: EfiGuid = EfiGuid::new(
     0x99DE_F701,
     0x7FF9,
     0x46B5,

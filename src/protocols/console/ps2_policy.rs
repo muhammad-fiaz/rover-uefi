@@ -1,7 +1,5 @@
 //! # PS/2 Policy Protocol
 //!
-//! Defined in EDK II `MdeModulePkg`.
-//!
 //! Abstracts platform-specific PS/2 keyboard and mouse initialization,
 //! port reset, and LED indicators (Caps Lock, Num Lock, Scroll Lock).
 

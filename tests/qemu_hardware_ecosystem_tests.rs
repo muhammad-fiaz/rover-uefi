@@ -1,5 +1,5 @@
 //! Integration tests for QEMU virtual hardware, `VirtIO` GPU, `BootLogo2`,
-//! ARM Multi-Core PPI, and EDK II Non-Discoverable Devices.
+//! ARM Multi-Core PPI, and Non-Discoverable Devices.
 
 use core::mem::size_of;
 use rover_uefi::base::{EfiGuid, EfiStatus};
@@ -87,7 +87,7 @@ fn test_virtio_gpu_control_structures() {
 #[test]
 fn test_non_discoverable_device_guids() {
     assert_eq!(
-        EDKII_NON_DISCOVERABLE_DEVICE_PROTOCOL_GUID,
+        NON_DISCOVERABLE_DEVICE_PROTOCOL_GUID,
         EfiGuid::new(
             0x0D51_905B,
             0xB77E,
@@ -96,7 +96,7 @@ fn test_non_discoverable_device_guids() {
         )
     );
     assert_eq!(
-        EDKII_NON_DISCOVERABLE_AHCI_DEVICE_GUID,
+        NON_DISCOVERABLE_AHCI_DEVICE_GUID,
         EfiGuid::new(
             0xC7D3_5798,
             0xE4D2,
@@ -105,7 +105,7 @@ fn test_non_discoverable_device_guids() {
         )
     );
     assert_eq!(
-        EDKII_NON_DISCOVERABLE_NVME_DEVICE_GUID,
+        NON_DISCOVERABLE_NVME_DEVICE_GUID,
         EfiGuid::new(
             0xC5F2_5542,
             0x2A79,
@@ -114,7 +114,7 @@ fn test_non_discoverable_device_guids() {
         )
     );
     assert_eq!(
-        EDKII_NON_DISCOVERABLE_XHCI_DEVICE_GUID,
+        NON_DISCOVERABLE_XHCI_DEVICE_GUID,
         EfiGuid::new(
             0xB1BE_0BC5,
             0x6C28,
@@ -127,7 +127,7 @@ fn test_non_discoverable_device_guids() {
 #[test]
 fn test_boot_logo2_protocol() {
     unsafe extern "efiapi" fn mock_set_boot_logo2(
-        _this: *mut EdkiiBootLogo2Protocol,
+        _this: *mut BootLogo2Protocol,
         _blt_buffer: *const EfiGraphicsOutputBltPixel,
         destination_x: usize,
         destination_y: usize,
@@ -141,13 +141,13 @@ fn test_boot_logo2_protocol() {
         }
     }
 
-    let protocol = EdkiiBootLogo2Protocol {
+    let protocol = BootLogo2Protocol {
         set_boot_logo: Some(mock_set_boot_logo2),
         get_boot_logo: None,
     };
 
     assert_eq!(
-        EDKII_BOOT_LOGO2_PROTOCOL_GUID,
+        BOOT_LOGO2_PROTOCOL_GUID,
         EfiGuid::new(
             0x4B5D_C1DF,
             0x1EAA,

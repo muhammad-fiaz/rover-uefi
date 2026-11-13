@@ -7,8 +7,8 @@ use crate::base::{EfiGuid, EfiStatus};
 use crate::protocols::pci::access::EfiPciIoProtocol;
 use core::ffi::c_void;
 
-/// The `EDKII_CXL_IO_PROTOCOL` GUID.
-pub const EDKII_CXL_IO_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+/// The CXL I/O protocol GUID.
+pub const CXL_IO_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     0x8FAC_60B2,
     0xBBC1,
     0x41DE,
@@ -18,10 +18,10 @@ pub const EDKII_CXL_IO_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
 /// Regblock accessors.
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct EdkiiCxlIoProtocolRegblockAccess {
+pub struct CxlIoProtocolRegblockAccess {
     /// Read CXL regblock.
     pub read: unsafe extern "efiapi" fn(
-        this: *mut EdkiiCxlIoProtocol,
+        this: *mut EfiCxlIoProtocol,
         reg_block: u32,
         offset: u64,
         buf: *mut c_void,
@@ -29,7 +29,7 @@ pub struct EdkiiCxlIoProtocolRegblockAccess {
     ) -> EfiStatus,
     /// Write CXL regblock.
     pub write: unsafe extern "efiapi" fn(
-        this: *mut EdkiiCxlIoProtocol,
+        this: *mut EfiCxlIoProtocol,
         reg_block: u32,
         offset: u64,
         buf: *const c_void,
@@ -40,10 +40,10 @@ pub struct EdkiiCxlIoProtocolRegblockAccess {
 /// DVSEC accessors.
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct EdkiiCxlIoProtocolDvsecAccess {
+pub struct CxlIoProtocolDvsecAccess {
     /// Read CXL DVSEC.
     pub read: unsafe extern "efiapi" fn(
-        this: *mut EdkiiCxlIoProtocol,
+        this: *mut EfiCxlIoProtocol,
         cxl_dvsec_id: u32,
         offset: u32,
         buf: *mut c_void,
@@ -51,7 +51,7 @@ pub struct EdkiiCxlIoProtocolDvsecAccess {
     ) -> EfiStatus,
     /// Write CXL DVSEC.
     pub write: unsafe extern "efiapi" fn(
-        this: *mut EdkiiCxlIoProtocol,
+        this: *mut EfiCxlIoProtocol,
         cxl_dvsec_id: u32,
         offset: u32,
         buf: *const c_void,
@@ -59,37 +59,37 @@ pub struct EdkiiCxlIoProtocolDvsecAccess {
     ) -> EfiStatus,
 }
 
-/// Raw EDK II `EDKII_CXL_IO_PROTOCOL`.
+/// Raw CXL I/O protocol interface.
 #[repr(C)]
-pub struct EdkiiCxlIoProtocol {
+pub struct EfiCxlIoProtocol {
     /// Pointer to associated `EFI_PCI_IO_PROTOCOL`.
     pub pci_io: *mut EfiPciIoProtocol,
     /// Data object exchange (DOE) request-response transaction.
     pub doe_transact: unsafe extern "efiapi" fn(
-        this: *mut EdkiiCxlIoProtocol,
+        this: *mut EfiCxlIoProtocol,
         request_buffer: *const c_void,
         request_buffer_size: UIntN,
         response_buffer: *mut c_void,
         response_buffer_size: *mut UIntN,
     ) -> EfiStatus,
     /// Regblock register access.
-    pub regblock: EdkiiCxlIoProtocolRegblockAccess,
+    pub regblock: CxlIoProtocolRegblockAccess,
     /// DVSEC register access.
-    pub dvsec: EdkiiCxlIoProtocolDvsecAccess,
+    pub dvsec: CxlIoProtocolDvsecAccess,
 }
 
-/// Safe wrapper around `EdkiiCxlIoProtocol`.
+/// Safe wrapper around `EfiCxlIoProtocol`.
 pub struct CxlIoProtocol<'a> {
-    raw: &'a mut EdkiiCxlIoProtocol,
+    raw: &'a mut EfiCxlIoProtocol,
 }
 
 impl<'a> CxlIoProtocol<'a> {
     /// The protocol GUID.
-    pub const GUID: EfiGuid = EDKII_CXL_IO_PROTOCOL_GUID;
+    pub const GUID: EfiGuid = CXL_IO_PROTOCOL_GUID;
 
     /// Creates a safe wrapper from a mutable raw protocol pointer.
     #[must_use]
-    pub fn new(raw: &'a mut EdkiiCxlIoProtocol) -> Self {
+    pub fn new(raw: &'a mut EfiCxlIoProtocol) -> Self {
         Self { raw }
     }
 

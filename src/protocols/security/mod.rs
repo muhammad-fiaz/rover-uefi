@@ -53,13 +53,12 @@ pub use sha3::{
 };
 pub use types::{GLOBAL_VARIABLE_GUID, IMAGE_SECURITY_DATABASE_GUID};
 pub use variable_policy::{
-    EDKII_VARIABLE_POLICY_PROTOCOL_GUID, EDKII_VARIABLE_POLICY_PROTOCOL_REVISION,
-    EdkiiDisableVariablePolicy, EdkiiDumpVariablePolicy,
-    EdkiiGetLockOnVariableStateVariablePolicyInfo, EdkiiGetVariablePolicyInfo,
-    EdkiiIsVariablePolicyEnabled, EdkiiLockVariablePolicy, EdkiiRegisterVariablePolicy,
-    EdkiiVariablePolicyProtocol, VARIABLE_POLICY_ENTRY_REVISION, VARIABLE_POLICY_NO_CANT_ATTR,
-    VARIABLE_POLICY_NO_MAX_SIZE, VARIABLE_POLICY_NO_MIN_SIZE, VARIABLE_POLICY_NO_MUST_ATTR,
-    VARIABLE_POLICY_TYPE_LOCK_NOW, VARIABLE_POLICY_TYPE_LOCK_ON_CREATE,
-    VARIABLE_POLICY_TYPE_LOCK_ON_VAR_STATE, VARIABLE_POLICY_TYPE_NO_LOCK,
-    VariableLockOnVarStatePolicy, VariablePolicyEntry,
+    DisableVariablePolicy, DumpVariablePolicy, GetLockOnVariableStateVariablePolicyInfo,
+    GetVariablePolicyInfo, IsVariablePolicyEnabled, LockVariablePolicy, RegisterVariablePolicy,
+    VARIABLE_POLICY_ENTRY_REVISION, VARIABLE_POLICY_NO_CANT_ATTR, VARIABLE_POLICY_NO_MAX_SIZE,
+    VARIABLE_POLICY_NO_MIN_SIZE, VARIABLE_POLICY_NO_MUST_ATTR, VARIABLE_POLICY_PROTOCOL_GUID,
+    VARIABLE_POLICY_PROTOCOL_REVISION, VARIABLE_POLICY_TYPE_LOCK_NOW,
+    VARIABLE_POLICY_TYPE_LOCK_ON_CREATE, VARIABLE_POLICY_TYPE_LOCK_ON_VAR_STATE,
+    VARIABLE_POLICY_TYPE_NO_LOCK, VariableLockOnVarStatePolicy, VariablePolicy,
+    VariablePolicyEntry, VariablePolicyProtocol,
 };

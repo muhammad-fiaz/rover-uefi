@@ -2,9 +2,7 @@
 //!
 //! Provides the early Multi-Processor Core Information PPI and mailbox descriptors
 //! used during early PEI / SEC phases on multi-core ARM systems (e.g. Cortex-A, Neoverse,
-//! Qualcomm Snapdragon, Apple Silicon, Rockchip, and QEMU virt).
-//!
-//! Defined in EDK II `ArmPkg/Include/Ppi/ArmMpCoreInfo.h` and `ArmPkg/Include/Guid/ArmMpCoreInfo.h`.
+//! Qualcomm Snapdragon, Apple Silicon, Rockchip, and virtual hardware).
 
 use crate::base::{EfiGuid, EfiStatus};
 
@@ -61,4 +59,37 @@ pub type ArmMpCoreInfoGet = unsafe extern "efiapi" fn(
 pub struct ArmMpCoreInfoPpi {
     /// Retrieves array of `ArmCoreInfo` entries for all cores in the `SoC`.
     pub get_mp_core_info: Option<ArmMpCoreInfoGet>,
+}
+
+/// Safe client wrapper for ARM MP Core Information PPI.
+#[derive(Debug)]
+pub struct ArmMpCoreInfo<'a> {
+    ppi: &'a ArmMpCoreInfoPpi,
+}
+
+impl<'a> ArmMpCoreInfo<'a> {
+    /// Create a new safe view of the ARM MP Core Information PPI.
+    #[must_use]
+    pub fn new(ppi: &'a ArmMpCoreInfoPpi) -> Self {
+        Self { ppi }
+    }
+
+    /// Retrieve the core information slice.
+    ///
+    /// # Errors
+    /// Returns `EfiStatus::UNSUPPORTED` if not implemented, or the status returned by firmware.
+    pub fn core_info(&self) -> Result<&'a [ArmCoreInfo], EfiStatus> {
+        if let Some(get_fn) = self.ppi.get_mp_core_info {
+            let mut count = 0usize;
+            let mut table: *const ArmCoreInfo = core::ptr::null();
+            let status = unsafe { get_fn(&raw mut count, &raw mut table) };
+            if status == EfiStatus::SUCCESS && !table.is_null() {
+                Ok(unsafe { core::slice::from_raw_parts(table, count) })
+            } else {
+                Err(status)
+            }
+        } else {
+            Err(EfiStatus::UNSUPPORTED)
+        }
+    }
 }

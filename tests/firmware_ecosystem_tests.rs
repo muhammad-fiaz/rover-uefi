@@ -65,7 +65,7 @@ fn test_esrt_guid_constants_and_struct_layout() {
 #[test]
 fn test_iommu_guid_and_abi_layout() {
     assert_eq!(
-        EDKII_IOMMU_PROTOCOL_GUID,
+        IOMMU_PROTOCOL_GUID,
         EfiGuid::new(
             0x4E93_9DE9,
             0xD948,
@@ -73,17 +73,17 @@ fn test_iommu_guid_and_abi_layout() {
             [0x88, 0xED, 0xE6, 0xE1, 0xCE, 0x51, 0x7C, 0x1E]
         )
     );
-    assert_eq!(EDKII_IOMMU_PROTOCOL_REVISION, 0x0001_0000);
-    assert_eq!(EDKII_IOMMU_ACCESS_READ, 0x01);
-    assert_eq!(EDKII_IOMMU_ACCESS_WRITE, 0x02);
-    assert_eq!(EDKII_IOMMU_ATTRIBUTE_DUAL_ADDRESS_CYCLE, 0x8000);
+    assert_eq!(IOMMU_PROTOCOL_REVISION, 0x0001_0000);
+    assert_eq!(IOMMU_ACCESS_READ, 0x01);
+    assert_eq!(IOMMU_ACCESS_WRITE, 0x02);
+    assert_eq!(IOMMU_ATTRIBUTE_DUAL_ADDRESS_CYCLE, 0x8000);
 
-    let op = EdkiiIoMmuOperation::BusMasterCommonBuffer64;
+    let op = IoMmuOperation::BusMasterCommonBuffer64;
     assert_eq!(op as u32, 5);
 
-    // EdkiiIoMmuProtocol: Revision (u64) + 5 function pointers
+    // IoMmuProtocol: Revision (u64) + 5 function pointers
     assert_eq!(
-        core::mem::size_of::<EdkiiIoMmuProtocol>(),
+        core::mem::size_of::<IoMmuProtocol>(),
         8 + 5 * core::mem::size_of::<usize>()
     );
 }
@@ -124,7 +124,7 @@ unsafe extern "efiapi" fn dummy_ps2_init(_handle: EfiHandle) -> EfiStatus {
 #[allow(clippy::cast_possible_truncation)]
 fn test_variable_policy_guid_and_structures() {
     assert_eq!(
-        EDKII_VARIABLE_POLICY_PROTOCOL_GUID,
+        VARIABLE_POLICY_PROTOCOL_GUID,
         EfiGuid::new(
             0x81D1_675C,
             0x86F6,
@@ -132,7 +132,7 @@ fn test_variable_policy_guid_and_structures() {
             [0xBD, 0x95, 0x9A, 0x6E, 0x4F, 0x09, 0x25, 0xC3]
         )
     );
-    assert_eq!(EDKII_VARIABLE_POLICY_PROTOCOL_REVISION, 0x0002_0000);
+    assert_eq!(VARIABLE_POLICY_PROTOCOL_REVISION, 0x0002_0000);
     assert_eq!(VARIABLE_POLICY_ENTRY_REVISION, 0x0001_0000);
     assert_eq!(VARIABLE_POLICY_NO_MIN_SIZE, 0);
     assert_eq!(VARIABLE_POLICY_NO_MAX_SIZE, u32::MAX);
@@ -155,9 +155,9 @@ fn test_variable_policy_guid_and_structures() {
     assert_eq!(min_size, 4);
     assert_eq!(max_size, 1024);
 
-    // EdkiiVariablePolicyProtocol has revision (u64) + 7 function pointers
+    // VariablePolicyProtocol has revision (u64) + 7 function pointers
     assert_eq!(
-        core::mem::size_of::<EdkiiVariablePolicyProtocol>(),
+        core::mem::size_of::<VariablePolicyProtocol>(),
         8 + 7 * core::mem::size_of::<usize>()
     );
 }

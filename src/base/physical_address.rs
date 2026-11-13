@@ -16,7 +16,7 @@
 /// values outside the host pointer range are preserved
 /// on 32-bit targets. The address has no ownership
 /// semantics; it is only a number.
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Hash)]
 #[repr(transparent)]
 pub struct EfiPhysicalAddress(u64);
 

@@ -34,6 +34,7 @@ pub mod tls;
 pub mod tls_protocol;
 pub mod types;
 pub mod udp;
+pub mod usb_ethernet;
 pub mod validation;
 pub mod vlan_config;
 pub mod wifi2;
@@ -90,6 +91,13 @@ pub use tls_protocol::{
     EFI_TLS_SERVICE_BINDING_PROTOCOL_GUID, EfiTlsConfigDataType, EfiTlsConfigurationGetData,
     EfiTlsConfigurationProtocol, EfiTlsConfigurationSetData, EfiTlsCryptMode, EfiTlsFragmentData,
     EfiTlsProtocol, EfiTlsSessionDataType,
+};
+pub use usb_ethernet::{
+    USB_CDC_ACM_SUBCLASS, USB_CDC_CLASS, USB_CDC_DATA_CLASS, USB_CDC_ECM_SUBCLASS,
+    USB_CDC_NCM_SUBCLASS, USB_ETHERNET_PROTOCOL_GUID, USB_MISC_CLASS, USB_RNDIS_ETHERNET_PROTOCOL,
+    USB_RNDIS_SUBCLASS, UsbEthernet, UsbEthernetFunDescriptor, UsbEthernetProtocol,
+    UsbEthernetUndi, UsbHeaderFunDescriptor, UsbUnionFunDescriptor,
+    desc_subtype as usb_eth_desc_subtype, packet_filter as usb_eth_packet_filter,
 };
 pub use vlan_config::{
     EfiVlanConfigFind, EfiVlanConfigProtocol, EfiVlanConfigRemove, EfiVlanConfigSet,

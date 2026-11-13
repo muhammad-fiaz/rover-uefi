@@ -9,10 +9,10 @@ extern crate alloc;
 use core::ffi::c_void;
 use rover_uefi::base::EfiStatus;
 use rover_uefi::protocols::spi::{
-    EDKII_SPI_NOR_FLASH_PROTOCOL_EX_GUID, EFI_SPI_CONFIGURATION_GUID, EFI_SPI_HC_PROTOCOL_GUID,
-    EFI_SPI_NOR_FLASH_PROTOCOL_GUID, EdkiiSpiNorFlashProtocolEx, EfiSpiBusTransaction,
-    EfiSpiHcProtocol, EfiSpiNorFlashProtocol, SpiHcProtocol, SpiNorFlashProtocol,
-    SpiNorFlashProtocolEx, SpiTransactionType, hc_attributes,
+    EFI_SPI_CONFIGURATION_GUID, EFI_SPI_HC_PROTOCOL_GUID, EFI_SPI_NOR_FLASH_PROTOCOL_GUID,
+    EfiSpiBusTransaction, EfiSpiHcProtocol, EfiSpiNorFlashProtocol, EfiSpiNorFlashProtocolEx,
+    SPI_NOR_FLASH_PROTOCOL_EX_GUID, SpiHcProtocol, SpiNorFlashProtocol, SpiNorFlashProtocolEx,
+    SpiTransactionType, hc_attributes,
 };
 
 #[test]
@@ -30,7 +30,7 @@ fn test_spi_guids() {
         0x4b44_876a_7d2a_7885_4ba6_f833_b57e_c3fe
     );
     assert_eq!(
-        EDKII_SPI_NOR_FLASH_PROTOCOL_EX_GUID.to_u128_le(),
+        SPI_NOR_FLASH_PROTOCOL_EX_GUID.to_u128_le(),
         0x9ba9_5bfe_8e56_5284_46b5_7ff9_99de_f701
     );
 }
@@ -140,17 +140,17 @@ fn test_spi_nor_flash() {
     assert!(flash.erase(0, 1).is_ok());
 }
 
-unsafe extern "efiapi" fn mock_enter_4byte(_this: *const EdkiiSpiNorFlashProtocolEx) -> EfiStatus {
+unsafe extern "efiapi" fn mock_enter_4byte(_this: *const EfiSpiNorFlashProtocolEx) -> EfiStatus {
     EfiStatus::SUCCESS
 }
 
-unsafe extern "efiapi" fn mock_exit_4byte(_this: *const EdkiiSpiNorFlashProtocolEx) -> EfiStatus {
+unsafe extern "efiapi" fn mock_exit_4byte(_this: *const EfiSpiNorFlashProtocolEx) -> EfiStatus {
     EfiStatus::SUCCESS
 }
 
 #[test]
 fn test_spi_nor_flash_ex() {
-    let raw = EdkiiSpiNorFlashProtocolEx {
+    let raw = EfiSpiNorFlashProtocolEx {
         version: 0x0100,
         enter_4byte: mock_enter_4byte,
         exit_4byte: mock_exit_4byte,

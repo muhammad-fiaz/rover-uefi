@@ -10,20 +10,20 @@ use core::ffi::c_void;
 use rover_uefi::abi::UIntN;
 use rover_uefi::base::EfiStatus;
 use rover_uefi::protocols::pci::{
-    CxlIoProtocol, EDKII_CXL_IO_PROTOCOL_GUID, EdkiiCxlIoProtocol, EdkiiCxlIoProtocolDvsecAccess,
-    EdkiiCxlIoProtocolRegblockAccess,
+    CXL_IO_PROTOCOL_GUID, CxlIoProtocol, CxlIoProtocolDvsecAccess, CxlIoProtocolRegblockAccess,
+    EfiCxlIoProtocol,
 };
 
 #[test]
 fn test_cxl_guid() {
     assert_eq!(
-        EDKII_CXL_IO_PROTOCOL_GUID.to_u128_le(),
+        CXL_IO_PROTOCOL_GUID.to_u128_le(),
         0xf8a8_d3cd_7598_97a7_41de_bbc1_8fac_60b2
     );
 }
 
 unsafe extern "efiapi" fn mock_doe_transact(
-    _this: *mut EdkiiCxlIoProtocol,
+    _this: *mut EfiCxlIoProtocol,
     _request_buffer: *const c_void,
     _request_buffer_size: UIntN,
     response_buffer: *mut c_void,
@@ -41,7 +41,7 @@ unsafe extern "efiapi" fn mock_doe_transact(
 }
 
 unsafe extern "efiapi" fn mock_regblock_read(
-    _this: *mut EdkiiCxlIoProtocol,
+    _this: *mut EfiCxlIoProtocol,
     _reg_block: u32,
     _offset: u64,
     buf: *mut c_void,
@@ -56,7 +56,7 @@ unsafe extern "efiapi" fn mock_regblock_read(
 }
 
 unsafe extern "efiapi" fn mock_regblock_write(
-    _this: *mut EdkiiCxlIoProtocol,
+    _this: *mut EfiCxlIoProtocol,
     _reg_block: u32,
     _offset: u64,
     _buf: *const c_void,
@@ -66,7 +66,7 @@ unsafe extern "efiapi" fn mock_regblock_write(
 }
 
 unsafe extern "efiapi" fn mock_dvsec_read(
-    _this: *mut EdkiiCxlIoProtocol,
+    _this: *mut EfiCxlIoProtocol,
     _cxl_dvsec_id: u32,
     _offset: u32,
     buf: *mut c_void,
@@ -81,7 +81,7 @@ unsafe extern "efiapi" fn mock_dvsec_read(
 }
 
 unsafe extern "efiapi" fn mock_dvsec_write(
-    _this: *mut EdkiiCxlIoProtocol,
+    _this: *mut EfiCxlIoProtocol,
     _cxl_dvsec_id: u32,
     _offset: u32,
     _buf: *const c_void,
@@ -92,14 +92,14 @@ unsafe extern "efiapi" fn mock_dvsec_write(
 
 #[test]
 fn test_cxl_operations() {
-    let mut raw = EdkiiCxlIoProtocol {
+    let mut raw = EfiCxlIoProtocol {
         pci_io: core::ptr::null_mut(),
         doe_transact: mock_doe_transact,
-        regblock: EdkiiCxlIoProtocolRegblockAccess {
+        regblock: CxlIoProtocolRegblockAccess {
             read: mock_regblock_read,
             write: mock_regblock_write,
         },
-        dvsec: EdkiiCxlIoProtocolDvsecAccess {
+        dvsec: CxlIoProtocolDvsecAccess {
             read: mock_dvsec_read,
             write: mock_dvsec_write,
         },

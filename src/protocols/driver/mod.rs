@@ -9,13 +9,16 @@ pub mod diagnostics;
 pub mod guid;
 pub mod health;
 pub mod iommu;
+pub mod isa;
 pub mod loaded_image;
 pub mod non_discoverable;
 pub mod override_protocol;
+pub mod ovmf;
 pub mod qemu_fw_cfg;
 pub mod scmi;
 pub mod supported_version;
 pub mod virtio;
+pub mod xen;
 
 pub use bds::{BdsArchProtocol, EFI_BDS_ARCH_PROTOCOL_GUID, EfiBdsArchProtocol, EfiBdsEntry};
 pub use binding::{DriverBinding, EfiDriverBindingProtocol};
@@ -36,26 +39,33 @@ pub use health::{
     EfiDriverHealthNotify, EfiDriverHealthProtocol, EfiDriverHealthRepair, EfiDriverHealthStatus,
 };
 pub use iommu::{
-    EDKII_IOMMU_ACCESS_READ, EDKII_IOMMU_ACCESS_WRITE, EDKII_IOMMU_ATTRIBUTE_DUAL_ADDRESS_CYCLE,
-    EDKII_IOMMU_ATTRIBUTE_MEMORY_CACHED, EDKII_IOMMU_ATTRIBUTE_MEMORY_WRITE_COMBINE,
-    EDKII_IOMMU_PROTOCOL_GUID, EDKII_IOMMU_PROTOCOL_REVISION, EdkiiIoMmuAllocateBuffer,
-    EdkiiIoMmuFreeBuffer, EdkiiIoMmuMap, EdkiiIoMmuOperation, EdkiiIoMmuProtocol,
-    EdkiiIoMmuSetAttribute, EdkiiIoMmuUnmap,
+    IOMMU_ACCESS_READ, IOMMU_ACCESS_WRITE, IOMMU_ATTRIBUTE_DUAL_ADDRESS_CYCLE,
+    IOMMU_ATTRIBUTE_MEMORY_CACHED, IOMMU_ATTRIBUTE_MEMORY_WRITE_COMBINE, IOMMU_PROTOCOL_GUID,
+    IOMMU_PROTOCOL_REVISION, IoMmu, IoMmuAllocateBuffer, IoMmuFreeBuffer, IoMmuMap, IoMmuOperation,
+    IoMmuProtocol, IoMmuSetAttribute, IoMmuUnmap,
+};
+pub use isa::{
+    EFI_ISA_HC_PROTOCOL_GUID, EFI_ISA_HC_SERVICE_BINDING_PROTOCOL_GUID, EfiIsaHcCloseIo,
+    EfiIsaHcOpenIo, EfiIsaHcProtocol,
 };
 pub use loaded_image::{EfiLoadedImageProtocol, LoadedImage};
 pub use non_discoverable::{
-    EDKII_NON_DISCOVERABLE_AHCI_DEVICE_GUID, EDKII_NON_DISCOVERABLE_AMBA_DEVICE_GUID,
-    EDKII_NON_DISCOVERABLE_DEVICE_PROTOCOL_GUID, EDKII_NON_DISCOVERABLE_EHCI_DEVICE_GUID,
-    EDKII_NON_DISCOVERABLE_NVME_DEVICE_GUID, EDKII_NON_DISCOVERABLE_OHCI_DEVICE_GUID,
-    EDKII_NON_DISCOVERABLE_SDHCI_DEVICE_GUID, EDKII_NON_DISCOVERABLE_UFS_DEVICE_GUID,
-    EDKII_NON_DISCOVERABLE_UHCI_DEVICE_GUID, EDKII_NON_DISCOVERABLE_XHCI_DEVICE_GUID,
-    EdkiiNonDiscoverableDeviceProtocol, NonDiscoverableDeviceDmaType, NonDiscoverableDeviceInit,
+    NON_DISCOVERABLE_AHCI_DEVICE_GUID, NON_DISCOVERABLE_AMBA_DEVICE_GUID,
+    NON_DISCOVERABLE_DEVICE_PROTOCOL_GUID, NON_DISCOVERABLE_EHCI_DEVICE_GUID,
+    NON_DISCOVERABLE_NVME_DEVICE_GUID, NON_DISCOVERABLE_OHCI_DEVICE_GUID,
+    NON_DISCOVERABLE_SDHCI_DEVICE_GUID, NON_DISCOVERABLE_UFS_DEVICE_GUID,
+    NON_DISCOVERABLE_UHCI_DEVICE_GUID, NON_DISCOVERABLE_XHCI_DEVICE_GUID, NonDiscoverableDevice,
+    NonDiscoverableDeviceDmaType, NonDiscoverableDeviceInit, NonDiscoverableDeviceProtocol,
 };
 pub use override_protocol::{
     EFI_BUS_SPECIFIC_DRIVER_OVERRIDE_PROTOCOL_GUID, EFI_PLATFORM_DRIVER_OVERRIDE_PROTOCOL_GUID,
     EfiBusSpecificDriverOverrideGetDriver, EfiBusSpecificDriverOverrideProtocol,
     EfiPlatformDriverOverrideDriverLoaded, EfiPlatformDriverOverrideGetDriver,
     EfiPlatformDriverOverrideGetDriverPath, EfiPlatformDriverOverrideProtocol,
+};
+pub use ovmf::{
+    OVMF_LOADED_X86_LINUX_KERNEL_PROTOCOL_GUID, OVMF_SEV_MEMORY_ACCEPTANCE_PROTOCOL_GUID,
+    OvmfLoadedX86LinuxKernel, OvmfSevAllowUnacceptedMemory, OvmfSevMemoryAcceptanceProtocol,
 };
 pub use qemu_fw_cfg::{
     FW_CFG_F_DMA, FW_CFG_IO_DATA, FW_CFG_IO_DMA_ADDRESS, FW_CFG_IO_SELECTOR, FwCfgDmaAccess,
@@ -81,4 +91,8 @@ pub use virtio::{
     VirtioSetGuestFeatures, VirtioSetPageSize, VirtioSetQueueAddress, VirtioSetQueueAlign,
     VirtioSetQueueNotify, VirtioSetQueueNum, VirtioSetQueueSel, VirtioUnmapShared,
     device_id as virtio_device_id, status as virtio_status, virtio_spec_revision,
+};
+pub use xen::{
+    XENBUS_PROTOCOL_GUID, XENIO_PROTOCOL_GUID, XenBusProtocol, XenBusState, XenIoProtocol,
+    XenStoreStatus,
 };
