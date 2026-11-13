@@ -15,6 +15,7 @@ pub mod erase_block;
 pub mod file_explorer;
 pub mod filesystem;
 pub mod guid;
+pub mod ide_controller;
 pub mod load_file;
 pub mod media_sanitize;
 pub mod mmc_host;
@@ -58,6 +59,14 @@ pub use guid::{
     ATA_PASS_THRU_PROTOCOL_GUID, BLOCK_IO_GUID, BLOCK_IO2_GUID, DISK_IO_GUID, DISK_IO2_GUID,
     EXT_SCSI_PASS_THRU_PROTOCOL_GUID, FILE_INFO_ID, FILE_SYSTEM_INFO_ID,
     FILE_SYSTEM_VOLUME_LABEL_ID, NVM_EXPRESS_PASS_THRU_PROTOCOL_GUID, SIMPLE_FILE_SYSTEM_GUID,
+};
+pub use ide_controller::{
+    EFI_ATAPI_DEVICE_IDENTIFY_DATA, EFI_IDE_CONTROLLER_INIT_PROTOCOL_GUID, EFI_SATA_AUTO_SPEED,
+    EFI_SATA_GEN1_SPEED, EFI_SATA_GEN2_SPEED, EFI_SATA_GEN3_SPEED, EfiAtaCollectiveMode,
+    EfiAtaExtTransferProtocol, EfiAtaExtendedMode, EfiAtaMode, EfiIdeControllerCalculateMode,
+    EfiIdeControllerDisqualifyMode, EfiIdeControllerEnumPhase, EfiIdeControllerGetChannelInfo,
+    EfiIdeControllerInitProtocol, EfiIdeControllerNotifyPhase, EfiIdeControllerSetTiming,
+    EfiIdeControllerSubmitData, EfiIdeIdentifyData, IdeControllerInit,
 };
 pub use load_file::{
     EfiLoadFile, EfiLoadFile2, EfiLoadFile2Protocol, EfiLoadFileProtocol, LOAD_FILE_PROTOCOL_GUID,
