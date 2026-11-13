@@ -48,6 +48,14 @@ pub const EFI_PCI_PLATFORM_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
     [0x90, 0xD0, 0x56, 0x43, 0xE2, 0x38, 0xB3, 0x41],
 );
 
+/// The `EFI_PCI_ENUMERATION_COMPLETE_GUID`.
+pub const EFI_PCI_ENUMERATION_COMPLETE_GUID: EfiGuid = EfiGuid::new(
+    0x30CF_E3E7,
+    0x3DE1,
+    0x4586,
+    [0xBE, 0x20, 0xDE, 0xAB, 0xA1, 0xB3, 0xB7, 0x93],
+);
+
 /// The `EFI_PCI_OVERRIDE_GUID`.
 pub const EFI_PCI_OVERRIDE_GUID: EfiGuid = EfiGuid::new(
     0xB5B3_5764,

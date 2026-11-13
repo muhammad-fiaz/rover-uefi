@@ -23,6 +23,7 @@ pub mod ip_config;
 pub mod ip_protocol;
 pub mod ipv4;
 pub mod ipv6;
+pub mod iscsi_initiator;
 pub mod mac;
 pub mod managed;
 pub mod mtftp;
@@ -91,6 +92,11 @@ pub use ip_config::{
     EFI_IP4_CONFIG2_PROTOCOL_GUID, EFI_IP6_CONFIG_PROTOCOL_GUID, EfiIp4Config2DataType,
     EfiIp4Config2ManualAddress, EfiIp4Config2Policy, EfiIp4Config2Protocol, EfiIp6ConfigPolicy,
     EfiIp6ConfigProtocol,
+};
+pub use iscsi_initiator::{
+    EFI_ISCSI_INITIATOR_NAME_PROTOCOL_GUID, EfiIScsiInitiatorNameGet,
+    EfiIScsiInitiatorNameProtocol, EfiIScsiInitiatorNameSet, ISCSI_MAX_INITIATOR_NAME_LEN,
+    IScsiInitiatorName,
 };
 pub use mtftp::{
     EFI_MTFTP4_PROTOCOL_GUID, EFI_MTFTP6_PROTOCOL_GUID, EfiMtftp4ModeData, EfiMtftp4Protocol,
