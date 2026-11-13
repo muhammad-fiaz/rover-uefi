@@ -22,8 +22,11 @@ use rover_uefi::arch::x86::{
     page_offset_4k, pd_index, pdpt_index, pml4_index, pml5_index, pt_index,
 };
 use rover_uefi::base::{
-    MemoryRange, compare_bytes, compare_bytes_raw, copy_bytes, fill_bytes, move_bytes,
-    secure_zero_memory, zero_bytes,
+    MemoryRange, ascii_hex_to_u64, ascii_str_case_cmp, ascii_str_cmp, ascii_str_len,
+    ascii_str_size, ascii_str_to_u64, ascii_to_lower, ascii_to_upper, ascii_to_utf16,
+    compare_bytes, compare_bytes_raw, copy_bytes, fill_bytes, move_bytes, secure_zero_memory,
+    utf16_str_case_cmp, utf16_str_cmp, utf16_str_len, utf16_str_size, utf16_str_to_u64,
+    utf16_to_ascii, utf16_to_lower, utf16_to_upper, zero_bytes,
 };
 use rover_uefi::sync::{
     InterruptState, IrqSpinLock, SpinLock, TicketLock, atomic_add_u64, atomic_add_usize,
@@ -648,4 +651,63 @@ fn test_x86_microcode_patch_structures() {
     assert!(header.matches_processor(0x0008_06E9, 0x02));
     assert!(!header.matches_processor(0x0008_06E9, 0x04));
     assert!(!header.matches_processor(0x0009_06EA, 0x02));
+}
+
+#[test]
+fn test_ascii_and_unicode_string_utilities() {
+    let ascii_str = b"RoverFirmware\0";
+    assert_eq!(ascii_str_len(ascii_str), 13);
+    assert_eq!(ascii_str_size(ascii_str), 14);
+
+    assert_eq!(ascii_to_upper(b'a'), b'A');
+    assert_eq!(ascii_to_lower(b'Z'), b'z');
+
+    assert_eq!(
+        ascii_str_cmp(b"abc\0", b"abc\0"),
+        core::cmp::Ordering::Equal
+    );
+    assert_eq!(ascii_str_cmp(b"abc\0", b"abd\0"), core::cmp::Ordering::Less);
+    assert_eq!(
+        ascii_str_case_cmp(b"Rover\0", b"ROVER\0"),
+        core::cmp::Ordering::Equal
+    );
+
+    assert_eq!(ascii_str_to_u64(b"123456789\0"), Some(123_456_789));
+    assert_eq!(ascii_hex_to_u64(b"0xDEADBEEF\0"), Some(0xDEAD_BEEF));
+    assert_eq!(ascii_hex_to_u64(b"CAFEBABE\0"), Some(0xCAFE_BABE));
+
+    let u16_str = [
+        'R' as u16, 'o' as u16, 'v' as u16, 'e' as u16, 'r' as u16, 0,
+    ];
+    assert_eq!(utf16_str_len(&u16_str), 5);
+    assert_eq!(utf16_str_size(&u16_str), 12); // 6 * 2 bytes
+
+    assert_eq!(utf16_to_upper('b' as u16), 'B' as u16);
+    assert_eq!(utf16_to_lower('Y' as u16), 'y' as u16);
+
+    let u16_upper = [
+        'R' as u16, 'O' as u16, 'V' as u16, 'E' as u16, 'R' as u16, 0,
+    ];
+    assert_eq!(
+        utf16_str_cmp(&u16_str, &u16_str),
+        core::cmp::Ordering::Equal
+    );
+    assert_eq!(
+        utf16_str_case_cmp(&u16_str, &u16_upper),
+        core::cmp::Ordering::Equal
+    );
+
+    let num_str = ['9' as u16, '8' as u16, '7' as u16, '6' as u16, 0];
+    assert_eq!(utf16_str_to_u64(&num_str), Some(9876));
+
+    // Transcoding
+    let mut utf16_buf = [0u16; 16];
+    let written = ascii_to_utf16(b"Hello\0", &mut utf16_buf);
+    assert_eq!(written, 6);
+    assert_eq!(utf16_str_len(&utf16_buf), 5);
+
+    let mut ascii_buf = [0u8; 16];
+    let written_ascii = utf16_to_ascii(&utf16_buf, &mut ascii_buf);
+    assert_eq!(written_ascii, 6);
+    assert_eq!(&ascii_buf[0..6], b"Hello\0");
 }

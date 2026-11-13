@@ -21,6 +21,7 @@ pub mod handle;
 pub mod memory;
 pub mod physical_address;
 pub mod status;
+pub mod string;
 pub mod time;
 pub mod types;
 pub mod virtual_address;
@@ -34,6 +35,12 @@ pub use memory::{
 };
 pub use physical_address::EfiPhysicalAddress;
 pub use status::EfiStatus;
+pub use string::{
+    ascii_hex_to_u64, ascii_str_case_cmp, ascii_str_cmp, ascii_str_len, ascii_str_size,
+    ascii_str_to_u64, ascii_to_lower, ascii_to_upper, ascii_to_utf16, utf16_str_case_cmp,
+    utf16_str_cmp, utf16_str_len, utf16_str_size, utf16_str_to_u64, utf16_to_ascii, utf16_to_lower,
+    utf16_to_upper,
+};
 pub use time::{
     EFI_TIME_ADJUST_DAYLIGHT, EFI_TIME_IN_DAYLIGHT, EFI_UNSPECIFIED_TIMEZONE, EfiTime,
     EfiTimeCapabilities,
