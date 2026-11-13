@@ -20,6 +20,7 @@ pub mod non_discoverable;
 pub mod override_protocol;
 pub mod ovmf;
 pub mod qemu_fw_cfg;
+pub mod realm_aperture;
 pub mod reset_filter;
 pub mod scmi;
 pub mod supported_version;
@@ -115,6 +116,11 @@ pub use qemu_fw_cfg::{
     FW_CFG_F_DMA, FW_CFG_IO_DATA, FW_CFG_IO_DMA_ADDRESS, FW_CFG_IO_SELECTOR, FwCfgDmaAccess,
     FwCfgFile, QEMU_FW_CFG_FNAME_SIZE, QEMU_RAMFB_GUID, QemuRamfbConfig, RAMFB_FOURCC_XRGB8888,
     dma_ctl as fw_cfg_dma_ctl, item_key as fw_cfg_item_key,
+};
+pub use realm_aperture::{
+    REALM_APERTURE_MANAGEMENT_PROTOCOL_GUID, REALM_APERTURE_MANAGEMENT_PROTOCOL_REVISION,
+    RealmApertureClose, RealmApertureManagement, RealmApertureManagementProtocol,
+    RealmApertureOpen,
 };
 pub use reset_filter::{
     EfiPlatformSpecificResetFilterProtocol, EfiResetFilter,
