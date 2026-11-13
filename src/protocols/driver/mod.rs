@@ -23,6 +23,7 @@ pub mod non_discoverable;
 pub mod override_protocol;
 pub mod ovmf;
 pub mod platform_boot_manager;
+pub mod platform_to_driver;
 pub mod ps2_policy;
 pub mod qemu_fw_cfg;
 pub mod realm_aperture;
@@ -144,6 +145,13 @@ pub use platform_boot_manager::{
     BootManagerLoadOptionType, EfiBootManagerLoadOption, EfiPlatformBootManagerProtocol,
     PLATFORM_BOOT_MANAGER_PROTOCOL_GUID, PLATFORM_BOOT_MANAGER_PROTOCOL_REVISION,
     PlatformBootManager, PlatformBootManagerRefreshAllBootOptions, load_option_attributes,
+};
+pub use platform_to_driver::{
+    EFI_PLATFORM_TO_DRIVER_CONFIGURATION_CLP_GUID,
+    EFI_PLATFORM_TO_DRIVER_CONFIGURATION_PROTOCOL_GUID, EfiConfigureClpParameterBlock,
+    EfiPlatformConfigurationAction, EfiPlatformToDriverConfigurationProtocol,
+    EfiPlatformToDriverConfigurationQuery, EfiPlatformToDriverConfigurationResponse,
+    PlatformToDriverConfiguration,
 };
 pub use ps2_policy::{
     KEYBOARD_LIGHT_CAPSLOCK, KEYBOARD_LIGHT_NUMLOCK, KEYBOARD_LIGHT_SCROLLLOCK,
