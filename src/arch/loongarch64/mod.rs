@@ -3,6 +3,14 @@
 //! Architectural general registers, control status registers (CSRs),
 //! and exception context for `LoongArch64` firmware environments.
 
+pub mod csr;
+
+pub use csr::{
+    CSR_ASID, CSR_BADI, CSR_BADV, CSR_CRMD, CSR_ECFG, CSR_EENTRY, CSR_ERA, CSR_ESTAT, CSR_EUEN,
+    CSR_PGD, CSR_PGDH, CSR_PGDL, CSR_PRMD, CSR_TLBEHI, CSR_TLBELO0, CSR_TLBELO1, CSR_TLBIDX, Crmd,
+    csr_read, csr_write,
+};
+
 /// `LoongArch` 64-bit general purpose and control registers at exception entry.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 #[repr(C)]

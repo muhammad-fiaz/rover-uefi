@@ -9,7 +9,20 @@
 //!   the cause of a trap.
 
 pub mod context;
+pub mod csr;
+pub mod paging;
 pub mod sbi;
+
+pub use csr::{
+    CSR_CYCLE, CSR_MCAUSE, CSR_MEPC, CSR_MIE, CSR_MIP, CSR_MISA, CSR_MSCRATCH, CSR_MSTATUS,
+    CSR_MTVAL, CSR_MTVEC, CSR_SATP, CSR_SCAUSE, CSR_SEPC, CSR_SIE, CSR_SIP, CSR_SSCRATCH,
+    CSR_SSTATUS, CSR_STVAL, CSR_STVEC, CSR_TIME, Satp, SatpMode, Sstatus, csrc, csrr, csrs, csrw,
+    sfence_vma,
+};
+pub use paging::{
+    RISCV_ENTRIES_PER_TABLE, RISCV_PAGE_SIZE_1G, RISCV_PAGE_SIZE_2M, RISCV_PAGE_SIZE_4K, RiscvPte,
+    RiscvPteFlags, sv39_page_offset, sv39_vpn0_index, sv39_vpn1_index, sv39_vpn2_index,
+};
 
 pub use context::{
     SCAUSE_BREAKPOINT, SCAUSE_ILLEGAL_INSTRUCTION, SCAUSE_INSTRUCTION_PAGE_FAULT,

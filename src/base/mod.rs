@@ -18,6 +18,7 @@ pub mod driver;
 pub mod event;
 pub mod guid;
 pub mod handle;
+pub mod memory;
 pub mod physical_address;
 pub mod status;
 pub mod time;
@@ -27,6 +28,10 @@ pub mod virtual_address;
 pub use event::EfiEvent;
 pub use guid::{EfiGuid, GuidParseError};
 pub use handle::EfiHandle;
+pub use memory::{
+    MemoryRange, compare_bytes, compare_bytes_raw, copy_bytes, fill_bytes, move_bytes,
+    secure_zero_memory, volatile_copy, volatile_fill, zero_bytes,
+};
 pub use physical_address::EfiPhysicalAddress;
 pub use status::EfiStatus;
 pub use time::{

@@ -9,10 +9,20 @@ use rover_uefi::arch::arm64::{
 use rover_uefi::arch::common::cache::{
     CACHE_LINE_SIZE_DEFAULT, cache_line_align_down, cache_line_align_up, cache_line_span,
 };
+use rover_uefi::arch::loongarch64::{CSR_CRMD, Crmd, LoongArch64ExceptionContext};
+use rover_uefi::arch::riscv::{
+    CSR_SATP, RiscvPte, RiscvPteFlags, Satp, SatpMode, Sstatus, sv39_page_offset, sv39_vpn0_index,
+    sv39_vpn1_index, sv39_vpn2_index,
+};
 use rover_uefi::arch::x86::{
-    ApicBase, Cr0Flags, Cr3, Cr4Flags, EferFlags, PageTable, PageTableEntry, PageTableFlags,
-    PatRegister, Xcr0Flags, canonicalize_48, canonicalize_57, page_offset_1g, page_offset_2m,
-    page_offset_4k, pd_index, pdpt_index, pml4_index, pml5_index, pt_index,
+    ApicBase, Cr0Flags, Cr3, Cr4Flags, DescriptorTablePointer, EferFlags, Idt, IdtEntry, PageTable,
+    PageTableEntry, PageTableFlags, PatRegister, SegmentDescriptor, SegmentSelector,
+    TaskStateSegment64, Xcr0Flags, canonicalize_48, canonicalize_57, page_offset_1g,
+    page_offset_2m, page_offset_4k, pd_index, pdpt_index, pml4_index, pml5_index, pt_index,
+};
+use rover_uefi::base::{
+    MemoryRange, compare_bytes, compare_bytes_raw, copy_bytes, fill_bytes, move_bytes,
+    secure_zero_memory, zero_bytes,
 };
 use rover_uefi::sync::{
     InterruptState, IrqSpinLock, SpinLock, TicketLock, atomic_add_u64, atomic_add_usize,
@@ -362,4 +372,208 @@ fn test_arm64_mmu_descriptors_and_registers() {
 
     let tcr = TcrEl1::DEFAULT_48BIT;
     assert_eq!(tcr.0 & 0x3F, 16); // T0SZ
+}
+
+#[test]
+fn test_x86_segment_selector_and_gdt() {
+    let selector = SegmentSelector::new(2, true, 3);
+    assert_eq!(selector.index(), 2);
+    assert_eq!(selector.rpl(), 3);
+    assert!(selector.is_ldt());
+
+    assert_eq!(SegmentSelector::KERNEL_CODE64.bits(), 0x08);
+    assert_eq!(SegmentSelector::KERNEL_CODE64.index(), 1);
+    assert_eq!(SegmentSelector::KERNEL_CODE64.rpl(), 0);
+    assert!(!SegmentSelector::KERNEL_CODE64.is_ldt());
+
+    assert_eq!(SegmentSelector::KERNEL_DATA.bits(), 0x10);
+    assert_eq!(SegmentSelector::USER_CODE64.rpl(), 3);
+    assert_eq!(SegmentSelector::USER_DATA.rpl(), 3);
+
+    let (tss_low, tss_high) = SegmentDescriptor::new_tss(0x1234_5678_9ABC_DEF0, 0x67);
+    assert_eq!(tss_low.0 & 0xFFFF, 0x67);
+    assert_eq!(tss_high.0, 0x1234_5678);
+
+    let tss = TaskStateSegment64::new();
+    assert_eq!(tss.rsp0(), 0);
+
+    let ptr = DescriptorTablePointer::new(0xFFFF_8000_0000_1000, 0x1F);
+    assert_eq!(ptr.base(), 0xFFFF_8000_0000_1000);
+    assert_eq!(ptr.limit(), 0x1F);
+}
+
+#[test]
+fn test_x86_idt_entry_and_idt() {
+    let entry =
+        IdtEntry::new_interrupt(0x1234_5678_9ABC_DEF0, SegmentSelector::KERNEL_CODE64, 0, 1);
+    assert!(entry.is_present());
+    assert_eq!(entry.selector(), SegmentSelector::KERNEL_CODE64);
+    assert_eq!(entry.ist(), 1);
+    assert_eq!(entry.handler_address(), 0x1234_5678_9ABC_DEF0);
+
+    let mut idt = Idt::new();
+    assert!(!idt.get(0x20).is_present());
+
+    idt.set_handler(
+        0x20,
+        0xDEAD_BEEF_CAFE_BABE,
+        SegmentSelector::KERNEL_CODE64,
+        0,
+    );
+    assert!(idt.get(0x20).is_present());
+    assert_eq!(idt.get(0x20).handler_address(), 0xDEAD_BEEF_CAFE_BABE);
+
+    let idt_ptr = idt.pointer();
+    assert_ne!(idt_ptr.base(), 0);
+    let Ok(expected_limit) = u16::try_from(core::mem::size_of::<Idt>() - 1) else {
+        panic!("IDT limit fits in u16");
+    };
+    assert_eq!(idt_ptr.limit(), expected_limit);
+}
+
+#[test]
+fn test_riscv_satp_and_sstatus() {
+    let satp = Satp::new(SatpMode::Sv39, 42, 0x8020_0000 >> 12);
+    assert_eq!(satp.mode(), SatpMode::Sv39);
+    assert_eq!(satp.asid(), 42);
+    assert_eq!(satp.ppn(), 0x8020_0000 >> 12);
+
+    let sstatus = Sstatus::SIE | Sstatus::SUM;
+    assert!(sstatus.contains(Sstatus::SIE));
+    assert!(sstatus.contains(Sstatus::SUM));
+    assert!(!sstatus.contains(Sstatus::SPP));
+    assert_eq!(CSR_SATP, 0x180);
+}
+
+#[test]
+fn test_riscv_paging_sv39() {
+    let vaddr = 0x0000_007F_FFFF_F123;
+    assert_eq!(sv39_vpn2_index(vaddr), 511);
+    assert_eq!(sv39_vpn1_index(vaddr), 511);
+    assert_eq!(sv39_vpn0_index(vaddr), 511);
+    assert_eq!(sv39_page_offset(vaddr), 0x123);
+
+    let table_pte = RiscvPte::new_table(0x8000_1000);
+    assert!(table_pte.is_valid());
+    assert!(table_pte.is_branch());
+    assert!(!table_pte.is_leaf());
+    assert_eq!(table_pte.physical_address(), 0x8000_1000);
+
+    let leaf_flags = RiscvPteFlags::READABLE
+        | RiscvPteFlags::WRITABLE
+        | RiscvPteFlags::ACCESSED
+        | RiscvPteFlags::DIRTY;
+    let leaf_pte = RiscvPte::new_leaf(0x8000_2000, leaf_flags);
+    assert!(leaf_pte.is_valid());
+    assert!(leaf_pte.is_leaf());
+    assert!(!leaf_pte.is_branch());
+    assert_eq!(leaf_pte.physical_address(), 0x8000_2000);
+}
+
+#[test]
+fn test_loongarch64_crmd_and_context() {
+    let crmd = Crmd::PG | Crmd::IE;
+    assert!(crmd.is_paging_enabled());
+    assert!(crmd.is_interrupts_enabled());
+    assert_eq!(crmd.privilege_level(), 0);
+    assert_eq!(CSR_CRMD, 0x0000);
+
+    let ctx = LoongArch64ExceptionContext {
+        estat: (0x0Bu64 << 16) | (0x02u64 << 22),
+        ..Default::default()
+    };
+    assert_eq!(ctx.exception_code(), 0x0B);
+    assert_eq!(ctx.sub_exception_code(), 0x02);
+}
+
+#[test]
+fn test_memory_range_abstractions() {
+    let range = MemoryRange::new(0x1000, 0x2000);
+    assert_eq!(range.start(), 0x1000);
+    assert_eq!(range.length(), 0x2000);
+    assert_eq!(range.end(), 0x3000);
+    assert!(!range.is_empty());
+
+    assert!(range.contains_address(0x1000));
+    assert!(range.contains_address(0x2FFF));
+    assert!(!range.contains_address(0x3000));
+    assert!(!range.contains_address(0x0FFF));
+
+    let sub = MemoryRange::new(0x1500, 0x0500);
+    assert!(range.contains_range(&sub));
+
+    let overlapping = MemoryRange::new(0x2500, 0x1000);
+    assert!(range.overlaps(&overlapping));
+
+    let disjoint = MemoryRange::new(0x4000, 0x1000);
+    assert!(!range.overlaps(&disjoint));
+
+    let Some((left, right)) = range.split_at(0x800) else {
+        panic!("split failed");
+    };
+    assert_eq!(left.start(), 0x1000);
+    assert_eq!(left.length(), 0x800);
+    assert_eq!(right.start(), 0x1800);
+    assert_eq!(right.length(), 0x1800);
+
+    assert!(range.is_aligned(0x1000));
+    assert!(!range.is_aligned(0x2000));
+
+    let unaligned = MemoryRange::new(0x1005, 0x1000);
+    let aligned = unaligned.align_outward(0x1000);
+    assert_eq!(aligned.start(), 0x1000);
+    assert_eq!(aligned.end(), 0x3000);
+}
+
+#[test]
+fn test_memory_primitives_copy_move_fill_zero() {
+    let src = [1u8, 2, 3, 4, 5, 6, 7, 8];
+    let mut dst = [0u8; 8];
+
+    unsafe {
+        copy_bytes(dst.as_mut_ptr(), src.as_ptr(), 8);
+    }
+    assert_eq!(dst, src);
+
+    assert_eq!(
+        unsafe { compare_bytes(dst.as_ptr(), src.as_ptr(), 8) },
+        core::cmp::Ordering::Equal
+    );
+    assert_eq!(
+        unsafe { compare_bytes_raw(dst.as_ptr(), src.as_ptr(), 8) },
+        0
+    );
+
+    // Overlapping move backwards
+    let mut buffer = [1u8, 2, 3, 4, 5, 6, 7, 8];
+    unsafe {
+        move_bytes(buffer.as_mut_ptr().add(2), buffer.as_ptr(), 4);
+    }
+    assert_eq!(buffer, [1, 2, 1, 2, 3, 4, 7, 8]);
+
+    // Overlapping move forwards
+    let mut buffer2 = [1u8, 2, 3, 4, 5, 6, 7, 8];
+    unsafe {
+        move_bytes(buffer2.as_mut_ptr(), buffer2.as_ptr().add(2), 4);
+    }
+    assert_eq!(buffer2, [3, 4, 5, 6, 5, 6, 7, 8]);
+
+    // Fill bytes
+    unsafe {
+        fill_bytes(dst.as_mut_ptr(), 0xAA, 8);
+    }
+    assert_eq!(dst, [0xAA; 8]);
+
+    // Zero bytes
+    unsafe {
+        zero_bytes(dst.as_mut_ptr(), 8);
+    }
+    assert_eq!(dst, [0u8; 8]);
+
+    // Secure zero memory
+    let mut secret = [0x55u8; 16];
+    unsafe {
+        secure_zero_memory(secret.as_mut_ptr(), 16);
+    }
+    assert_eq!(secret, [0u8; 16]);
 }

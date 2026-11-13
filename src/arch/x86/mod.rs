@@ -16,7 +16,9 @@ pub mod cmos;
 pub mod context;
 pub mod control_regs;
 pub mod cpuid;
+pub mod gdt;
 pub mod hpet;
+pub mod idt;
 pub mod io;
 pub mod msr;
 pub mod paging;
@@ -24,6 +26,15 @@ pub mod pic;
 pub mod pit;
 pub mod pm_timer;
 pub mod uart16550;
+
+pub use gdt::{
+    DescriptorTablePointer, SegmentDescriptor, SegmentSelector, TaskStateSegment64, halt, lgdt,
+    ltr, read_cs, read_ds, read_es, read_fs, read_gs, read_ss, sgdt,
+};
+pub use idt::{
+    GATE_PRESENT, GATE_TYPE_INTERRUPT64, GATE_TYPE_TRAP64, IDT_ENTRY_COUNT, Idt, IdtEntry, lidt,
+    sidt,
+};
 
 pub use control_regs::{
     Cr0Flags, Cr3, Cr4Flags, Xcr0Flags, read_cr0, read_cr2, read_cr3, read_cr4, read_xcr0,
