@@ -13,20 +13,40 @@ fn pci_resource_allocation_guids_and_phases() {
     assert!(!EFI_PCI_HOT_PLUG_INIT_PROTOCOL_GUID.is_zero());
 
     assert_eq!(
-        EfiPciHostBridgeResourceAllocationPhase::NotifyBeforeBusEnumeration as u32,
+        EfiPciHostBridgeResourceAllocationPhase::BeginEnumeration as u32,
         0
     );
     assert_eq!(
-        EfiPciHostBridgeResourceAllocationPhase::NotifyAfterBusEnumeration as u32,
+        EfiPciHostBridgeResourceAllocationPhase::BeginBusAllocation as u32,
         1
     );
     assert_eq!(
-        EfiPciHostBridgeResourceAllocationPhase::NotifyBeforeAllocateResources as u32,
+        EfiPciHostBridgeResourceAllocationPhase::EndBusAllocation as u32,
         2
     );
     assert_eq!(
-        EfiPciHostBridgeResourceAllocationPhase::NotifyAfterAllocateResources as u32,
+        EfiPciHostBridgeResourceAllocationPhase::BeginResourceAllocation as u32,
         3
+    );
+    assert_eq!(
+        EfiPciHostBridgeResourceAllocationPhase::AllocateResources as u32,
+        4
+    );
+    assert_eq!(
+        EfiPciHostBridgeResourceAllocationPhase::SetResources as u32,
+        5
+    );
+    assert_eq!(
+        EfiPciHostBridgeResourceAllocationPhase::FreeResources as u32,
+        6
+    );
+    assert_eq!(
+        EfiPciHostBridgeResourceAllocationPhase::EndResourceAllocation as u32,
+        7
+    );
+    assert_eq!(
+        EfiPciHostBridgeResourceAllocationPhase::EndEnumeration as u32,
+        8
     );
 
     assert_eq!(EFI_PCI_HOST_BRIDGE_COMBINE_MEM_PMEM, 0x01);
