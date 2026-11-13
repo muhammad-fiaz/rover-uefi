@@ -13,6 +13,7 @@ pub mod esrt;
 pub mod firmvol;
 pub mod fmp;
 pub mod fmp_depex;
+pub mod form_browser;
 pub mod form_browser_ex;
 pub mod fsp;
 pub mod ftw;
@@ -91,6 +92,13 @@ pub use fmp_depex::{
     LAST_ATTEMPT_STATUS_DRIVER_MAX, LAST_ATTEMPT_STATUS_DRIVER_MIN,
     LAST_ATTEMPT_STATUS_FMP_RESERVED_MAX, LAST_ATTEMPT_STATUS_FMP_RESERVED_MIN,
     MAX_FMP_DEPEX_STACK_DEPTH, evaluate_fmp_depex, validate_fmp_depex,
+};
+pub use form_browser::{
+    ConfirmDataChangeFn, EFI_FORM_BROWSER2_PROTOCOL_GUID, EFI_HII_PLATFORM_SETUP_FORMSET_GUID,
+    EFI_HII_USER_CREDENTIAL_FORMSET_GUID, EfiBrowserCallback2, EfiFormBrowser2Protocol,
+    EfiFormDisplayEngineProtocol, EfiFormId, EfiHiiValue, EfiScreenDescriptor, EfiSendForm2,
+    ExitDisplayFn, FORM_DISPLAY_ENGINE_PROTOCOL_GUID, FormBrowser2, FormDisplayEngine,
+    FormDisplayFn, UserInput, browser_action_request, display_status,
 };
 pub use form_browser_ex::{
     BROWSER_ACTION_DEFAULT, BROWSER_ACTION_DISCARD, BROWSER_ACTION_EXIT, BROWSER_ACTION_GOTO,
