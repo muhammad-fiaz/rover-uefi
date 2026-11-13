@@ -10,6 +10,7 @@
 
 pub mod cache;
 pub mod context;
+pub mod ffa;
 pub mod gic;
 pub mod mmu;
 pub mod pl011;
@@ -17,6 +18,24 @@ pub mod psci;
 pub mod smccc;
 pub mod sysreg;
 
+pub use ffa::{
+    ARM_FFA_DESTINATION_ENDPOINT_ID, ARM_FFA_MAJOR_VERSION, ARM_FFA_MEM_PERM_CODE_X,
+    ARM_FFA_MEM_PERM_CODE_XN, ARM_FFA_MEM_PERM_DATA_NO_ACCESS, ARM_FFA_MEM_PERM_DATA_RO,
+    ARM_FFA_MEM_PERM_DATA_RW, ARM_FFA_MINOR_VERSION, ARM_FID_FFA_CONSOLE_LOG_64, ARM_FID_FFA_ERROR,
+    ARM_FID_FFA_FEATURES, ARM_FID_FFA_ID_GET, ARM_FID_FFA_INTERRUPT, ARM_FID_FFA_MEM_DONATE_64,
+    ARM_FID_FFA_MEM_LEND_64, ARM_FID_FFA_MEM_PERM_GET_64, ARM_FID_FFA_MEM_PERM_SET_64,
+    ARM_FID_FFA_MEM_RETRIEVE_RECLAIM, ARM_FID_FFA_MEM_RETRIEVE_RELINQUISH,
+    ARM_FID_FFA_MEM_RETRIEVE_REQ_64, ARM_FID_FFA_MEM_RETRIEVE_RESP, ARM_FID_FFA_MEM_SHARE_64,
+    ARM_FID_FFA_MSG_SEND_DIRECT_REQ_32, ARM_FID_FFA_MSG_SEND_DIRECT_REQ_64,
+    ARM_FID_FFA_MSG_SEND_DIRECT_RESP_32, ARM_FID_FFA_MSG_SEND_DIRECT_RESP_64,
+    ARM_FID_FFA_PARTITION_INFO_GET, ARM_FID_FFA_PARTITION_INFO_GET_REGS, ARM_FID_FFA_RX_ACQUIRE,
+    ARM_FID_FFA_RX_RELEASE, ARM_FID_FFA_RXTX_MAP_64, ARM_FID_FFA_RXTX_UNMAP,
+    ARM_FID_FFA_SPM_ID_GET, ARM_FID_FFA_SUCCESS_32, ARM_FID_FFA_SUCCESS_64, ARM_FID_FFA_VERSION,
+    FfaStatus, ffa_dest_partition_id, ffa_hvc_call, ffa_id_get, ffa_is_compatible,
+    ffa_is_secure_partition, ffa_make_mem_perm, ffa_make_version, ffa_mem_perm_get,
+    ffa_mem_perm_set, ffa_msg_send_direct_req64, ffa_pack_partition_ids, ffa_smc_call,
+    ffa_source_partition_id, ffa_version, ffa_version_major, ffa_version_minor,
+};
 pub use mmu::{
     ARM64_BLOCK_SIZE_1G, ARM64_BLOCK_SIZE_2M, ARM64_ENTRIES_PER_TABLE, ARM64_PAGE_SIZE_4K,
     ArmDescriptorFlags, ArmTableDescriptor, MAIR_ATTR_DEVICE_NGNRE, MAIR_ATTR_DEVICE_NGNRNE,

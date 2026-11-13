@@ -5,6 +5,7 @@
 pub mod bds;
 pub mod binding;
 pub mod component_name;
+pub mod config_manager;
 pub mod diagnostics;
 pub mod fdt_client;
 pub mod gpio;
@@ -28,6 +29,14 @@ pub use bds::{BdsArchProtocol, EFI_BDS_ARCH_PROTOCOL_GUID, EfiBdsArchProtocol, E
 pub use binding::{DriverBinding, EfiDriverBindingProtocol};
 pub use component_name::{
     ComponentName, ComponentName2, EfiComponentName2Protocol, EfiComponentNameProtocol,
+};
+pub use config_manager::{
+    CM_NAMESPACE_ID_MASK, CM_NAMESPACE_ID_SHIFT, CM_NULL_TOKEN, CM_OBJECT_ID_MASK,
+    CONFIGURATION_MANAGER_PROTOCOL_GUID, CONFIGURATION_MANAGER_PROTOCOL_REVISION, CmObjDescriptor,
+    CmStdObjConfigurationManagerInfo, ConfigurationManager, ConfigurationManagerGetObject,
+    ConfigurationManagerProtocol, ConfigurationManagerSetObject, get_cm_namespace_id,
+    get_cm_object_id, make_cm_object_id, namespace as cm_namespace,
+    std_object_id as cm_std_object_id,
 };
 pub use diagnostics::{
     EFI_DRIVER_DIAGNOSTICS_PROTOCOL_GUID, EFI_DRIVER_DIAGNOSTICS2_PROTOCOL_GUID,
