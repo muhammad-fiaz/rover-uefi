@@ -8,8 +8,8 @@ use rover_uefi::protocols::firmware::firmvol::{
 };
 use rover_uefi::protocols::firmware::fmp::{
     EfiFirmwareImageDescriptor, EfiFirmwareManagementProtocol, FIRMWARE_MANAGEMENT_PROTOCOL_GUID,
-    FMP_CAPSULE_GUID, FMP_GUID, FMP_PROTOCOL_GUID, IMAGE_ATTRIBUTE_IMAGE_UPDATABLE,
-    IMAGE_UPDATABLE_VALID, PACKAGE_ATTRIBUTE_VERSION_UPDATABLE, parse_fmp_capsule_header,
+    FMP_CAPSULE_GUID, FMP_PROTOCOL_GUID, IMAGE_ATTRIBUTE_IMAGE_UPDATABLE, IMAGE_UPDATABLE_VALID,
+    PACKAGE_ATTRIBUTE_VERSION_UPDATABLE, parse_fmp_capsule_header,
 };
 use rover_uefi::protocols::firmware::hii::{
     HII_DATABASE_GUID, HII_FORMS_GUID, is_known_package_type, parse_package_header,
@@ -132,8 +132,7 @@ fn hii_packages() {
 
 #[test]
 fn fmp_header() {
-    assert!(!FMP_GUID.is_zero());
-    assert_eq!(FMP_GUID, FIRMWARE_MANAGEMENT_PROTOCOL_GUID);
+    assert!(!FMP_PROTOCOL_GUID.is_zero());
     assert_eq!(FMP_PROTOCOL_GUID, FIRMWARE_MANAGEMENT_PROTOCOL_GUID);
     assert_eq!(
         FIRMWARE_MANAGEMENT_PROTOCOL_GUID.to_bytes(),

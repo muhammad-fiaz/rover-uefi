@@ -129,6 +129,3 @@ impl core::fmt::Debug for Dns6<'_> {
             .finish()
     }
 }
-
-/// Legacy alias for the IPv4 DNS view.
-pub type DnsProtocol<'a> = Dns4<'a>;

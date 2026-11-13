@@ -64,3 +64,90 @@ pub struct EfiMmCommunication2Protocol {
     /// Sends physical and virtual message buffers to MM handler.
     pub communicate: EfiMmCommunicate2,
 }
+
+/// Safe client wrapper around the MM Communication Protocol.
+#[derive(Debug, Clone, Copy)]
+pub struct MmCommunication {
+    proto: *const EfiMmCommunicationProtocol,
+}
+
+impl MmCommunication {
+    /// Wraps an MM Communication protocol interface pointer.
+    ///
+    /// # Safety
+    ///
+    /// `proto` must point to a valid, live `EfiMmCommunicationProtocol` structure.
+    #[must_use]
+    pub const unsafe fn from_raw(proto: *const EfiMmCommunicationProtocol) -> Self {
+        Self { proto }
+    }
+
+    /// Communicates with an MM handler by passing a communication buffer.
+    ///
+    /// # Errors
+    ///
+    /// Returns `EfiStatus::INVALID_PARAMETER` if buffer is invalid.
+    /// Returns `EfiStatus::ACCESS_DENIED` if communication is disallowed.
+    pub fn communicate(&self, comm_buffer: &mut [u8]) -> Result<(), EfiStatus> {
+        let mut comm_size = comm_buffer.len();
+        let status = unsafe {
+            let func = (*self.proto).communicate;
+            func(
+                self.proto,
+                comm_buffer.as_mut_ptr().cast::<c_void>(),
+                &raw mut comm_size,
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
+}
+
+/// Safe client wrapper around the MM Communication2 Protocol.
+#[derive(Debug, Clone, Copy)]
+pub struct MmCommunication2 {
+    proto: *const EfiMmCommunication2Protocol,
+}
+
+impl MmCommunication2 {
+    /// Wraps an MM Communication2 protocol interface pointer.
+    ///
+    /// # Safety
+    ///
+    /// `proto` must point to a valid, live `EfiMmCommunication2Protocol` structure.
+    #[must_use]
+    pub const unsafe fn from_raw(proto: *const EfiMmCommunication2Protocol) -> Self {
+        Self { proto }
+    }
+
+    /// Communicates with an MM handler using physical and virtual buffer mappings.
+    ///
+    /// # Errors
+    ///
+    /// Returns `EfiStatus::INVALID_PARAMETER` if buffer is invalid.
+    /// Returns `EfiStatus::ACCESS_DENIED` if communication is disallowed.
+    pub fn communicate(
+        &self,
+        comm_buffer_physical: &mut [u8],
+        comm_buffer_virtual: &mut [u8],
+    ) -> Result<(), EfiStatus> {
+        let mut comm_size = comm_buffer_physical.len();
+        let status = unsafe {
+            let func = (*self.proto).communicate;
+            func(
+                self.proto,
+                comm_buffer_physical.as_mut_ptr().cast::<c_void>(),
+                comm_buffer_virtual.as_mut_ptr().cast::<c_void>(),
+                &raw mut comm_size,
+            )
+        };
+        if status == EfiStatus::SUCCESS {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
+}

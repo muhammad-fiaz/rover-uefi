@@ -16,6 +16,7 @@ pub mod framebuffer;
 pub mod guid;
 pub mod mode;
 pub mod pixel;
+pub mod platform_logo;
 pub mod protocol;
 pub mod validation;
 
@@ -33,6 +34,10 @@ pub use framebuffer::FramebufferInfo;
 pub use guid::{EDID_ACTIVE_GUID, EDID_DISCOVERED_GUID, EDID_OVERRIDE_GUID, GRAPHICS_OUTPUT_GUID};
 pub use mode::{EfiGraphicsOutputModeInformation, EfiGraphicsOutputProtocolMode};
 pub use pixel::{EfiGraphicsOutputBltPixel, EfiPixelBitmask, PixelFormat};
+pub use platform_logo::{
+    EfiPlatformLogoGetImage, EfiPlatformLogoProtocol, PLATFORM_LOGO_PROTOCOL_GUID, PlatformLogo,
+    PlatformLogoImage, PlatformLogoImageType,
+};
 pub use protocol::{
     Edid, EfiEdidActiveProtocol, EfiEdidDiscoveredProtocol, EfiGraphicsOutputProtocol,
     GraphicsOutput,

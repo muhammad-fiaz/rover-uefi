@@ -15,6 +15,7 @@ pub mod non_discoverable;
 pub mod override_protocol;
 pub mod ovmf;
 pub mod qemu_fw_cfg;
+pub mod reset_filter;
 pub mod scmi;
 pub mod supported_version;
 pub mod virtio;
@@ -71,6 +72,11 @@ pub use qemu_fw_cfg::{
     FW_CFG_F_DMA, FW_CFG_IO_DATA, FW_CFG_IO_DMA_ADDRESS, FW_CFG_IO_SELECTOR, FwCfgDmaAccess,
     FwCfgFile, QEMU_FW_CFG_FNAME_SIZE, QEMU_RAMFB_GUID, QemuRamfbConfig, RAMFB_FOURCC_XRGB8888,
     dma_ctl as fw_cfg_dma_ctl, item_key as fw_cfg_item_key,
+};
+pub use reset_filter::{
+    EfiPlatformSpecificResetFilterProtocol, EfiResetFilter,
+    PLATFORM_SPECIFIC_RESET_FILTER_PROTOCOL_GUID, PLATFORM_SPECIFIC_RESET_HANDLER_PROTOCOL_GUID,
+    PlatformSpecificResetFilter,
 };
 pub use scmi::{
     ARM_SCMI_BASE_PROTOCOL_GUID, ARM_SCMI_CLOCK_PROTOCOL_GUID, ARM_SCMI_PERFORMANCE_PROTOCOL_GUID,

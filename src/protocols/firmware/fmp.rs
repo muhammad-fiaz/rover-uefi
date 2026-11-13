@@ -21,19 +21,13 @@ pub const FIRMWARE_MANAGEMENT_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
 /// Canonical alias for the Firmware Management Protocol GUID.
 pub const FMP_PROTOCOL_GUID: EfiGuid = FIRMWARE_MANAGEMENT_PROTOCOL_GUID;
 
-/// Legacy/capsule identifier GUID for backwards compatibility.
-pub const FMP_GUID: EfiGuid = FIRMWARE_MANAGEMENT_PROTOCOL_GUID;
-
-/// The Firmware Management Capsule ID GUID (`EFI_FIRMWARE_MANAGEMENT_CAPSULE_ID_GUID`).
+/// The Firmware Management Capsule ID GUID.
 pub const FMP_CAPSULE_GUID: EfiGuid = EfiGuid::new(
     0x6DCB_D5ED,
     0xE82D,
     0x4C44,
     [0xBD, 0xA1, 0x71, 0x94, 0x19, 0x9A, 0xD9, 0x2A],
 );
-
-/// Legacy constant alias for capsule identifier GUID.
-pub const EFI_FIRMWARE_MANAGEMENT_CAPSULE_ID_GUID: EfiGuid = FMP_CAPSULE_GUID;
 
 // Image Attribute Definitions
 /// The device supports firmware image update.

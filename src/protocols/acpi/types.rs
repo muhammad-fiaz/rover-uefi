@@ -46,3 +46,30 @@ pub const SIG_SPCR: [u8; 4] = *b"SPCR";
 
 /// BGRT signature.
 pub const SIG_BGRT: [u8; 4] = *b"BGRT";
+
+/// DBG2 signature.
+pub const SIG_DBG2: [u8; 4] = *b"DBG2";
+
+/// TPM2 signature.
+pub const SIG_TPM2: [u8; 4] = *b"TPM2";
+
+/// PRMT signature.
+pub const SIG_PRMT: [u8; 4] = *b"PRMT";
+
+/// BERT signature.
+pub const SIG_BERT: [u8; 4] = *b"BERT";
+
+/// HEST signature.
+pub const SIG_HEST: [u8; 4] = *b"HEST";
+
+/// NFIT signature.
+pub const SIG_NFIT: [u8; 4] = *b"NFIT";
+
+/// PPTT signature.
+pub const SIG_PPTT: [u8; 4] = *b"PPTT";
+
+/// CEDT signature.
+pub const SIG_CEDT: [u8; 4] = *b"CEDT";
+
+/// IORT signature.
+pub const SIG_IORT: [u8; 4] = *b"IORT";

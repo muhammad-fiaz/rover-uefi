@@ -137,6 +137,3 @@ impl core::fmt::Debug for Tcp6<'_> {
             .finish()
     }
 }
-
-/// Legacy alias for the IPv4 TCP view.
-pub type TcpProtocol<'a> = Tcp4<'a>;

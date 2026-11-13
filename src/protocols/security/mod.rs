@@ -27,6 +27,7 @@ pub mod tcg2;
 pub mod tcg_pp;
 pub mod types;
 pub mod validation;
+pub mod variable_lock;
 pub mod variable_policy;
 pub mod x509;
 
@@ -71,6 +72,10 @@ pub use sha3::{
     sha3_224, sha3_256, sha3_384, sha3_512, shake128_into, shake256_into,
 };
 pub use types::{GLOBAL_VARIABLE_GUID, IMAGE_SECURITY_DATABASE_GUID};
+pub use variable_lock::{
+    EfiVariableLockProtocol, EfiVariableLockRequestToLock, VARIABLE_LOCK_PROTOCOL_GUID,
+    VariableLock,
+};
 pub use variable_policy::{
     DisableVariablePolicy, DumpVariablePolicy, GetLockOnVariableStateVariablePolicyInfo,
     GetVariablePolicyInfo, IsVariablePolicyEnabled, LockVariablePolicy, RegisterVariablePolicy,

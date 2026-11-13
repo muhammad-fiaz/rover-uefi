@@ -144,6 +144,3 @@ impl core::fmt::Debug for Udp6<'_> {
             .finish()
     }
 }
-
-/// Legacy alias for the IPv4 UDP view.
-pub type UdpProtocol<'a> = Udp4<'a>;

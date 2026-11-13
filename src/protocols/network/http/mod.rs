@@ -6,4 +6,4 @@ pub mod config;
 pub mod message;
 pub mod protocol;
 
-pub use protocol::{EfiHttpProtocol, Http, HttpProtocol};
+pub use protocol::{EfiHttpProtocol, Http};

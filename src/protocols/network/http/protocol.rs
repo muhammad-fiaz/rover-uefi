@@ -67,6 +67,3 @@ impl core::fmt::Debug for Http<'_> {
             .finish()
     }
 }
-
-/// Legacy alias for the HTTP view.
-pub type HttpProtocol<'a> = Http<'a>;

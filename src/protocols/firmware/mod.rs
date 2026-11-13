@@ -12,11 +12,13 @@ pub mod dxe_services;
 pub mod firmvol;
 pub mod fmp;
 pub mod fsp;
+pub mod ftw;
 pub mod hii;
 pub mod hob;
 pub mod ifr;
 pub mod memory_accept;
 pub mod memory_attribute;
+pub mod memory_test;
 pub mod mm_base;
 pub mod mm_communication;
 pub mod mm_system_table;
@@ -25,6 +27,9 @@ pub mod pei;
 pub mod ppi;
 pub mod prm;
 pub mod sections;
+pub mod smm_access2;
+pub mod smm_control2;
+pub mod smm_cpu;
 pub mod universal_payload;
 
 pub use arch_protocols::{
@@ -60,6 +65,12 @@ pub use fsp::{
     FspTempRamInit, IMAGE_ATTRIBUTE_64BIT_MODE_SUPPORT, IMAGE_ATTRIBUTE_DISPATCH_MODE_SUPPORT,
     IMAGE_ATTRIBUTE_GRAPHICS_SUPPORT,
 };
+pub use ftw::{
+    EfiFaultTolerantWriteAbort, EfiFaultTolerantWriteAllocate, EfiFaultTolerantWriteGetLastWrite,
+    EfiFaultTolerantWriteGetMaxBlockSize, EfiFaultTolerantWriteProtocol,
+    EfiFaultTolerantWriteRestart, EfiFaultTolerantWriteWrite, FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
+    FAULT_TOLERANT_WRITE_SMM_PROTOCOL_GUID, FaultTolerantWrite,
+};
 pub use memory_accept::{
     AcceptMemory, MEMORY_ACCEPT_PROTOCOL_GUID, MemoryAccept, MemoryAcceptProtocol,
 };
@@ -68,6 +79,11 @@ pub use memory_attribute::{
     EfiMemoryAttributeProtocol, EfiSetMemoryAttributes, MemoryAttribute,
     memory_attribute as memory_attr_flags,
 };
+pub use memory_test::{
+    EfiGenericMemoryTestProtocol, EfiInitializeMemoryTest, EfiMemoryTestFinished,
+    EfiPerformMemoryTest, GENERIC_MEMORY_TEST_PROTOCOL_GUID, GenericMemoryTest, MemoryTestLevel,
+    MemoryTestProgress,
+};
 pub use mm_base::{
     EfiMmBaseProtocol, EfiMmGetMmstLocation, EfiMmInsideOut, EfiSmmBase2Protocol,
     MM_BASE_PROTOCOL_GUID, MmBaseProtocol, SMM_BASE2_PROTOCOL_GUID,
@@ -75,6 +91,7 @@ pub use mm_base::{
 pub use mm_communication::{
     EfiMmCommunicate, EfiMmCommunicate2, EfiMmCommunicateHeader, EfiMmCommunication2Protocol,
     EfiMmCommunicationProtocol, MM_COMMUNICATION_PROTOCOL_GUID, MM_COMMUNICATION2_PROTOCOL_GUID,
+    MmCommunication, MmCommunication2,
 };
 pub use mm_system_table::{
     EFI_MM_SYSTEM_TABLE_GUID, EFI_SMM_SYSTEM_TABLE2_GUID, EfiMmAllocatePages, EfiMmAllocatePool,
@@ -126,6 +143,20 @@ pub use sections::{
     EFI_STANDARD_COMPRESSION, FfsSection, FfsSectionHeader, FfsSectionIter,
     GuidDefinedSectionHeader, parse_compression_header, parse_guid_defined_header, parse_section,
     parse_section_header,
+};
+pub use smm_access2::{
+    EfiSmmAccess2Protocol, EfiSmmCapabilities2, EfiSmmClose2, EfiSmmLock2, EfiSmmOpen2,
+    EfiSmramDescriptor, SMM_ACCESS2_PROTOCOL_GUID, SMRAM_ALLOCATED, SMRAM_CACHEABLE, SMRAM_CLOSED,
+    SMRAM_LOCKED, SMRAM_OPEN, SmmAccess2,
+};
+pub use smm_control2::{
+    EfiSmmActivate2, EfiSmmControl2Protocol, EfiSmmDeactivate2, SMM_CONTROL2_PROTOCOL_GUID,
+    SmmControl2,
+};
+pub use smm_cpu::{
+    EfiSmmCpuProtocol, EfiSmmReadSaveState, EfiSmmSaveStateIoInfo, EfiSmmSaveStateIoType,
+    EfiSmmSaveStateIoWidth, EfiSmmSaveStateRegister, EfiSmmWriteSaveState, SMM_CPU_PROTOCOL_GUID,
+    SmmCpu,
 };
 pub use universal_payload::{
     UNIVERSAL_PAYLOAD_IDENTIFIER, UniversalPayloadEntryPoint, UniversalPayloadGenericHeader,
