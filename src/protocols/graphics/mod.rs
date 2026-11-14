@@ -18,6 +18,7 @@ pub mod mode;
 pub mod pixel;
 pub mod platform_logo;
 pub mod protocol;
+pub mod uga_draw;
 pub mod validation;
 
 pub use blt::{BltOperation, BltRectangle, BltRequest};
@@ -42,4 +43,8 @@ pub use platform_logo::{
 pub use protocol::{
     Edid, EfiEdidActiveProtocol, EfiEdidDiscoveredProtocol, EfiGraphicsOutputProtocol,
     GraphicsOutput,
+};
+pub use uga_draw::{
+    EFI_UGA_DRAW_PROTOCOL_GUID, EfiUgaBltOperation, EfiUgaDrawBlt, EfiUgaDrawGetMode,
+    EfiUgaDrawProtocol, EfiUgaDrawSetMode, EfiUgaPixel, UgaDraw, UgaModeInfo,
 };
