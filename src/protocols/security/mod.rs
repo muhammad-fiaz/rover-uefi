@@ -5,6 +5,7 @@
 
 pub mod aes;
 pub mod authentication_info;
+pub mod bis;
 pub mod cc_measurement;
 pub mod deferred_image;
 pub mod device_security;
@@ -70,6 +71,15 @@ pub use authentication_info::{
     EFI_AUTHENTICATION_CHAP_RADIUS_GUID, EFI_AUTHENTICATION_INFO_PROTOCOL_GUID,
     EfiAuthenticationInfoProtocol, EfiAuthenticationInfoProtocolGet,
     EfiAuthenticationInfoProtocolSet,
+};
+pub use bis::{
+    BIS_ALG_DSA, BIS_ALG_RSA_MD5, BIS_CERT_ID_DSA, BIS_CERT_ID_MASK, BIS_CERT_ID_RSA_MD5,
+    BIS_CURRENT_VERSION_MAJOR, BIS_VERSION_1, BOOT_OBJECT_AUTHORIZATION_PARMSET_GUID, Bis,
+    BisAlgId, BisApplicationHandle, BisCertId, EFI_BIS_PROTOCOL_GUID, EfiBisData,
+    EfiBisGetBootObjectAuthorizationCertificate, EfiBisGetBootObjectAuthorizationCheckFlag,
+    EfiBisGetBootObjectAuthorizationUpdateToken, EfiBisGetSignatureInfo, EfiBisInitialize,
+    EfiBisProtocol, EfiBisShutdown, EfiBisSignatureInfo, EfiBisUpdateBootObjectAuthorization,
+    EfiBisVerifyBootObject, EfiBisVerifyObjectWithCredential, EfiBisVersion,
 };
 pub use cc_measurement::{
     ARMCCA_MR_INDEX_0_RIM, ARMCCA_MR_INDEX_1_REM0, ARMCCA_MR_INDEX_2_REM1, ARMCCA_MR_INDEX_3_REM2,
