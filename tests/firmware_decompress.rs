@@ -86,7 +86,7 @@ fn uefi_compress_and_decompress_roundtrip_text() {
 #[test]
 fn tiano_compress_and_decompress_roundtrip_text() {
     let original =
-        b"Tiano Core custom compression algorithm utilizes 5-bit position fields and 64KB window.";
+        b"The custom compression algorithm utilizes 5-bit position fields and 64KB window.";
     let mut comp_buf = [0_u8; 1024];
     let comp_len = compress_tiano(original, &mut comp_buf).expect("compress tiano failed");
     assert!(comp_len > 8);

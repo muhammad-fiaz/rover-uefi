@@ -2,7 +2,7 @@
 //!
 //! Defined by the UEFI Specification Appendix A: Decompression Algorithm,
 //! `EFI_DECOMPRESS_PROTOCOL`, PI Specification Volume 1: `EFI_PEI_DECOMPRESS_PPI`,
-//! and Tiano Core custom compression/decompression standards.
+//! and custom firmware compression/decompression standards.
 //!
 //! Provides zero-allocation, `#![no_std]` native Huffman and LZ77 compression
 //! and decompression services for firmware volumes, sections, and images.
@@ -145,7 +145,7 @@ pub fn get_decompress_info(source: &[u8]) -> Result<DecompressInfo, EfiStatus> {
     })
 }
 
-// Internal decompressor constants conforming to UEFI Spec Appendix A & EDK II
+// Internal decompressor constants conforming to UEFI Spec Appendix A.
 const MAXMATCH: usize = 256;
 const THRESHOLD: usize = 3;
 const CODE_BIT: usize = 16;
@@ -665,7 +665,7 @@ impl<'a> OutBitStream<'a> {
             self.bit_buf = 0;
             self.bit_count = 0;
         }
-        // EDK II null-terminates compressed buffer so decompressor's lookahead does not read out of bounds
+        // Null-terminate compressed buffer so decompressor's lookahead does not read out of bounds
         if self.out_idx < self.dst.len() {
             self.dst[self.out_idx] = 0;
             self.out_idx += 1;
