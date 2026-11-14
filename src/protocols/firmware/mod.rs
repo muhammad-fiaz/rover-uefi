@@ -6,6 +6,7 @@
 pub mod arch_protocols;
 pub mod capsule_arch;
 pub mod capsule_policy;
+pub mod capsule_report;
 pub mod decompress;
 pub mod depex;
 pub mod dt_fixup;
@@ -68,6 +69,11 @@ pub use capsule_policy::{
     CapsuleUpdatePolicyIsLockFmpDeviceAtLockEventGuidRequired,
     CapsuleUpdatePolicyIsLowestSupportedVersionCheckRequired, CapsuleUpdatePolicyProtocol,
     last_attempt_status,
+};
+pub use capsule_report::{
+    CAPSULE_RESULT_VARIABLE_FMP_VERSION, CAPSULE_RESULT_VARIABLE_JSON_VERSION, CapsuleResultReport,
+    EFI_CAPSULE_REPORT_GUID, EfiCapsuleResultVariableFmp, EfiCapsuleResultVariableHeader,
+    EfiCapsuleResultVariableJson, REDFISH_DEFINED_JSON_SCHEMA,
 };
 pub use decompress::{
     DecompressInfo, EFI_DECOMPRESS_PROTOCOL_GUID, EfiDecompress, EfiDecompressGetInfo,
