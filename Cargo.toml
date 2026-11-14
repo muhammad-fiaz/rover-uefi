@@ -7,6 +7,7 @@ description = "A modern, feature-rich, cross-platform firmware development libra
 readme = "README.md"
 license = "Apache-2.0"
 repository = "https://github.com/muhammad-fiaz/rover-uefi"
+homepage = "https://github.com/muhammad-fiaz/rover-uefi"
 categories = ["embedded", "no-std", "os", "hardware-support", "cryptography"]
 keywords = ["uefi", "firmware", "no-std", "bootloader", "pi"]
 

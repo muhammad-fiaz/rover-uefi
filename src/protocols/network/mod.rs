@@ -30,7 +30,9 @@ pub mod iscsi_initiator;
 pub mod mac;
 pub mod managed;
 pub mod mtftp;
+pub mod nii;
 pub mod packets;
+pub mod proxy;
 pub mod pxe;
 pub mod redfish_config;
 pub mod redfish_credential;
@@ -49,6 +51,7 @@ pub mod udp;
 pub mod usb_ethernet;
 pub mod validation;
 pub mod vlan_config;
+pub mod wifi;
 pub mod wifi2;
 pub mod wifi_profile_sync;
 
@@ -135,6 +138,16 @@ pub use mtftp::{
     EFI_MTFTP4_PROTOCOL_GUID, EFI_MTFTP6_PROTOCOL_GUID, EfiMtftp4ModeData, EfiMtftp4Protocol,
     EfiMtftp4Token, EfiMtftp6ModeData, EfiMtftp6Protocol,
 };
+pub use nii::{
+    EFI_NETWORK_INTERFACE_IDENTIFIER_PROTOCOL_GUID,
+    EFI_NETWORK_INTERFACE_IDENTIFIER_PROTOCOL_GUID_31,
+    EFI_NETWORK_INTERFACE_IDENTIFIER_PROTOCOL_REVISION, EfiNetworkInterfaceIdentifierProtocol,
+    EfiNetworkInterfaceType, NetworkInterfaceIdentifier, UndiConfigTable,
+};
+pub use proxy::{
+    ProxyAuthScheme, ProxyBypassRule, ProxyConfig, ProxyRouter, ProxyType,
+    build_http_connect_request, parse_wpad_option_252, validate_proxy_connect_response,
+};
 pub use redfish_config::{
     EfiRedfishConfigHandlerProtocol, REDFISH_CONFIG_HANDLER_PROTOCOL_GUID, RedfishConfigHandler,
     RedfishConfigHandlerInit, RedfishConfigHandlerStop, RedfishConfigServiceInformation,
@@ -205,6 +218,17 @@ pub use usb_ethernet::{
 pub use vlan_config::{
     EFI_VLAN_CONFIG_PROTOCOL_GUID, EfiVlanConfigFind, EfiVlanConfigProtocol, EfiVlanConfigRemove,
     EfiVlanConfigSet, EfiVlanFindData, VLAN_CONFIG_PROTOCOL_GUID, VlanConfig,
+};
+pub use wifi::{
+    EFI_WIFI_PROTOCOL_GUID, Efi80211AccNetType, Efi80211AssociateData, Efi80211AssociateDataToken,
+    Efi80211AssociateResultCode, Efi80211AuthenticateData, Efi80211AuthenticateDataToken,
+    Efi80211AuthenticationType, Efi80211DeauthenticateData, Efi80211DeauthenticateDataToken,
+    Efi80211DisassociateData, Efi80211DisassociateDataToken, Efi80211DisassociateResultCode,
+    Efi80211ElementHeader, Efi80211ElementSsid, Efi80211ReasonCode, Efi80211ScanData,
+    Efi80211ScanDataToken, Efi80211ScanResultCode, EfiWirelessMacConnectionAssociate,
+    EfiWirelessMacConnectionAuthenticate, EfiWirelessMacConnectionDeauthenticate,
+    EfiWirelessMacConnectionDisassociate, EfiWirelessMacConnectionProtocol,
+    EfiWirelessMacConnectionScan, WirelessMacConnection,
 };
 pub use wifi_profile_sync::{
     WIFI_MAX_KEY_LEN, WIFI_MAX_SSID_LEN, WIFI_PROFILE_SYNC_PROTOCOL_GUID,

@@ -44,7 +44,7 @@
 | **Cryptography & Security** | Constant-time AES-128/256, SHA-1/224/256/384/512, SHA-3, RSA PKCS#1 v1.5 verification, X.509 ASN.1 certificate decoding, Authenticode PE signature verification, Image Execution Information Table (`EFI_IMAGE_EXECUTION_INFO_TABLE_GUID`), Secure Boot key databases (`PK`, `KEK`, `db`, `dbx`), RNG Protocol, PKCS#7 Verification Protocol, Confidential Computing (CC) Measurement Protocol, and Device Security Protocols. |
 | **TCG / TPM** | TPM 1.2 and TPM 2.0 protocols (`EfiTcg2Protocol`), TCG event log parsing, SHA-1/SHA-256 PCR bank operations, startup commands, and measurements. |
 | **ACPI & SMBIOS** | Full ACPI table generators and bounded parsers (RSDP, RSDT, XSDT, FADT, MADT, MCFG, HPET, DMAR, SRAT, SLIT, SPCR, BGRT, FACS, DSDT, SSDT), ACPI SDT protocol, SMBIOS Protocol (`EFI_SMBIOS_PROTOCOL`), and SMBIOS 2.x/3.x entry points and structured record parsers. |
-| **Network Protocols** | SNP (Simple Network), MNP, ARP, VLAN Config, IPv4, IPv6, IPv4/v6 Config (`EFI_IP4_CONFIG2_PROTOCOL`, `EFI_IP6_CONFIG_PROTOCOL`), ICMP, IGMP, NDP, UDPv4/v6, TCPv4/v6, TLS, DHCPv4/v6 (`EFI_DHCP4_PROTOCOL`, `EFI_DHCP6_PROTOCOL`), MTFTPv4/v6 (`EFI_MTFTP4_PROTOCOL`, `EFI_MTFTP6_PROTOCOL`), DNS, HTTP, REST EX, Redfish Discover, and PXE Base Code. |
+| **Network Protocols** | SNP (Simple Network), MNP, ARP, VLAN Config, IPv4, IPv6, IPv4/v6 Config (`EFI_IP4_CONFIG2_PROTOCOL`, `EFI_IP6_CONFIG_PROTOCOL`), ICMP, IGMP, NDP, UDPv4/v6, TCPv4/v6, TLS, DHCPv4/v6 (`EFI_DHCP4_PROTOCOL`, `EFI_DHCP6_PROTOCOL`), MTFTPv4/v6 (`EFI_MTFTP4_PROTOCOL`, `EFI_MTFTP6_PROTOCOL`), DNS, HTTP, REST EX, Redfish Discover, PXE Base Code, NII / UNDI (`EFI_NETWORK_INTERFACE_IDENTIFIER_PROTOCOL`), IEEE 802.11 WiFi (`EFI_WIRELESS_MAC_CONNECTION_PROTOCOL`, `EFI_WIFI2_PROTOCOL`), EAP & Supplicant, IPsec / IKEv2 VPN (`EFI_IPSEC_PROTOCOL`, `EFI_IPSEC2_PROTOCOL`, `EFI_IPSEC_CONFIG_PROTOCOL`), and HTTP/SOCKS enterprise proxy & WPAD Option 252 routing. |
 | **Firmware & PI Formats** | Universal Payload (`UNIVERSAL_PAYLOAD_IDENTIFIER`, `'PLDH'`), Intel FSP 2.x headers (`FspInfoHeader`, `'FSPH'`), Platform Runtime Mechanism (PRM), Hand-Off Blocks (HOBs), Firmware Volume/FMP, HII/IFR, DEPEX, PE32/PE32+/TE headers, and Standalone/Traditional MM communication (`EFI_MM_COMMUNICATION2_PROTOCOL`, `EFI_MM_SYSTEM_TABLE`). |
 | **Manageability** | IPMI Protocol & KCS register interface, MCTP packet/message dispatch, and PLDM Protocol with base and platform monitoring commands. |
 | **Drivers & Binding** | UEFI Driver Binding Protocol (`EFI_DRIVER_BINDING_PROTOCOL`), Component Name Protocols (1 & 2), Loaded Image Protocol, Driver Health Protocol, Driver Diagnostics Protocols (1 & 2), Platform/Bus Driver Override Protocols, Driver Supported EFI Version, ARM SCMI Protocol, VirtIO Device Protocol, and native driver lifecycle registries. |
@@ -138,24 +138,26 @@ rover-uefi = { path = "boot/rover-uefi" }
 #![no_main]
 
 use core::panic::PanicInfo;
-use rover_uefi::abi::Status;
-use rover_uefi::base::Handle;
-use rover_uefi::tables::SystemTable;
+use rover_uefi::base::{EfiHandle, EfiStatus};
+use rover_uefi::tables::{EfiSystemTable, SYSTEM_TABLE_SIGNATURE};
 
 #[unsafe(no_mangle)]
-pub extern "efiapi" fn efi_main(image_handle: Handle, system_table: *const SystemTable) -> Status {
+pub extern "efiapi" fn efi_main(
+    _image_handle: EfiHandle,
+    system_table: *const EfiSystemTable,
+) -> EfiStatus {
     if system_table.is_null() {
-        return Status::INVALID_PARAMETER;
+        return EfiStatus::INVALID_PARAMETER;
     }
 
     let st = unsafe { &*system_table };
-    
-    // Validate table header signature
-    if !st.header.is_valid() {
-        return Status::UNSUPPORTED;
+
+    // Validate table header signature ("IBI SYST")
+    if !st.hdr.has_signature(SYSTEM_TABLE_SIGNATURE) {
+        return EfiStatus::UNSUPPORTED;
     }
 
-    Status::SUCCESS
+    EfiStatus::SUCCESS
 }
 
 #[panic_handler]
@@ -167,17 +169,19 @@ fn panic(_info: &PanicInfo) -> ! {
 ### 2. Boot Services Protocol Discovery
 
 ```rust
-use rover_uefi::base::{Guid, Handle};
-use rover_uefi::protocols::graphics::GopProtocol;
-use rover_uefi::tables::BootServices;
+use rover_uefi::base::EfiStatus;
+use rover_uefi::protocols::graphics::{EfiGraphicsOutputProtocol, GRAPHICS_OUTPUT_GUID};
+use rover_uefi::tables::EfiBootServices;
 
-pub fn locate_gop(bs: &BootServices) -> Option<*mut GopProtocol> {
+pub fn locate_gop(bs: &EfiBootServices) -> Option<*mut EfiGraphicsOutputProtocol> {
     let mut interface = core::ptr::null_mut();
+    let mut guid = GRAPHICS_OUTPUT_GUID;
+
     let status = unsafe {
         (bs.locate_protocol)(
-            &raw const GopProtocol::GUID,
+            &mut guid,
             core::ptr::null_mut(),
-            &raw mut interface,
+            &mut interface,
         )
     };
 
@@ -192,14 +196,13 @@ pub fn locate_gop(bs: &BootServices) -> Option<*mut GopProtocol> {
 ### 3. Native Bounded ACPI Parsing
 
 ```rust
-use rover_uefi::acpi::{Rsdp, Xsdt};
+use rover_uefi::protocols::acpi::{RsdpInfo, parse_rsdp};
 
-pub fn find_table_in_rsdp<'a>(rsdp_bytes: &'a [u8], signature: &[u8; 4]) -> Option<&'a [u8]> {
-    let rsdp = Rsdp::parse(rsdp_bytes).ok()?;
-    let xsdt_addr = rsdp.xsdt_address();
-    
-    // Safe bounded inspection of memory tables
-    None
+pub fn inspect_rsdp(rsdp_bytes: &[u8]) -> Option<RsdpInfo> {
+    // Safe bounded zero-copy parsing of ACPI RSDP structure
+    let rsdp = parse_rsdp(rsdp_bytes)?;
+    let _xsdt_addr = rsdp.xsdt_address;
+    Some(rsdp)
 }
 ```
 
@@ -213,7 +216,7 @@ pub fn find_table_in_rsdp<'a>(rsdp_bytes: &'a [u8], signature: &[u8; 4]) -> Opti
 Run the comprehensive test suite and linters locally:
 
 ```bash
-# Run unit and integration tests (264 suites, 1,000+ tests)
+# Run unit and integration tests (267 suites, 1,000+ tests)
 cargo test --all-features
 
 # Strict lint verification
@@ -276,7 +279,7 @@ rover-uefi/
 │       ├── graphics/           # Graphics Output Protocol (GOP), UGA Draw Protocol, EDID & software BLT engine
 │       ├── i2c/                # I2C host, master, and device protocols
 │       ├── manageability/      # IPMI, MCTP, and PLDM protocols
-│       ├── network/            # SNP, MNP, ARP, VLAN, IPv4/v6, TCP, UDP, DHCP, MTFTP, DNS, HTTP, Redfish
+│       ├── network/            # SNP, MNP, ARP, VLAN, IPv4/v6, TCP, UDP, DHCP, MTFTP, DNS, HTTP, Redfish, NII, WiFi, IPsec, Proxy
 │       ├── pci/                # PCI I/O, root bridge, resource allocation, hot plug, CXL & config spaces
 │       ├── security/           # AES, SHA, RSA, X.509, TPM 1.2/2.0, Secure Boot, Image Execution Info & CC measurement
 │       ├── serial/             # Serial I/O protocols
@@ -285,7 +288,7 @@ rover-uefi/
 │       ├── spi/                # SPI host, master, and device protocols
 │       ├── storage/            # Block I/O, Disk I/O, security, erase, disk info, RAM disk, SD/MMC, FAT
 │       └── usb/                # USB I/O, XHCI, EHCI, HID descriptors & mass storage
-└── tests/                      # 264 native integration test suites
+└── tests/                      # 267 native integration test suites
 ```
 
 </details>
