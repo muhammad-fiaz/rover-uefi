@@ -427,3 +427,59 @@ pub struct EfiPeiMpServices2Ppi {
     /// Returns the calling logical processor number.
     pub who_am_i: EfiPeiMpServices2WhoAmI,
 }
+
+// --- PEI Reset & Reset 2 PPIs ---
+
+/// PEI Reset PPI GUID: `{3dae3825-4215-4a86-82dd-94244350ec75}`.
+pub const EFI_PEI_RESET_PPI_GUID: EfiGuid = EfiGuid::new(
+    0x3DAE_3825,
+    0x4215,
+    0x4A86,
+    [0x82, 0xDD, 0x94, 0x24, 0x43, 0x50, 0xEC, 0x75],
+);
+
+/// PEI Reset 2 PPI GUID: `{600e152e-4478-4cdf-a0b1-3d85418c1ab7}`.
+pub const EFI_PEI_RESET2_PPI_GUID: EfiGuid = EfiGuid::new(
+    0x600E_152E,
+    0x4478,
+    0x4CDF,
+    [0xA0, 0xB1, 0x3D, 0x85, 0x41, 0x8C, 0x1A, 0xB7],
+);
+
+/// Function pointer to execute a platform reset in PEI.
+pub type EfiPeiResetSystem2 = unsafe extern "efiapi" fn(
+    reset_type: crate::base::ResetType,
+    reset_status: EfiStatus,
+    data_size: usize,
+    reset_data: *const c_void,
+) -> !;
+
+/// PEI Reset 2 PPI interface table.
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct EfiPeiReset2Ppi {
+    /// Resets the platform.
+    pub reset_system: EfiPeiResetSystem2,
+}
+
+// --- PEI S3 Resume 2 PPI ---
+
+/// PEI S3 Resume 2 PPI GUID: `{6d582dbc-db85-4514-8fcc-5adf6227b147}`.
+pub const EFI_PEI_S3_RESUME2_PPI_GUID: EfiGuid = EfiGuid::new(
+    0x6D58_2DBC,
+    0xDB85,
+    0x4514,
+    [0x8F, 0xCC, 0x5A, 0xDF, 0x62, 0x27, 0xB1, 0x47],
+);
+
+/// Function pointer to execute S3 restore boot script in PEI.
+pub type EfiPeiS3RestoreConfig2 =
+    unsafe extern "efiapi" fn(this: *const EfiPeiS3Resume2Ppi) -> EfiStatus;
+
+/// PEI S3 Resume 2 PPI interface table.
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct EfiPeiS3Resume2Ppi {
+    /// Restores platform configuration by executing the S3 boot script.
+    pub s3_restore_config2: EfiPeiS3RestoreConfig2,
+}

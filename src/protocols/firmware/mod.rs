@@ -54,16 +54,24 @@ pub mod swap_address_range;
 pub mod universal_payload;
 
 pub use arch_protocols::{
-    EFI_CPU_ARCH_PROTOCOL_GUID, EFI_METRONOME_ARCH_PROTOCOL_GUID,
+    EFI_BDS_ARCH_PROTOCOL_GUID, EFI_CPU_ARCH_PROTOCOL_GUID, EFI_METRONOME_ARCH_PROTOCOL_GUID,
     EFI_MONOTONIC_COUNTER_ARCH_PROTOCOL_GUID, EFI_REAL_TIME_CLOCK_ARCH_PROTOCOL_GUID,
-    EFI_RESET_ARCH_PROTOCOL_GUID, EFI_RUNTIME_ARCH_PROTOCOL_GUID, EFI_SECURITY_ARCH_PROTOCOL_GUID,
-    EFI_SECURITY2_ARCH_PROTOCOL_GUID, EFI_TIMER_ARCH_PROTOCOL_GUID,
-    EFI_VARIABLE_ARCH_PROTOCOL_GUID, EFI_VARIABLE_WRITE_ARCH_PROTOCOL_GUID,
-    EFI_WATCHDOG_TIMER_ARCH_PROTOCOL_GUID, EfiCpuArchProtocol, EfiCpuFlushType, EfiCpuInitType,
-    EfiMetronomeArchProtocol, EfiSecurity2ArchProtocol, EfiSecurityArchProtocol,
+    EFI_RESET_ARCH_PROTOCOL_GUID, EFI_RSC_HANDLER_PROTOCOL_GUID, EFI_RUNTIME_ARCH_PROTOCOL_GUID,
+    EFI_SECURITY_ARCH_PROTOCOL_GUID, EFI_SECURITY2_ARCH_PROTOCOL_GUID,
+    EFI_TIMER_ARCH_PROTOCOL_GUID, EFI_VARIABLE_ARCH_PROTOCOL_GUID,
+    EFI_VARIABLE_WRITE_ARCH_PROTOCOL_GUID, EFI_WATCHDOG_TIMER_ARCH_PROTOCOL_GUID,
+    EfiBdsArchProtocol, EfiBdsEntry, EfiCpuArchProtocol, EfiCpuFlushType, EfiCpuInitType,
+    EfiMetronomeArchProtocol, EfiRscHandlerCallback, EfiRscHandlerProtocol, EfiRscHandlerRegister,
+    EfiRscHandlerUnregister, EfiSecurity2ArchProtocol, EfiSecurityArchProtocol,
     EfiTimerArchProtocol, EfiWatchdogTimerArchProtocol,
 };
-pub use capsule_arch::EFI_CAPSULE_ARCH_PROTOCOL_GUID;
+pub use capsule_arch::{
+    DisplayDisplayPayload, EFI_CAPSULE_ARCH_PROTOCOL_GUID, EFI_JSON_CAPSULE_DATA_TABLE_GUID,
+    EFI_JSON_CAPSULE_ID_GUID, EFI_JSON_CAPSULE_RESULT_TABLE_GUID, EFI_JSON_CONFIG_DATA_TABLE_GUID,
+    EFI_PEI_CAPSULE_ON_DISK_PPI_GUID, EFI_PEI_CAPSULE_PPI_GUID, EfiJsonCapsuleConfigDataHeader,
+    EfiJsonCapsuleHeader, EfiJsonConfigDataItemHeader, EfiPeiCapsuleCheckCapsuleUpdate,
+    EfiPeiCapsuleCoalesce, EfiPeiCapsuleCreateState, EfiPeiCapsulePpi, WINDOWS_UX_CAPSULE_GUID,
+};
 pub use capsule_policy::{
     CAPSULE_UPDATE_POLICY_PROTOCOL_GUID, CapsuleUpdatePolicy,
     CapsuleUpdatePolicyCheckSystemEnvironment, CapsuleUpdatePolicyCheckSystemPower,
@@ -78,8 +86,11 @@ pub use capsule_report::{
     EfiCapsuleResultVariableJson, REDFISH_DEFINED_JSON_SCHEMA,
 };
 pub use decompress::{
-    DecompressInfo, EFI_DECOMPRESS_PROTOCOL_GUID, EfiDecompress, EfiDecompressGetInfo,
-    EfiDecompressProtocol, UEFI_DECOMPRESS_SCRATCH_SIZE, decompress_uefi, get_decompress_info,
+    BROTLI_CUSTOM_DECOMPRESS_GUID, Decompress, DecompressInfo, EFI_DECOMPRESS_PROTOCOL_GUID,
+    EfiDecompress, EfiDecompressGetInfo, EfiDecompressProtocol, EfiPeiDecompressDecompress,
+    LZMA_CUSTOM_DECOMPRESS_GUID, LZMAF86_CUSTOM_DECOMPRESS_GUID, PeiDecompress,
+    TIANO_CUSTOM_DECOMPRESS_GUID, TIANO_DECOMPRESS_SCRATCH_SIZE, UEFI_DECOMPRESS_SCRATCH_SIZE,
+    compress_tiano, compress_uefi, decompress_tiano, decompress_uefi, get_decompress_info,
 };
 pub use dt_fixup::{
     DT_FIXUP_PROTOCOL_GUID, DT_FIXUP_PROTOCOL_REVISION, DeviceTreeFixup, DtFixup, DtFixupProtocol,
@@ -162,8 +173,10 @@ pub use guided_section_extraction::{
     EFI_AUTH_STATUS_ALL, EFI_AUTH_STATUS_IMAGE_SIGNED, EFI_AUTH_STATUS_NOT_TESTED,
     EFI_AUTH_STATUS_PLATFORM_OVERRIDE, EFI_AUTH_STATUS_TEST_FAILED,
     EFI_GUIDED_SECTION_AUTH_STATUS_VALID, EFI_GUIDED_SECTION_PROCESSING_REQUIRED,
-    EfiExtractGuidedSection, EfiGuidedSectionExtractionProtocol, ExtractedSection,
-    GuidedSectionExtraction,
+    EfiExtractGuidedSection, EfiGuidedSectionExtractionProtocol, EfiPeiExtractGuidedSection,
+    EfiPeiGuidedSectionExtractionPpi, ExtractGuidedSectionDecodeHandler,
+    ExtractGuidedSectionGetInfoHandler, ExtractedSection, GuidedSectionExtraction,
+    PeiGuidedSectionExtraction,
 };
 pub use hii::{
     EFI_HII_CONFIG_ROUTING_PROTOCOL_GUID, EFI_HII_DATABASE_PROTOCOL_GUID,
@@ -213,6 +226,8 @@ pub use lock_box::{
 };
 pub use memory_accept::{
     AcceptMemory, MEMORY_ACCEPT_PROTOCOL_GUID, MemoryAccept, MemoryAcceptProtocol,
+    OVMF_SEV_MEMORY_ACCEPTANCE_PROTOCOL_GUID, OvmfSevAllowUnacceptedMemory,
+    OvmfSevMemoryAcceptanceProtocol, SevMemoryAcceptance,
 };
 pub use memory_attribute::{
     EFI_MEMORY_ATTRIBUTE_PROTOCOL_GUID, EfiClearMemoryAttributes, EfiGetMemoryAttributes,
@@ -303,9 +318,11 @@ pub use ppi::{
     EFI_PEI_CPU_IO_PPI_INSTALLED_GUID, EFI_PEI_FIRMWARE_VOLUME_INFO_PPI_GUID,
     EFI_PEI_FIRMWARE_VOLUME_INFO2_PPI_GUID, EFI_PEI_GRAPHICS_PPI_GUID,
     EFI_PEI_MASTER_BOOT_MODE_PEIM_PPI_GUID, EFI_PEI_MP_SERVICES_PPI_GUID,
-    EFI_PEI_PERMANENT_MEMORY_INSTALLED_PPI_GUID, EFI_PEI_RECOVERY_BLOCK_IO_PPI_GUID, EfiDxeIplPpi,
+    EFI_PEI_PERMANENT_MEMORY_INSTALLED_PPI_GUID, EFI_PEI_RECOVERY_BLOCK_IO_PPI_GUID,
+    EFI_PEI_RESET_PPI_GUID, EFI_PEI_RESET2_PPI_GUID, EFI_PEI_S3_RESUME2_PPI_GUID, EfiDxeIplPpi,
     EfiPeiCpuIoPpi, EfiPeiCpuIoPpiAccess, EfiPeiCpuIoPpiWidth, EfiPeiFirmwareVolumeInfo2Ppi,
-    EfiPeiFirmwareVolumeInfoPpi, EfiPeiGraphicsPpi, EfiPeiMpServicesPpi,
+    EfiPeiFirmwareVolumeInfoPpi, EfiPeiGraphicsPpi, EfiPeiMpServicesPpi, EfiPeiReset2Ppi,
+    EfiPeiS3Resume2Ppi,
 };
 pub use prm::{
     AcpiParameterBufferDescriptor, PRM_ACPI_PARAMETER_DATA_BUFFER_HEADER_SIGNATURE,
@@ -346,13 +363,14 @@ pub use s3_save_state::{
     S3BootScriptTarget, S3SaveState, pci_address as s3_boot_script_pci_address,
 };
 pub use sections::{
-    CompressionSectionHeader, EFI_NOT_COMPRESSED, EFI_SECTION_ALL, EFI_SECTION_COMPATIBILITY16,
-    EFI_SECTION_COMPRESSION, EFI_SECTION_DISPOSABLE, EFI_SECTION_DXE_DEPEX,
-    EFI_SECTION_FIRMWARE_VOLUME_IMAGE, EFI_SECTION_FREEFORM_SUBTYPE_GUID, EFI_SECTION_GUID_DEFINED,
-    EFI_SECTION_PE32, EFI_SECTION_PEI_DEPEX, EFI_SECTION_PIC, EFI_SECTION_RAW,
-    EFI_SECTION_SMM_DEPEX, EFI_SECTION_TE, EFI_SECTION_USER_INTERFACE, EFI_SECTION_VERSION,
-    EFI_STANDARD_COMPRESSION, FfsSection, FfsSectionHeader, FfsSectionIter,
-    GuidDefinedSectionHeader, parse_compression_header, parse_guid_defined_header, parse_section,
+    CompressionSectionHeader, EFI_CUSTOMIZED_COMPRESSION, EFI_NOT_COMPRESSED, EFI_SECTION_ALL,
+    EFI_SECTION_COMPATIBILITY16, EFI_SECTION_COMPRESSION, EFI_SECTION_DISPOSABLE,
+    EFI_SECTION_DXE_DEPEX, EFI_SECTION_FIRMWARE_VOLUME_IMAGE, EFI_SECTION_FREEFORM_SUBTYPE_GUID,
+    EFI_SECTION_GUID_DEFINED, EFI_SECTION_PE32, EFI_SECTION_PEI_DEPEX, EFI_SECTION_PIC,
+    EFI_SECTION_RAW, EFI_SECTION_SMM_DEPEX, EFI_SECTION_TE, EFI_SECTION_USER_INTERFACE,
+    EFI_SECTION_VERSION, EFI_STANDARD_COMPRESSION, FfsSection, FfsSectionHeader, FfsSectionIter,
+    GuidDefinedSection2Header, GuidDefinedSectionHeader, parse_compression_header,
+    parse_guid_defined_header, parse_guid_defined_section2_header, parse_section,
     parse_section_header,
 };
 pub use smm_access2::{
@@ -373,12 +391,26 @@ pub use smm_cpu::{
     SmmCpuService, SmmCpuServiceProtocol,
 };
 pub use smm_events::{
-    SMM_EXIT_BOOT_SERVICES_PROTOCOL_GUID, SMM_LEGACY_BOOT_PROTOCOL_GUID,
-    SMM_READY_TO_BOOT_PROTOCOL_GUID,
+    EFI_DXE_MM_READY_TO_LOCK_PROTOCOL_GUID, EFI_DXE_SMM_READY_TO_LOCK_PROTOCOL_GUID,
+    EFI_MM_END_OF_DXE_PROTOCOL_GUID, EFI_MM_END_OF_S3_RESUME_PROTOCOL_GUID,
+    EFI_MM_READY_TO_LOCK_PROTOCOL_GUID, EFI_SMM_END_OF_DXE_PROTOCOL_GUID,
+    EFI_SMM_READY_TO_LOCK_PROTOCOL_GUID, SMM_EXIT_BOOT_SERVICES_PROTOCOL_GUID,
+    SMM_LEGACY_BOOT_PROTOCOL_GUID, SMM_READY_TO_BOOT_PROTOCOL_GUID,
 };
 pub use smm_variable::{
     EFI_SMM_FIRMWARE_VOLUME_BLOCK_PROTOCOL_GUID, EFI_SMM_VARIABLE_PROTOCOL_GUID,
-    EfiSmmFirmwareVolumeBlockProtocol, EfiSmmVariableProtocol, SmmVariable,
+    EFI_SMM_VARIABLE_WRITE_GUID, EfiSmmFirmwareVolumeBlockProtocol, EfiSmmVariableProtocol,
+    SMM_VARIABLE_FUNCTION_EXIT_BOOT_SERVICE, SMM_VARIABLE_FUNCTION_GET_NEXT_VARIABLE_NAME,
+    SMM_VARIABLE_FUNCTION_GET_PAYLOAD_SIZE, SMM_VARIABLE_FUNCTION_GET_RUNTIME_CACHE_INFO,
+    SMM_VARIABLE_FUNCTION_GET_STATISTICS, SMM_VARIABLE_FUNCTION_GET_VARIABLE,
+    SMM_VARIABLE_FUNCTION_INIT_RUNTIME_VARIABLE_CACHE_CONTEXT, SMM_VARIABLE_FUNCTION_LOCK_VARIABLE,
+    SMM_VARIABLE_FUNCTION_QUERY_VARIABLE_INFO, SMM_VARIABLE_FUNCTION_READY_TO_BOOT,
+    SMM_VARIABLE_FUNCTION_SET_VARIABLE, SMM_VARIABLE_FUNCTION_SYNC_RUNTIME_CACHE,
+    SMM_VARIABLE_FUNCTION_VAR_CHECK_VARIABLE_PROPERTY_GET,
+    SMM_VARIABLE_FUNCTION_VAR_CHECK_VARIABLE_PROPERTY_SET, SmmVariable,
+    SmmVariableCommunicateAccessVariable, SmmVariableCommunicateGetNextVariableName,
+    SmmVariableCommunicateHeader, SmmVariableCommunicateLockVariable,
+    SmmVariableCommunicateQueryVariableInfo,
 };
 pub use standalone_mm::{
     CORE_TYPE_EFFICIENT, CORE_TYPE_PERFORMANCE, CORE_TYPE_STANDARD,

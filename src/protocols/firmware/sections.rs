@@ -47,6 +47,8 @@ pub const EFI_SECTION_SMM_DEPEX: u8 = 0x1C;
 pub const EFI_NOT_COMPRESSED: u8 = 0x00;
 /// Standard UEFI decompression algorithm (LZH).
 pub const EFI_STANDARD_COMPRESSION: u8 = 0x01;
+/// Custom decompression algorithm (e.g., Tiano or custom vendor compression).
+pub const EFI_CUSTOMIZED_COMPRESSION: u8 = 0x02;
 
 /// Common section header view.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -154,7 +156,7 @@ impl<'a> Iterator for FfsSectionIter<'a> {
 pub struct CompressionSectionHeader {
     /// Uncompressed size of the enclosed data.
     pub uncompressed_length: u32,
-    /// Compression type (`EFI_NOT_COMPRESSED` or `EFI_STANDARD_COMPRESSION`).
+    /// Compression type (`EFI_NOT_COMPRESSED`, `EFI_STANDARD_COMPRESSION`, or `EFI_CUSTOMIZED_COMPRESSION`).
     pub compression_type: u8,
 }
 
@@ -199,6 +201,40 @@ pub fn parse_guid_defined_header(payload: &[u8]) -> Option<(GuidDefinedSectionHe
     let data = payload.get(inner_offset..)?;
     Some((
         GuidDefinedSectionHeader {
+            section_definition_guid: guid,
+            data_offset,
+            attributes,
+        },
+        data,
+    ))
+}
+
+/// Parsed GUID-defined section 2 (extended) metadata.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct GuidDefinedSection2Header {
+    /// Section definition GUID.
+    pub section_definition_guid: EfiGuid,
+    /// Offset from beginning of extended section header to data.
+    pub data_offset: u16,
+    /// Attributes bitmask.
+    pub attributes: u16,
+}
+
+/// Parses the header of an extended GUID-defined section 2.
+#[must_use]
+pub fn parse_guid_defined_section2_header(
+    payload: &[u8],
+) -> Option<(GuidDefinedSection2Header, &[u8])> {
+    if payload.len() < 20 {
+        return None;
+    }
+    let guid = EfiGuid::from_bytes(payload.get(..16)?.try_into().ok()?);
+    let data_offset = u16::from_le_bytes([payload[16], payload[17]]);
+    let attributes = u16::from_le_bytes([payload[18], payload[19]]);
+    let inner_offset = usize::from(data_offset).checked_sub(8)?; // Minus extended 8-byte section header length
+    let data = payload.get(inner_offset..)?;
+    Some((
+        GuidDefinedSection2Header {
             section_definition_guid: guid,
             data_offset,
             attributes,

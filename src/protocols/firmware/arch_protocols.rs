@@ -331,3 +331,63 @@ pub struct EfiCpuArchProtocol {
     /// Minimum required alignment (in bytes) for DMA buffer allocations.
     pub dma_buffer_alignment: u32,
 }
+
+// --- BDS Architectural Protocol ---
+
+/// Boot Device Selection (BDS) Architectural Protocol GUID:
+/// `{665e3ff6-46cc-11d4-9a38-0090273fc14d}`.
+pub const EFI_BDS_ARCH_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0x665E_3FF6,
+    0x46CC,
+    0x11D4,
+    [0x9A, 0x38, 0x00, 0x90, 0x27, 0x3F, 0xC1, 0x4D],
+);
+
+/// Function pointer for transferring control from DXE foundation to BDS.
+pub type EfiBdsEntry = unsafe extern "efiapi" fn(this: *mut EfiBdsArchProtocol);
+
+/// Boot Device Selection (BDS) Architectural Protocol interface table.
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct EfiBdsArchProtocol {
+    /// Transfers execution control to the BDS phase.
+    pub entry: EfiBdsEntry,
+}
+
+// --- Report Status Code Router & Handler Protocol ---
+
+/// Report Status Code Handler Protocol GUID:
+/// `{86212936-0e76-41c8-a03a-2af2fc1c39e2}`.
+pub const EFI_RSC_HANDLER_PROTOCOL_GUID: EfiGuid = EfiGuid::new(
+    0x8621_2936,
+    0x0E76,
+    0x41C8,
+    [0xA0, 0x3A, 0x2A, 0xF2, 0xFC, 0x1C, 0x39, 0xE2],
+);
+
+/// Callback signature for status code report listeners.
+pub type EfiRscHandlerCallback = unsafe extern "efiapi" fn(
+    code_type: u32,
+    value: u32,
+    instance: u32,
+    caller_id: *const EfiGuid,
+    data: *const c_void,
+) -> EfiStatus;
+
+/// Registers status code callback.
+pub type EfiRscHandlerRegister =
+    unsafe extern "efiapi" fn(callback: EfiRscHandlerCallback, tpl: usize) -> EfiStatus;
+
+/// Unregisters status code callback.
+pub type EfiRscHandlerUnregister =
+    unsafe extern "efiapi" fn(callback: EfiRscHandlerCallback) -> EfiStatus;
+
+/// Report Status Code Handler Protocol interface table.
+#[repr(C)]
+#[derive(Clone, Copy, Debug)]
+pub struct EfiRscHandlerProtocol {
+    /// Registers a listener callback for reported status codes.
+    pub register: EfiRscHandlerRegister,
+    /// Removes a previously registered status code callback.
+    pub unregister: EfiRscHandlerUnregister,
+}

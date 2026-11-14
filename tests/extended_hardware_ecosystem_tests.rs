@@ -7,6 +7,7 @@ use core::mem::size_of;
 use rover_uefi::base::{EfiGuid, EfiPhysicalAddress, EfiStatus};
 use rover_uefi::protocols::android::*;
 use rover_uefi::protocols::driver::isa::*;
+use rover_uefi::protocols::driver::ovmf::OVMF_SEV_MEMORY_ACCEPTANCE_PROTOCOL_GUID;
 use rover_uefi::protocols::driver::ovmf::*;
 use rover_uefi::protocols::driver::xen::*;
 use rover_uefi::protocols::firmware::dt_fixup::*;

@@ -216,7 +216,7 @@ pub fn inspect_rsdp(rsdp_bytes: &[u8]) -> Option<RsdpInfo> {
 Run the comprehensive test suite and linters locally:
 
 ```bash
-# Run unit and integration tests (267 suites, 1,000+ tests)
+# Run unit and integration tests (268 suites, 1,000+ tests)
 cargo test --all-features
 
 # Strict lint verification
@@ -288,7 +288,7 @@ rover-uefi/
 │       ├── spi/                # SPI host, master, and device protocols
 │       ├── storage/            # Block I/O, Disk I/O, security, erase, disk info, RAM disk, SD/MMC, FAT
 │       └── usb/                # USB I/O, XHCI, EHCI, HID descriptors & mass storage
-└── tests/                      # 267 native integration test suites
+└── tests/                      # 268 native integration test suites
 ```
 
 </details>
