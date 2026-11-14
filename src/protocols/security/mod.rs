@@ -15,6 +15,7 @@ pub mod guid;
 pub mod hash;
 pub mod hkdf;
 pub mod hmac;
+pub mod image_execution;
 pub mod kms;
 pub mod mor;
 pub mod pkcs7;
@@ -109,6 +110,15 @@ pub use ecc::{Curve, EcdsaError, Modulus, Point, PublicKey, Signature};
 pub use guid::{
     HASH_GUID, HASH_SERVICE_BINDING_GUID, HASH2_GUID, HASH2_SERVICE_BINDING_GUID, RNG_GUID,
     SECURITY_ARCH_GUID, SECURITY2_ARCH_GUID, TCG2_FINAL_EVENTS_TABLE_GUID, TCG2_GUID,
+};
+pub use image_execution::{
+    EFI_IMAGE_EXECUTION_AUTH_SIG_FAILED, EFI_IMAGE_EXECUTION_AUTH_SIG_FOUND,
+    EFI_IMAGE_EXECUTION_AUTH_SIG_NOT_FOUND, EFI_IMAGE_EXECUTION_AUTH_SIG_PASSED,
+    EFI_IMAGE_EXECUTION_AUTH_UNTESTED, EFI_IMAGE_EXECUTION_AUTHENTICATION,
+    EFI_IMAGE_EXECUTION_INFO_TABLE_GUID, EFI_IMAGE_EXECUTION_INITIALIZED,
+    EFI_IMAGE_EXECUTION_POLICY_FAILED, EFI_IMAGE_SECURITY_DATABASE_GUID,
+    EfiImageExecutionInfoHeader, EfiImageExecutionInfoTableHeader, ImageExecutionError,
+    ImageExecutionInfoIter, ImageExecutionInfoTableView, ImageExecutionInfoView,
 };
 pub use kms::{
     EFI_KMS_ATTRIBUTE_TYPE_BIG_INTEGER, EFI_KMS_ATTRIBUTE_TYPE_BOOLEAN,
