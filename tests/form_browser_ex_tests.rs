@@ -1,5 +1,8 @@
 //! Integration tests for Form Browser Extension and Form Browser Extension 2 protocols.
 
+use std::sync::Mutex;
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+
 use rover_uefi::abi::types::Bool;
 use rover_uefi::base::{EfiGuid, EfiStatus};
 use rover_uefi::protocols::console::input::EfiInputKey;
@@ -12,13 +15,14 @@ use rover_uefi::protocols::firmware::form_browser_ex::{
     FormBrowserExtension, FormBrowserExtension2,
 };
 
-static mut SCOPE_RECORDED: Option<BrowserSettingScope> = None;
-static mut LAST_ACTION: u32 = 0;
-static mut EXIT_HANDLER_CALLED: bool = false;
+static SCOPE_RECORDED: Mutex<Option<BrowserSettingScope>> = Mutex::new(None);
+static HOTKEY_ACTION: AtomicU32 = AtomicU32::new(0);
+static EXEC_ACTION: AtomicU32 = AtomicU32::new(0);
+static EXIT_HANDLER_CALLED: AtomicBool = AtomicBool::new(false);
 
 unsafe extern "efiapi" fn mock_set_scope(scope: BrowserSettingScope) -> EfiStatus {
-    unsafe {
-        SCOPE_RECORDED = Some(scope);
+    if let Ok(mut lock) = SCOPE_RECORDED.lock() {
+        *lock = Some(scope);
     }
     EfiStatus::SUCCESS
 }
@@ -29,9 +33,7 @@ unsafe extern "efiapi" fn mock_register_hot_key(
     _default_id: u16,
     _help: *const u16,
 ) -> EfiStatus {
-    unsafe {
-        LAST_ACTION = action;
-    }
+    HOTKEY_ACTION.store(action, Ordering::SeqCst);
     EfiStatus::SUCCESS
 }
 
@@ -51,9 +53,7 @@ unsafe extern "efiapi" fn mock_is_modified() -> Bool {
 }
 
 unsafe extern "efiapi" fn mock_execute_action(action: u32, _default_id: u16) -> EfiStatus {
-    unsafe {
-        LAST_ACTION = action;
-    }
+    EXEC_ACTION.store(action, Ordering::SeqCst);
     EfiStatus::SUCCESS
 }
 
@@ -62,9 +62,7 @@ unsafe extern "efiapi" fn mock_is_reset_required() -> Bool {
 }
 
 unsafe extern "efiapi" fn sample_exit_cb() {
-    unsafe {
-        EXIT_HANDLER_CALLED = true;
-    }
+    EXIT_HANDLER_CALLED.store(true, Ordering::SeqCst);
 }
 
 #[test]
@@ -108,10 +106,11 @@ fn test_form_browser_extension_wrapper() {
 
     let fb = unsafe { FormBrowserExtension::from_raw(&raw const mock_proto) };
     assert!(fb.set_scope(BrowserSettingScope::FormLevel).is_ok());
-    assert_eq!(
-        unsafe { SCOPE_RECORDED },
-        Some(BrowserSettingScope::FormLevel)
-    );
+    let recorded_scope = match SCOPE_RECORDED.lock() {
+        Ok(guard) => *guard,
+        Err(_) => None,
+    };
+    assert_eq!(recorded_scope, Some(BrowserSettingScope::FormLevel));
 
     let key = EfiInputKey {
         scan_code: 0x01,
@@ -121,10 +120,10 @@ fn test_form_browser_extension_wrapper() {
         fb.register_hot_key(&key, BROWSER_ACTION_DISCARD, 0, None)
             .is_ok()
     );
-    assert_eq!(unsafe { LAST_ACTION }, BROWSER_ACTION_DISCARD);
+    assert_eq!(HOTKEY_ACTION.load(Ordering::SeqCst), BROWSER_ACTION_DISCARD);
 
     assert!(fb.register_exit_handler(Some(sample_exit_cb)).is_ok());
-    assert!(unsafe { EXIT_HANDLER_CALLED });
+    assert!(EXIT_HANDLER_CALLED.load(Ordering::SeqCst));
 }
 
 #[test]
@@ -144,5 +143,5 @@ fn test_form_browser_extension2_wrapper() {
     assert!(fb2.is_browser_data_modified());
     assert!(!fb2.is_reset_required());
     assert!(fb2.execute_action(BROWSER_ACTION_RESET, 0).is_ok());
-    assert_eq!(unsafe { LAST_ACTION }, BROWSER_ACTION_RESET);
+    assert_eq!(EXEC_ACTION.load(Ordering::SeqCst), BROWSER_ACTION_RESET);
 }

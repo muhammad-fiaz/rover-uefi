@@ -1,13 +1,15 @@
 //! Integration tests for Form Browser 2 and Form Display Engine protocols.
 
 use core::ffi::c_void;
+use std::sync::atomic::{AtomicBool, AtomicU16, Ordering};
+
 use rover_uefi::abi::types::{Bool, EFI_TRUE, UIntN};
 use rover_uefi::base::{EfiGuid, EfiStatus};
 use rover_uefi::protocols::firmware::form_browser::*;
 use rover_uefi::protocols::firmware::hii::EfiHiiHandle;
 
-static mut LAST_FORM_ID: EfiFormId = 0;
-static mut SCREEN_EXIT_CALLED: bool = false;
+static LAST_FORM_ID: AtomicU16 = AtomicU16::new(0);
+static SCREEN_EXIT_CALLED: AtomicBool = AtomicBool::new(false);
 
 unsafe extern "efiapi" fn mock_send_form(
     _this: *const EfiFormBrowser2Protocol,
@@ -21,9 +23,11 @@ unsafe extern "efiapi" fn mock_send_form(
     if handles.is_null() || handle_count == 0 {
         return EfiStatus::INVALID_PARAMETER;
     }
-    unsafe {
-        LAST_FORM_ID = form_id;
-        *action_request = browser_action_request::SUBMIT;
+    LAST_FORM_ID.store(form_id, Ordering::SeqCst);
+    if !action_request.is_null() {
+        unsafe {
+            *action_request = browser_action_request::SUBMIT;
+        }
     }
     EfiStatus::SUCCESS
 }
@@ -56,17 +60,17 @@ unsafe extern "efiapi" fn mock_form_display(
     _form_data: *const c_void,
     user_input_data: *mut UserInput,
 ) -> EfiStatus {
-    unsafe {
-        (*user_input_data).action = 1 << 0;
-        (*user_input_data).default_id = 0x0001;
+    if !user_input_data.is_null() {
+        unsafe {
+            (*user_input_data).action = 1 << 0;
+            (*user_input_data).default_id = 0x0001;
+        }
     }
     EfiStatus::SUCCESS
 }
 
 unsafe extern "efiapi" fn mock_exit_display() {
-    unsafe {
-        SCREEN_EXIT_CALLED = true;
-    }
+    SCREEN_EXIT_CALLED.store(true, Ordering::SeqCst);
 }
 
 unsafe extern "efiapi" fn mock_confirm_data_change() -> UIntN {
@@ -150,7 +154,7 @@ fn test_form_browser2_client_wrapper() {
         Err(e) => panic!("send_form failed: {e:?}"),
     };
     assert_eq!(action, browser_action_request::SUBMIT);
-    assert_eq!(unsafe { LAST_FORM_ID }, 0x0042);
+    assert_eq!(LAST_FORM_ID.load(Ordering::SeqCst), 0x0042);
 
     assert_eq!(
         client.send_form(&[], None, 0x0042, None),
@@ -192,7 +196,7 @@ fn test_form_display_engine_client_wrapper() {
     assert_eq!(input.default_id, 1);
 
     client.exit_display();
-    assert!(unsafe { SCREEN_EXIT_CALLED });
+    assert!(SCREEN_EXIT_CALLED.load(Ordering::SeqCst));
 
     let confirm = client.confirm_data_change();
     assert_eq!(confirm, browser_action_request::SUBMIT);
