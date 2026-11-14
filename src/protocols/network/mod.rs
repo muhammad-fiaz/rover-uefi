@@ -37,6 +37,7 @@ pub mod redfish_credential;
 pub mod redfish_discover;
 pub mod redfish_host_interface;
 pub mod rest_ex;
+pub mod rest_json;
 pub mod simple_network;
 pub mod stack;
 pub mod supplicant;
@@ -172,6 +173,13 @@ pub use rest_ex::{
     EfiRestExServiceInfoVer, EfiRestExServiceType, EfiRestExToken, EfiRestGetTime, EfiRestProtocol,
     EfiRestSendReceive, REST_EX_PROTOCOL_GUID, REST_EX_SERVICE_BINDING_PROTOCOL_GUID,
     REST_PROTOCOL_GUID, Rest, RestEx,
+};
+pub use rest_json::{
+    EFI_REST_JSON_STRUCTURE_PROTOCOL_GUID, EfiRestJsonResourceTypeIdentifier,
+    EfiRestJsonResourceTypeNamespace, EfiRestJsonStructureDestroyStructure,
+    EfiRestJsonStructureHeader, EfiRestJsonStructureProtocol, EfiRestJsonStructureRegister,
+    EfiRestJsonStructureSupported, EfiRestJsonStructureToJson, EfiRestJsonStructureToStructure,
+    RestJsonStructure,
 };
 pub use supplicant::{
     EFI_MAX_KEY_LEN, EFI_SUPPLICANT_PROTOCOL_GUID, EFI_SUPPLICANT_SERVICE_BINDING_PROTOCOL_GUID,
