@@ -17,16 +17,6 @@
 
 <p><em>Modern, feature-rich, cross-platform UEFI and PI firmware development in Rust.</em></p>
 
-<p>
-<a href="#features">Features</a> &bull;
-<a href="#prerequisites-and-supported-platforms">Supported Platforms</a> &bull;
-<a href="#quick-start">Quick Start</a> &bull;
-<a href="#project-structure">Architecture</a> &bull;
-<a href="#acknowledgements">Acknowledgements</a> &bull;
-<a href="#contributing">Contributing</a> &bull;
-<a href="SECURITY.md">Security</a>
-</p>
-
 </div>
 
 `rover-uefi` is a modern, feature-rich, cross-platform firmware development library for the UEFI and Platform Initialization (PI) specifications in Rust. It provides spec-accurate ABIs, system tables, Boot and Runtime Services, 60+ protocols, native cryptography, and bounded parsers for cross-platform pre-boot environments.
@@ -41,22 +31,26 @@
 
 | Feature Category | Description |
 |---|---|
-| **Core ABI & Tables** | `extern "efiapi"` calling convention, primitive types (`Char16`, `UIntN`, `EfiGuid`, `EfiHandle`, `EfiStatus`, `EfiTime`), `EfiSystemTable`, `EfiBootServices`, `EfiRuntimeServices`, `EfiConfigurationTable`, standard table headers, and DXE Services Table (`EfiDxeServices`) with Global Coherency Domain (GCD) memory and I/O management. |
-| **Boot & PEI Services** | Memory allocation (`allocate_pages`, `allocate_pool`), handle databases, protocol locate/open/install, image load/start/unload, event/timer subsystems, watchdog, memory map parsing, `exit_boot_services`, and full PI PEI Services Table (`EfiPeiServices`) with PPI installation, notification, boot modes, and security dispatch. |
+| **Core ABI & Tables** | `extern "efiapi"` calling convention, primitive types (`Char16`, `UIntN`, `EfiGuid`, `EfiHandle`, `EfiStatus`, `EfiTime`), `EfiSystemTable`, `EfiBootServices`, `EfiRuntimeServices`, `EfiConfigurationTable`, standard table header validation, EFI System Resource Table (ESRT), and DXE Services Table (`EfiDxeServices`) with Global Coherency Domain (GCD) memory and I/O management. |
+| **Boot & Load Management** | Spec-accurate UEFI Load Options (`Boot####`, `Driver####`, `SysPrep####`, `PlatformRecovery####`), zero-copy binary serialization and parsing, `BootOrder` and `DriverOrder` list manipulation, hotkey descriptors (`EfiKeyOptionHeader`, `EfiBootKeyData`), CRC32 target verification, removable media default paths (`BOOTX64.EFI`, `BOOTAA64.EFI`, `BOOTIA32.EFI`, etc.), and capsule update triggers. |
+| **PEI & DXE Foundation** | PI PEI Services Table (`EfiPeiServices`) with PPI installation, notification, boot modes, and security dispatch; DXE Dispatcher architectures, architectural protocols, Hand-Off Blocks (HOBs), and Guided Section Extraction (`EFI_SECTION_GUID_DEFINED`) with native LZH decompression (`EFI_DECOMPRESS_PROTOCOL`). |
 | **Runtime Services** | Variable services (`get_variable`, `set_variable`, `get_next_variable_name`), time and wakeup alarms, virtual memory mapping (`set_virtual_address_map`), hardware reset systems (`ResetSystem2`), and capsule update queries. |
 | **Device Paths** | Device path nodes and instances (Hardware, ACPI, Messaging, Media, BBS, End), node iteration, validation, and Device Path Utilities (`EFI_DEVICE_PATH_UTILITIES_PROTOCOL`). |
 | **Hardware Architecture** | x86/x86_64 Local APIC, I/O APIC, and structured CPUID feature trees; IA-32 exception contexts; ARM64 GICv2/v3 distributor/CPU interfaces, system registers, and exception vectors; ARM32 (ARMv7-A) exception contexts; RISC-V contexts and SBI extensions (Base, Timer, IPI, HSM, SRST, PMU, DBCN); LoongArch64 exception contexts and CSR parsing; common MMIO, DMA descriptors, and system timers. |
+| **Firmware Synchronization** | `#![no_std]` high-performance concurrency primitives: ticket locks, spinlocks, CPU barriers, and interrupt-safe locks (`IntrLock`) tailored for multi-core MP Services and runtime environments. |
 | **PCI Subsystem** | `EfiPciIoProtocol`, `EfiPciRootBridgeIoProtocol`, `EfiPciHostBridgeResourceAllocationProtocol`, `EfiPciHotPlugInitProtocol`, CXL 2.0/3.0 protocol, Type 0/1 header decoding, BAR resource allocation, capability list traversal, and PCIe configuration space access. |
 | **USB Subsystem** | USB Host Controller interfaces (`EFI_USB2_HC_PROTOCOL`, `EFI_USB3_HC_PROTOCOL`, EHCI, XHCI TRBs/rings), USB I/O Protocol, standard descriptors, HID report parser, and USB Mass Storage (Bulk-Only Transport & SCSI). |
 | **Storage & Filesystems** | Block I/O & Block I/O 2, Disk I/O & Disk I/O 2, Simple File System (`EFI_FILE_PROTOCOL`), Storage Security Command Protocol (TCG Opal / IEEE 1667), Erase Block Protocol, Disk Info Protocol, RAM Disk Protocol, SD/MMC Pass-Thru, Partition discovery (MBR, GPT, protective MBR, EBR, Partition Info), `#![no_std]` FAT12/16/32 reader with LFN, and ATA/NVMe/SCSI pass-thru protocols. |
-| **Cryptography & Security** | Constant-time AES-128/256, SHA-1/224/256/384/512, SHA-3, RSA PKCS#1 v1.5 verification, X.509 ASN.1 certificate decoding, Authenticode PE signature verification, Secure Boot key databases (`PK`, `KEK`, `db`, `dbx`), RNG Protocol, PKCS#7 Verification Protocol, Confidential Computing (CC) Measurement Protocol, and Device Security Protocols. |
+| **Cryptography & Security** | Constant-time AES-128/256, SHA-1/224/256/384/512, SHA-3, RSA PKCS#1 v1.5 verification, X.509 ASN.1 certificate decoding, Authenticode PE signature verification, Image Execution Information Table (`EFI_IMAGE_EXECUTION_INFO_TABLE_GUID`), Secure Boot key databases (`PK`, `KEK`, `db`, `dbx`), RNG Protocol, PKCS#7 Verification Protocol, Confidential Computing (CC) Measurement Protocol, and Device Security Protocols. |
 | **TCG / TPM** | TPM 1.2 and TPM 2.0 protocols (`EfiTcg2Protocol`), TCG event log parsing, SHA-1/SHA-256 PCR bank operations, startup commands, and measurements. |
 | **ACPI & SMBIOS** | Full ACPI table generators and bounded parsers (RSDP, RSDT, XSDT, FADT, MADT, MCFG, HPET, DMAR, SRAT, SLIT, SPCR, BGRT, FACS, DSDT, SSDT), ACPI SDT protocol, SMBIOS Protocol (`EFI_SMBIOS_PROTOCOL`), and SMBIOS 2.x/3.x entry points and structured record parsers. |
 | **Network Protocols** | SNP (Simple Network), MNP, ARP, VLAN Config, IPv4, IPv6, IPv4/v6 Config (`EFI_IP4_CONFIG2_PROTOCOL`, `EFI_IP6_CONFIG_PROTOCOL`), ICMP, IGMP, NDP, UDPv4/v6, TCPv4/v6, TLS, DHCPv4/v6 (`EFI_DHCP4_PROTOCOL`, `EFI_DHCP6_PROTOCOL`), MTFTPv4/v6 (`EFI_MTFTP4_PROTOCOL`, `EFI_MTFTP6_PROTOCOL`), DNS, HTTP, REST EX, Redfish Discover, and PXE Base Code. |
-| **Firmware & PI Formats** | Universal Payload (`UNIVERSAL_PAYLOAD_IDENTIFIER`, `'PLDH'`), Intel FSP 2.x headers (`FspInfoHeader`, `'FSPH'`), Platform Runtime Mechanism (PRM), Hand-Off Blocks (HOBs), Firmware Volume/FMP, HII/IFR, DEPEX, PE32/PE32+/TE headers, FFS Section parsing with UEFI standard LZH decompressor (`EFI_DECOMPRESS_PROTOCOL`), and Standalone/Traditional MM communication (`EFI_MM_COMMUNICATION2_PROTOCOL`, `EFI_MM_SYSTEM_TABLE`). |
+| **Firmware & PI Formats** | Universal Payload (`UNIVERSAL_PAYLOAD_IDENTIFIER`, `'PLDH'`), Intel FSP 2.x headers (`FspInfoHeader`, `'FSPH'`), Platform Runtime Mechanism (PRM), Hand-Off Blocks (HOBs), Firmware Volume/FMP, HII/IFR, DEPEX, PE32/PE32+/TE headers, and Standalone/Traditional MM communication (`EFI_MM_COMMUNICATION2_PROTOCOL`, `EFI_MM_SYSTEM_TABLE`). |
 | **Manageability** | IPMI Protocol & KCS register interface, MCTP packet/message dispatch, and PLDM Protocol with base and platform monitoring commands. |
-| **Drivers & Binding** | UEFI Driver Binding Protocol (`EFI_DRIVER_BINDING_PROTOCOL`), Component Name Protocols, Loaded Image Protocol, Driver Health Protocol, Driver Diagnostics Protocols (1 & 2), Platform/Bus Driver Override Protocols, Driver Supported EFI Version, ARM SCMI Protocol, VirtIO Device Protocol, and native driver lifecycle registries. |
-| **Console & Serial** | Simple Text Input/Output, Simple Pointer & Absolute Pointer protocols, Graphics Output Protocol (GOP) with BLT engine, Serial I/O Protocol (`EFI_SERIAL_IO_PROTOCOL`), Unicode Collation Protocols (`EFI_UNICODE_COLLATION_PROTOCOL`, `EFI_UNICODE_COLLATION2_PROTOCOL`), and UEFI Shell / Shell Parameters protocols. |
+| **Drivers & Binding** | UEFI Driver Binding Protocol (`EFI_DRIVER_BINDING_PROTOCOL`), Component Name Protocols (1 & 2), Loaded Image Protocol, Driver Health Protocol, Driver Diagnostics Protocols (1 & 2), Platform/Bus Driver Override Protocols, Driver Supported EFI Version, ARM SCMI Protocol, VirtIO Device Protocol, and native driver lifecycle registries. |
+| **Graphics & Display** | Graphics Output Protocol (GOP) with high-performance software BLT engine, Universal Graphics Adapter (UGA) Draw Protocol (`EFI_UGA_DRAW_PROTOCOL_GUID`), EDID Discovered & Active protocols, and Pixel formats (RGB, BGR, Bitmask, BltOnly). |
+| **Console & Shell** | Simple Text Input/Output, Simple Pointer & Absolute Pointer protocols, Console Control Protocol (`EFI_CONSOLE_CONTROL_PROTOCOL`), Serial I/O Protocol (`EFI_SERIAL_IO_PROTOCOL`), Unicode Collation Protocols (`EFI_UNICODE_COLLATION_PROTOCOL`, `EFI_UNICODE_COLLATION2_PROTOCOL`), UEFI Shell / Shell Parameters protocols, and Built-in Shell Command Framework with registry & execution status codes (`ShellStatus`). |
+| **Mobile & Peripheral** | Android Boot & Fastboot protocols, Bluetooth Host Controller, Bluetooth Configuration & GATT protocols, Audio I/O protocol, and I2C/SPI/SMBus host and device protocols. |
 
 </details>
 
@@ -71,19 +65,19 @@
 
 | Requirement | Version | Notes |
 |---|---|---|
-| **Rust Toolchain** | **Nightly or Stable 2024 Edition (1.85+)** | Compatible with standard Rust installations |
+| **Rust Toolchain** | Nightly or Stable 2024 Edition (1.85+) | Compatible with standard Rust installations |
 | **UEFI Targets** | Target support via `rustup target add` | Bare-metal firmware cross-compilation |
 
 ---
 
 ## Supported Targets
 
-| Architecture | Target Triple | Support Tier |
-|---|---|---|
-| **x86_64 (64-bit)** | `x86_64-unknown-uefi` | Tier 1 (Fully Verified) |
-| **AArch64 (ARM64)** | `aarch64-unknown-uefi` | Tier 1 (Fully Verified) |
-| **x86 (32-bit)** | `i686-unknown-uefi` | Tier 1 (Fully Verified) |
-| **Host Test Runner** | `x86_64-pc-windows-msvc` / `x86_64-unknown-linux-gnu` | Full Integration Testing |
+| Architecture | Target Triple | Supported | Status |
+|---|---|:---:|---|
+| **x86_64 (64-bit)** | `x86_64-unknown-uefi` | ✅ | ✅ Yes (Fully Verified) |
+| **AArch64 (ARM64)** | `aarch64-unknown-uefi` | ✅ | ✅ Yes (Fully Verified) |
+| **x86 (32-bit)** | `i686-unknown-uefi` | ✅ | ✅ Yes (Fully Verified) |
+| **Host Test Runner** | `x86_64-pc-windows-msvc` / `x86_64-unknown-linux-gnu` | ✅ | ✅ Yes (Full Integration Testing) |
 
 ### Cross-Compilation
 
@@ -216,7 +210,7 @@ pub fn find_table_in_rsdp<'a>(rsdp_bytes: &'a [u8], signature: &[u8; 4]) -> Opti
 Run the comprehensive test suite and linters locally:
 
 ```bash
-# Run unit and integration tests (129 suites, 700+ tests)
+# Run unit and integration tests (263 suites, 1,000+ tests)
 cargo test --all-features
 
 # Strict lint verification
@@ -238,9 +232,11 @@ cargo check --target i686-unknown-uefi
 
 ```text
 rover-uefi/
+├── .github/                    # CI workflows, Dependabot & CodeQL security scans
 ├── .gitignore                  # Git exclusion rules
 ├── Cargo.lock                  # Dependency lockfile
 ├── Cargo.toml                  # Package manifest, crates.io categories & strict lints
+├── CODE_OF_CONDUCT.md          # Contributor Covenant Code of Conduct
 ├── CONTRIBUTING.md             # Contribution guidelines & development workflow
 ├── LICENSE                     # Apache-2.0 license text
 ├── README.md                   # Project documentation
@@ -257,40 +253,51 @@ rover-uefi/
 │   │   ├── riscv/              # RISC-V contexts & SBI interfaces
 │   │   └── x86/                # APIC, I/O APIC, CPUID, and context handling
 │   ├── base/                   # GUIDs, handles, statuses, events, CRC32, drivers & bounded byte buffers
-│   ├── tables/                 # System, Boot, Runtime, and Configuration tables
 │   ├── services/               # Boot Services and Runtime Services wrappers
+│   ├── sync/                   # Firmware synchronization primitives (spinlocks, ticket locks, barriers, interrupt locks)
+│   ├── tables/                 # System, Boot, Runtime, Configuration, ESRT, and Load Option tables
 │   └── protocols/              # UEFI & PI protocol interfaces
 │       ├── acpi/               # ACPI table discovery, parsing, validation & SDT protocol
-│       ├── console/            # Text I/O, absolute pointer, shell & Unicode collation protocols
-│       ├── core/               # Handle database, CPU arch, CPU I/O 2, MP Services & memory attribute
-│       ├── debug/              # Debug support & port communication
+│       ├── android/            # Android boot & Fastboot protocol interfaces
+│       ├── audio/              # Audio I/O protocol
+│       ├── bluetooth/          # Bluetooth Host Controller, configuration & GATT protocols
+│       ├── console/            # Text I/O, absolute pointer, console control, shell & Unicode collation
+│       ├── core/               # Handle database, CPU arch, CPU I/O 2, MP Services & memory attributes
+│       ├── debug/              # Debug support & debug port communication
 │       ├── device_path/        # Device path nodes, instances & utilities
 │       ├── diagnostic/         # Status codes, metronome, timestamp & timer architectures
 │       ├── driver/             # Driver binding, health, diagnostics, overrides & supported versions
 │       ├── firmware/           # Universal Payload, Intel FSP 2.x, PRM, MM/SMM, HOBs, PEI & DXE services, sections & decompression
-│       ├── graphics/           # Graphics Output Protocol (GOP), pixel formats, BLT
+│       ├── graphics/           # Graphics Output Protocol (GOP), UGA Draw Protocol, EDID & software BLT engine
 │       ├── i2c/                # I2C host, master, and device protocols
 │       ├── manageability/      # IPMI, MCTP, and PLDM protocols
 │       ├── network/            # SNP, MNP, ARP, VLAN, IPv4/v6, TCP, UDP, DHCP, MTFTP, DNS, HTTP, Redfish
 │       ├── pci/                # PCI I/O, root bridge, resource allocation, hot plug, CXL & config spaces
-│       ├── security/           # AES, SHA, RSA, X.509, TPM 1.2/2.0, Secure Boot, PKCS#7 & CC measurement
+│       ├── security/           # AES, SHA, RSA, X.509, TPM 1.2/2.0, Secure Boot, Image Execution Info & CC measurement
 │       ├── serial/             # Serial I/O protocols
 │       ├── smbios/             # SMBIOS 2.x/3.x table discovery, structure parsers & SMBIOS protocol
+│       ├── smbus/              # SMBus Host Controller protocol
 │       ├── spi/                # SPI host, master, and device protocols
 │       ├── storage/            # Block I/O, Disk I/O, security, erase, disk info, RAM disk, SD/MMC, FAT
 │       └── usb/                # USB I/O, XHCI, EHCI, HID descriptors & mass storage
-└── tests/                      # 129 native integration test suites
+└── tests/                      # 263 native integration test suites
 ```
 
 </details>
 
 ---
 
-## Acknowledgements
+## Specifications & Standards
 
 `rover-uefi` was developed from the ground up in native Rust to provide a modern, memory-safe firmware foundation for operating systems, bootloaders, and bare-metal environments.
 
-We gratefully acknowledge the **[TianoCore EDK II](https://github.com/tianocore/edk2/)** project as a foundational engineering reference for UEFI and PI specifications, table layouts, and GUID definitions.
+The architecture and interfaces adhere strictly to standard industry specifications:
+- **UEFI Specification** (Unified Extensible Firmware Interface Forum)
+- **UEFI Platform Initialization (PI) Specification**
+- **Advanced Configuration and Power Interface (ACPI) Specification**
+- **System Management BIOS (SMBIOS) Reference Specification**
+- **Trusted Computing Group (TCG) EFI Protocol & TPM 2.0 Specifications**
+- **PCI Local Bus & PCI Express Base Specifications**
 
 ---
 
