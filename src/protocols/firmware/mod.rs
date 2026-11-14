@@ -19,6 +19,7 @@ pub mod form_browser_ex;
 pub mod fsp;
 pub mod ftw;
 pub mod hii;
+pub mod hii_image;
 pub mod hii_keyword;
 pub mod hob;
 pub mod ifr;
@@ -163,6 +164,14 @@ pub use hii::{
     HiiImageDecoderColorType, HiiImageDecoderHeader, HiiPackageHeader, HiiPackageType, HiiPopup,
     HiiPopupSelection, HiiPopupStyle, HiiPopupType, HiiRowInfo, HiiString, hii_out_flags,
     is_known_package_type, notify_type as hii_notify_type, parse_package_header,
+};
+pub use hii_image::{
+    EFI_HII_DIRECT_TO_SCREEN, EFI_HII_DRAW_FLAG_CLIP, EFI_HII_DRAW_FLAG_DEFAULT,
+    EFI_HII_DRAW_FLAG_FORCE_OPAQUE, EFI_HII_DRAW_FLAG_FORCE_TRANS, EFI_HII_DRAW_FLAG_TRANSPARENT,
+    EFI_HII_IMAGE_EX_PROTOCOL_GUID, EFI_IMAGE_TRANSPARENT, EfiHiiDrawImage, EfiHiiDrawImageEx,
+    EfiHiiDrawImageId, EfiHiiDrawImageIdEx, EfiHiiGetImage, EfiHiiGetImageEx, EfiHiiGetImageInfo,
+    EfiHiiImageExProtocol, EfiHiiImageProtocol, EfiHiiNewImage, EfiHiiNewImageEx, EfiHiiSetImage,
+    EfiHiiSetImageEx, EfiImageId, EfiImageInput, HiiImage, HiiImageEx,
 };
 pub use hii_keyword::{
     ConfigKeywordHandler, EFI_CONFIG_KEYWORD_HANDLER_PROTOCOL_GUID, EfiConfigKeywordHandlerGetData,
