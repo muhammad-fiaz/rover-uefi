@@ -9,6 +9,7 @@
 //! instance and preserve the firmware status.
 
 pub mod absolute_pointer;
+pub mod console_control;
 pub mod input;
 pub mod input_ex;
 pub mod output;
@@ -25,6 +26,11 @@ pub use absolute_pointer::{
     ABSOLUTE_POINTER_PROTOCOL_GUID, ABSOLUTE_POINTER_TOUCH_ACTIVE, AbsolutePointer,
     EfiAbsolutePointerMode, EfiAbsolutePointerProtocol, EfiAbsolutePointerReset,
     EfiAbsolutePointerState,
+};
+pub use console_control::{
+    ConsoleControl, ConsoleControlModeInfo, EFI_CONSOLE_CONTROL_PROTOCOL_GUID,
+    EfiConsoleControlGetMode, EfiConsoleControlLockStdIn, EfiConsoleControlProtocol,
+    EfiConsoleControlScreenMode, EfiConsoleControlSetMode,
 };
 pub use input::{
     CHAR_BACKSPACE, CHAR_CARRIAGE_RETURN, CHAR_LINEFEED, CHAR_TAB, EfiInputKey, EfiInputReadKey,

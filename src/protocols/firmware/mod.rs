@@ -19,6 +19,7 @@ pub mod form_browser;
 pub mod form_browser_ex;
 pub mod fsp;
 pub mod ftw;
+pub mod guided_section_extraction;
 pub mod hii;
 pub mod hii_image;
 pub mod hii_keyword;
@@ -155,6 +156,13 @@ pub use ftw::{
     EfiFaultTolerantWriteGetMaxBlockSize, EfiFaultTolerantWriteProtocol,
     EfiFaultTolerantWriteRestart, EfiFaultTolerantWriteWrite, FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
     FaultTolerantWrite, SMM_FAULT_TOLERANT_WRITE_PROTOCOL_GUID,
+};
+pub use guided_section_extraction::{
+    EFI_AUTH_STATUS_ALL, EFI_AUTH_STATUS_IMAGE_SIGNED, EFI_AUTH_STATUS_NOT_TESTED,
+    EFI_AUTH_STATUS_PLATFORM_OVERRIDE, EFI_AUTH_STATUS_TEST_FAILED,
+    EFI_GUIDED_SECTION_AUTH_STATUS_VALID, EFI_GUIDED_SECTION_PROCESSING_REQUIRED,
+    EfiExtractGuidedSection, EfiGuidedSectionExtractionProtocol, ExtractedSection,
+    GuidedSectionExtraction,
 };
 pub use hii::{
     EFI_HII_CONFIG_ROUTING_PROTOCOL_GUID, EFI_HII_DATABASE_PROTOCOL_GUID,
