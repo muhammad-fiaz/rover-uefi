@@ -35,6 +35,7 @@ pub mod mm_base;
 pub mod mm_communication;
 pub mod mm_dispatch;
 pub mod mm_system_table;
+pub mod pcd;
 pub mod pecoff;
 pub mod pei;
 pub mod ppi;
@@ -268,6 +269,16 @@ pub use mm_system_table::{
     EfiMmFreePages, EfiMmFreePool, EfiMmInstallConfigurationTable, EfiMmSystemTable, EfiMmiHandler,
     EfiMmiHandlerRegister, EfiMmiHandlerUnRegister, EfiMmiManage, MM_SYSTEM_TABLE_REVISION,
     MM_SYSTEM_TABLE_SIGNATURE,
+};
+pub use pcd::{
+    EFI_GET_PCD_INFO_PROTOCOL_GUID, EFI_PCD_DEFAULT_SKU_ID, EFI_PCD_INVALID_TOKEN_NUMBER,
+    EFI_PCD_PROTOCOL_GUID, EFI_PEI_GET_PCD_INFO_PPI_GUID, EFI_PEI_PCD_PPI_GUID,
+    EfiGetPcdInfoGetInfo, EfiGetPcdInfoGetSku, EfiGetPcdInfoProtocol, EfiPcdCallbackOnSet,
+    EfiPcdCancelCallback, EfiPcdGet8, EfiPcdGet16, EfiPcdGet32, EfiPcdGet64, EfiPcdGetBool,
+    EfiPcdGetNextToken, EfiPcdGetNextTokenSpace, EfiPcdGetPtr, EfiPcdGetSize, EfiPcdInfo,
+    EfiPcdProtocol, EfiPcdProtocolCallback, EfiPcdSet8, EfiPcdSet16, EfiPcdSet32, EfiPcdSet64,
+    EfiPcdSetBool, EfiPcdSetPtr, EfiPcdSetSku, EfiPcdType, EfiPeiGetPcdInfoPpi, EfiPeiPcdPpi,
+    PcdDatabase, PcdEntry, PcdValue,
 };
 pub use pei::{
     BOOT_ASSUMING_NO_CONFIGURATION_CHANGES, BOOT_IN_RECOVERY_MODE, BOOT_ON_FLASH_UPDATE,

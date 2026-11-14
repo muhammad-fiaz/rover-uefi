@@ -72,12 +72,12 @@
 
 ## Supported Targets
 
-| Architecture | Target Triple | Supported | Status |
-|---|---|:---:|---|
-| **x86_64 (64-bit)** | `x86_64-unknown-uefi` | ✅ | ✅ Yes (Fully Verified) |
-| **AArch64 (ARM64)** | `aarch64-unknown-uefi` | ✅ | ✅ Yes (Fully Verified) |
-| **x86 (32-bit)** | `i686-unknown-uefi` | ✅ | ✅ Yes (Fully Verified) |
-| **Host Test Runner** | `x86_64-pc-windows-msvc` / `x86_64-unknown-linux-gnu` | ✅ | ✅ Yes (Full Integration Testing) |
+| Architecture | Target Triple | Supported |
+|---|---|:---:|
+| **x86_64 (64-bit)** | `x86_64-unknown-uefi` | ✅ |
+| **AArch64 (ARM64)** | `aarch64-unknown-uefi` | ✅ |
+| **x86 (32-bit)** | `i686-unknown-uefi` | ✅ |
+| **Host Test Runner** | `x86_64-pc-windows-msvc` / `x86_64-unknown-linux-gnu` | ✅ |
 
 ### Cross-Compilation
 
@@ -205,12 +205,15 @@ pub fn find_table_in_rsdp<'a>(rsdp_bytes: &'a [u8], signature: &[u8; 4]) -> Opti
 
 ---
 
-## Validation Matrix
+<details>
+<summary><strong>Validation Matrix</strong> (click to expand)</summary>
+
+<br>
 
 Run the comprehensive test suite and linters locally:
 
 ```bash
-# Run unit and integration tests (263 suites, 1,000+ tests)
+# Run unit and integration tests (264 suites, 1,000+ tests)
 cargo test --all-features
 
 # Strict lint verification
@@ -224,6 +227,8 @@ cargo check --target x86_64-unknown-uefi
 cargo check --target aarch64-unknown-uefi
 cargo check --target i686-unknown-uefi
 ```
+
+</details>
 
 ---
 
@@ -267,7 +272,7 @@ rover-uefi/
 │       ├── device_path/        # Device path nodes, instances & utilities
 │       ├── diagnostic/         # Status codes, metronome, timestamp & timer architectures
 │       ├── driver/             # Driver binding, health, diagnostics, overrides & supported versions
-│       ├── firmware/           # Universal Payload, Intel FSP 2.x, PRM, MM/SMM, HOBs, PEI & DXE services, sections & decompression
+│       ├── firmware/           # Universal Payload, Intel FSP 2.x, PRM, MM/SMM, HOBs, PCD, PEI & DXE services, sections & decompression
 │       ├── graphics/           # Graphics Output Protocol (GOP), UGA Draw Protocol, EDID & software BLT engine
 │       ├── i2c/                # I2C host, master, and device protocols
 │       ├── manageability/      # IPMI, MCTP, and PLDM protocols
@@ -280,24 +285,25 @@ rover-uefi/
 │       ├── spi/                # SPI host, master, and device protocols
 │       ├── storage/            # Block I/O, Disk I/O, security, erase, disk info, RAM disk, SD/MMC, FAT
 │       └── usb/                # USB I/O, XHCI, EHCI, HID descriptors & mass storage
-└── tests/                      # 263 native integration test suites
+└── tests/                      # 264 native integration test suites
 ```
 
 </details>
 
 ---
 
-## Specifications & Standards
+## Acknowledgements
 
-`rover-uefi` was developed from the ground up in native Rust to provide a modern, memory-safe firmware foundation for operating systems, bootloaders, and bare-metal environments.
+`rover-uefi` is independently developed from the ground up in native Rust, following industry standards:
 
-The architecture and interfaces adhere strictly to standard industry specifications:
-- **UEFI Specification** (Unified Extensible Firmware Interface Forum)
-- **UEFI Platform Initialization (PI) Specification**
-- **Advanced Configuration and Power Interface (ACPI) Specification**
-- **System Management BIOS (SMBIOS) Reference Specification**
-- **Trusted Computing Group (TCG) EFI Protocol & TPM 2.0 Specifications**
-- **PCI Local Bus & PCI Express Base Specifications**
+- [UEFI Specification](https://uefi.org/specifications)
+- [UEFI PI Specification](https://uefi.org/specifications)
+- [ACPI Specification](https://uefi.org/specifications)
+- [SMBIOS Specification](https://www.dmtf.org/standards/smbios)
+- [TPM 2.0 Specifications](https://trustedcomputinggroup.org/resource/tpm-library-specification/)
+- [PCI Specifications](https://pcisig.com/specifications)
+
+We acknowledge [TianoCore EDK II](https://github.com/tianocore/edk2) as a technical reference for firmware architecture, protocols, and interfaces.
 
 ---
 

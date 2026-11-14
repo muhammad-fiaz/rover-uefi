@@ -172,21 +172,21 @@ impl core::fmt::Debug for RiscvPte {
     }
 }
 
-/// Extracts the VPN[2] index (level 2) from an Sv39 virtual address (bits 30..38).
+/// Extracts the `VPN[2]` index (level 2) from an Sv39 virtual address (bits 30..38).
 #[must_use]
 #[inline]
 pub const fn sv39_vpn2_index(vaddr: usize) -> usize {
     (vaddr >> 30) & 0x1FF
 }
 
-/// Extracts the VPN[1] index (level 1) from an Sv39 virtual address (bits 21..29).
+/// Extracts the `VPN[1]` index (level 1) from an Sv39 virtual address (bits 21..29).
 #[must_use]
 #[inline]
 pub const fn sv39_vpn1_index(vaddr: usize) -> usize {
     (vaddr >> 21) & 0x1FF
 }
 
-/// Extracts the VPN[0] index (level 0) from an Sv39 virtual address (bits 12..20).
+/// Extracts the `VPN[0]` index (level 0) from an Sv39 virtual address (bits 12..20).
 #[must_use]
 #[inline]
 pub const fn sv39_vpn0_index(vaddr: usize) -> usize {
