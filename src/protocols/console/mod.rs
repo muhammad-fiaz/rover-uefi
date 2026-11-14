@@ -17,6 +17,7 @@ pub mod pointer;
 pub mod print2;
 pub mod ps2_policy;
 pub mod shell;
+pub mod shell_commands;
 pub mod text;
 pub mod unicode_collation;
 pub mod virtual_keyboard;
@@ -82,6 +83,13 @@ pub use shell::{
     SHELL_ENVIRONMENT_PROTOCOL_GUID, SHELL_ENVIRONMENT2_EXTENSION_GUID,
     SHELL_INTERFACE_PROTOCOL_GUID, SHELL_MAP_GUID, SHELL_VARIABLE_GUID, Shell, ShellCommandGetHelp,
     ShellCommandHandler, ShellFileHandle, ShellInterface, ShellParameters,
+};
+pub use shell_commands::{
+    BUILTIN_COMMANDS, MAX_REGISTERED_COMMANDS, SHELL_PROFILE_BCFG, SHELL_PROFILE_DEBUG1,
+    SHELL_PROFILE_DRIVER1, SHELL_PROFILE_LEVEL1, SHELL_PROFILE_LEVEL2, SHELL_PROFILE_LEVEL3,
+    SHELL_PROFILE_NETWORK1, SHELL_SUPPORT_LEVEL_0, SHELL_SUPPORT_LEVEL_1, SHELL_SUPPORT_LEVEL_2,
+    SHELL_SUPPORT_LEVEL_3, ShellCommandDescriptor, ShellCommandRegistry, ShellStatus,
+    commands_for_level, commands_for_profile, is_builtin_command, lookup_command,
 };
 pub use text::{is_null_terminated, is_printable_terminated, utf16_bytes};
 pub use unicode_collation::{
