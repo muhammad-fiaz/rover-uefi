@@ -15,11 +15,15 @@ pub mod input_ex;
 pub mod output;
 pub mod pointer;
 pub mod print2;
+pub mod ps2_keyboard;
+pub mod ps2_mouse;
 pub mod ps2_policy;
 pub mod shell;
 pub mod shell_commands;
 pub mod text;
 pub mod unicode_collation;
+pub mod usb_keyboard;
+pub mod usb_mouse;
 pub mod virtual_keyboard;
 
 pub use absolute_pointer::{
@@ -70,6 +74,26 @@ pub use print2::{
     UnicodeBsPrintAsciiFormat, UnicodeSPrint, UnicodeSPrintAsciiFormat, UnicodeValueToString,
     UnicodeValueToStringS, format_int64_ascii, format_int64_unicode, print_flags,
 };
+pub use ps2_keyboard::{
+    EfiKeyQueue, KBC_CMD_DISABLE_KEYBOARD, KBC_CMD_DISABLE_MOUSE, KBC_CMD_ENABLE_KEYBOARD,
+    KBC_CMD_ENABLE_MOUSE, KBC_CMD_READ_CONFIG_BYTE, KBC_CMD_SELF_TEST, KBC_CMD_WRITE_CONFIG_BYTE,
+    KBC_CMD_WRITE_MOUSE, KBD_CMD_ENABLE_SCANNING, KBD_CMD_RESET, KBD_CMD_SET_LEDS, KBD_RESP_ACK,
+    KBD_RESP_BAT_SUCCESS, KEYBOARD_EFI_KEY_MAX_COUNT, KEYBOARD_SCAN_CODE_MAX_COUNT,
+    PS2_COMMAND_PORT, PS2_DATA_PORT, PS2_LED_CAPS_LOCK, PS2_LED_NUM_LOCK, PS2_LED_SCROLL_LOCK,
+    PS2_STATUS_PORT, Ps2KeyboardDecoder, SCANCODE_ALT_BREAK, SCANCODE_ALT_MAKE,
+    SCANCODE_CAPS_LOCK_MAKE, SCANCODE_CTRL_BREAK, SCANCODE_CTRL_MAKE, SCANCODE_DELETE_MAKE,
+    SCANCODE_EXTENDED0, SCANCODE_EXTENDED1, SCANCODE_LEFT_SHIFT_MAKE, SCANCODE_NUM_LOCK_MAKE,
+    SCANCODE_RIGHT_SHIFT_MAKE, SCANCODE_SCROLL_LOCK_MAKE, SCANCODE_SET1_TABLE, ScancodeMapping,
+    ScancodeQueue,
+};
+pub use ps2_mouse::{
+    MOUSE_CMD_ENABLE_STREAMING, MOUSE_CMD_GET_DEVICE_ID, MOUSE_CMD_RESET, MOUSE_CMD_SET_RESOLUTION,
+    MOUSE_CMD_SET_SAMPLE_RATE, MOUSE_ID_5_BUTTON, MOUSE_ID_INTELLIMOUSE, MOUSE_ID_STANDARD,
+    MOUSE_RESP_ACK, MOUSE_RESP_BAT1, MOUSE_RESP_BAT2, MouseResolution, MouseSampleRate,
+    PS2_MOUSE_FLAG_BUTTON_4, PS2_MOUSE_FLAG_BUTTON_5, PS2_MOUSE_FLAG_LEFT_BUTTON,
+    PS2_MOUSE_FLAG_MIDDLE_BUTTON, PS2_MOUSE_FLAG_RIGHT_BUTTON, PS2_MOUSE_FLAG_SYNC,
+    PS2_MOUSE_FLAG_X_OVERFLOW, PS2_MOUSE_FLAG_Y_OVERFLOW, Ps2MouseDecoder, Ps2MouseError,
+};
 pub use ps2_policy::{
     EFI_KEYBOARD_CAPSLOCK, EFI_KEYBOARD_NUMLOCK, EFI_KEYBOARD_SCROLLLOCK,
     EFI_PS2_POLICY_PROTOCOL_GUID, EfiPs2InitHardware, EfiPs2PolicyProtocol,
@@ -97,6 +121,18 @@ pub use unicode_collation::{
     EfiUnicodeCollation2Protocol, EfiUnicodeCollationFatToStr, EfiUnicodeCollationMetaiMatch,
     EfiUnicodeCollationProtocol, EfiUnicodeCollationStrLwr, EfiUnicodeCollationStrToFat,
     EfiUnicodeCollationStrUpr, EfiUnicodeCollationStriColl,
+};
+pub use usb_keyboard::{
+    USB_KBD_LED_CAPS_LOCK, USB_KBD_LED_COMPOSE, USB_KBD_LED_KANA, USB_KBD_LED_NUM_LOCK,
+    USB_KBD_LED_SCROLL_LOCK, USB_KBD_MOD_LEFT_ALT, USB_KBD_MOD_LEFT_CTRL, USB_KBD_MOD_LEFT_GUI,
+    USB_KBD_MOD_LEFT_SHIFT, USB_KBD_MOD_RIGHT_ALT, USB_KBD_MOD_RIGHT_CTRL, USB_KBD_MOD_RIGHT_GUI,
+    USB_KBD_MOD_RIGHT_SHIFT, USB_KEY_MAP_TABLE, USB_USAGE_ERROR_ROLLOVER, USB_USAGE_KEY_A,
+    USB_USAGE_KEY_CAPS_LOCK, USB_USAGE_KEY_ENTER, USB_USAGE_KEY_ESCAPE, USB_USAGE_KEY_SPACE,
+    USB_USAGE_KEY_Z, USB_USAGE_KEYPAD_NUM_LOCK, UsbKeyMapping, UsbKeyboardDecoder,
+};
+pub use usb_mouse::{
+    USB_MOUSE_BTN_4, USB_MOUSE_BTN_5, USB_MOUSE_BTN_LEFT, USB_MOUSE_BTN_MIDDLE,
+    USB_MOUSE_BTN_RIGHT, UsbAbsolutePointerDecoder, UsbMouseDecoder,
 };
 pub use virtual_keyboard::{
     EfiPlatformVirtualKeyboardProtocol, PLATFORM_VIRTUAL_KEYBOARD_PROTOCOL_GUID,
