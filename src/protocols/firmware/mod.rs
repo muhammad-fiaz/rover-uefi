@@ -19,6 +19,7 @@ pub mod form_browser_ex;
 pub mod fsp;
 pub mod ftw;
 pub mod hii;
+pub mod hii_keyword;
 pub mod hob;
 pub mod ifr;
 pub mod legacy_region2;
@@ -162,6 +163,14 @@ pub use hii::{
     HiiImageDecoderColorType, HiiImageDecoderHeader, HiiPackageHeader, HiiPackageType, HiiPopup,
     HiiPopupSelection, HiiPopupStyle, HiiPopupType, HiiRowInfo, HiiString, hii_out_flags,
     is_known_package_type, notify_type as hii_notify_type, parse_package_header,
+};
+pub use hii_keyword::{
+    ConfigKeywordHandler, EFI_CONFIG_KEYWORD_HANDLER_PROTOCOL_GUID, EfiConfigKeywordHandlerGetData,
+    EfiConfigKeywordHandlerProtocol, EfiConfigKeywordHandlerSetData,
+    KEYWORD_HANDLER_ACCESS_NOT_PERMITTED, KEYWORD_HANDLER_INCOMPATIBLE_VALUE_DETECTED,
+    KEYWORD_HANDLER_KEYWORD_NOT_FOUND, KEYWORD_HANDLER_MALFORMED_STRING,
+    KEYWORD_HANDLER_NAMESPACE_ID_NOT_FOUND, KEYWORD_HANDLER_NO_ERROR,
+    KEYWORD_HANDLER_UNDEFINED_PROCESSING_ERROR,
 };
 pub use legacy_region2::{
     EFI_LEGACY_REGION2_PROTOCOL_GUID, EfiLegacyRegion2BootLock, EfiLegacyRegion2Decode,
